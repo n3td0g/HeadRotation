@@ -29,8 +29,10 @@ namespace HeadRotation.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.glControl = new OpenTK.GLControl();
-            this.SuspendLayout();          
+            this.RenderTimer = new System.Windows.Forms.Timer(this.components);
+            this.SuspendLayout();
             // 
             // glControl
             // 
@@ -39,9 +41,14 @@ namespace HeadRotation.Controls
             this.glControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.glControl.Location = new System.Drawing.Point(0, 0);
             this.glControl.Name = "glControl";
-            this.glControl.Size = new System.Drawing.Size(728, 493);
+            this.glControl.Size = new System.Drawing.Size(539, 452);
             this.glControl.TabIndex = 3;
             this.glControl.VSync = false;
+            // 
+            // RenderTimer
+            // 
+            this.RenderTimer.Interval = 40;
+            this.RenderTimer.Tick += new System.EventHandler(this.RenderTimer_Tick);
             // 
             // RenderControl
             // 
@@ -49,13 +56,15 @@ namespace HeadRotation.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.glControl);
             this.Name = "RenderControl";
-            this.Size = new System.Drawing.Size(539, 452);           
-            this.ResumeLayout(false);            
+            this.Size = new System.Drawing.Size(539, 452);
+            this.ResumeLayout(false);
 
         }
 
-        private GLControl glControl;
+        private OpenTK.GLControl glControl;
 
         #endregion
+
+        public System.Windows.Forms.Timer RenderTimer;
     }
 }

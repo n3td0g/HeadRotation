@@ -45,5 +45,10 @@ namespace HeadRotation
         {
             photoControl.LoadPhoto();
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            renderControl.Initialize();
+        }
     }
 }

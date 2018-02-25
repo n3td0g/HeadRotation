@@ -1,4 +1,6 @@
-﻿namespace HeadRotation
+﻿using HeadRotation.Controls;
+
+namespace HeadRotation
 {
     partial class MainForm
     {
@@ -31,8 +33,9 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLoadPhoto = new System.Windows.Forms.Button();
-            this.photoControl = new HeadRotation.PhotoControl();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.photoControl = new HeadRotation.PhotoControl();
+            this.renderControl = new HeadRotation.Controls.RenderControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,14 +69,6 @@
             this.btnLoadPhoto.UseVisualStyleBackColor = true;
             this.btnLoadPhoto.Click += new System.EventHandler(this.btnLoadPhoto_Click);
             // 
-            // photoControl
-            // 
-            this.photoControl.Dock = System.Windows.Forms.DockStyle.Left;
-            this.photoControl.Location = new System.Drawing.Point(0, 47);
-            this.photoControl.Name = "photoControl";
-            this.photoControl.Size = new System.Drawing.Size(478, 585);
-            this.photoControl.TabIndex = 1;
-            // 
             // splitter1
             // 
             this.splitter1.Location = new System.Drawing.Point(478, 47);
@@ -82,16 +77,34 @@
             this.splitter1.TabIndex = 2;
             this.splitter1.TabStop = false;
             // 
+            // photoControl
+            // 
+            this.photoControl.Dock = System.Windows.Forms.DockStyle.Left;
+            this.photoControl.Location = new System.Drawing.Point(0, 47);
+            this.photoControl.Name = "photoControl";
+            this.photoControl.Size = new System.Drawing.Size(478, 585);
+            this.photoControl.TabIndex = 1;
+            // 
+            // renderControl
+            // 
+            this.renderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.renderControl.Location = new System.Drawing.Point(481, 47);
+            this.renderControl.Name = "renderControl";
+            this.renderControl.Size = new System.Drawing.Size(586, 585);
+            this.renderControl.TabIndex = 3;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 632);
+            this.Controls.Add(this.renderControl);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.photoControl);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
             this.Text = "Head rotation tests";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -104,6 +117,7 @@
         private System.Windows.Forms.Button btnLoadPhoto;
         private PhotoControl photoControl;
         private System.Windows.Forms.Splitter splitter1;
+        private RenderControl renderControl;
     }
 }
 
