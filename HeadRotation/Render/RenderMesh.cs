@@ -62,10 +62,29 @@ namespace HeadRotation.Render
             var lastTriangle = 0;
             var meshPartsInfo = LoadHeadMeshes(objData, 1.0f, ref lastTriangle);
             
+            Vector3 A = new Vector3(99999.0f, 99999.0f, 99999.0f);
+            Vector3 B = new Vector3(-99999.0f, -99999.0f, -99999.0f);
+
+            foreach (var meshPartInfo in meshPartsInfo)
+            {
+                foreach(var p in meshPartInfo.VertexPositions)
+                {
+                    A.X = Math.Min(A.X, p.X);
+                    A.Y = Math.Min(A.Y, p.Y);
+                    A.Z = Math.Min(A.Z, p.Z);
+
+                    B.X = Math.Max(B.X, p.X);
+                    B.Y = Math.Max(B.Y, p.Y);
+                    B.Z = Math.Max(B.Z, p.Z);
+                }
+            }
+
+            Vector3 Center = (A + B) * 0.5f;
+
             foreach (var meshPartInfo in meshPartsInfo)
             {
                 var meshPart = new MeshPart();
-                if (meshPart.Create(meshPartInfo))
+                if (meshPart.Create(meshPartInfo, -Center))
                 {
                     result.Parts.Add(meshPart);
                 }                

@@ -118,7 +118,7 @@ namespace HeadRotation.Render
             OpenGlHelper.CheckErrors();
         }
 
-        public bool Create(MeshPartInfo info)
+        public bool Create(MeshPartInfo info, Vector3 Offset)
         {
             if (info.VertexPositions.Count == 0)
                 return false;
@@ -160,7 +160,7 @@ namespace HeadRotation.Render
             var normals = Normal.CalculateNormals(positions, Indices);
             for (var i = 0; i < Vertices.Length; i++)
             {
-                Vertices[i].Position = positions[i];
+                Vertices[i].Position = positions[i] + Offset;
                 Vertices[i].Normal = normals[i];
                 Vertices[i].TexCoord = texCoords[i];
                 Vertices[i].Color = Vector4.One;

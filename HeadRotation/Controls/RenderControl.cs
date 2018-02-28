@@ -146,7 +146,6 @@ namespace HeadRotation.Controls
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
             var worldMatrix = Matrix4.Identity;
-            //Иначе берем Matrix4.Identity
             idleShader.UpdateUniform("u_World", worldMatrix);
             idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
