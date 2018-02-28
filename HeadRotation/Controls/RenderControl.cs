@@ -13,23 +13,34 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Platform;
 using HeadRotation.Render;
 using System.IO;
+using HeadRotation.Properties;
 
 namespace HeadRotation.Controls
 {
     public partial class RenderControl : UserControl
     {
+        #region var
+
         private bool UseTexture = true;
         public bool loaded = false;
         private ShaderController idleShader;
-        public Camera Camera = new Camera();
+
+        public Camera camera = new Camera();
+        public ScaleMode ScaleMode = ScaleMode.None;
+        private int mX;
+        private int mY;
+        private bool leftMousePressed;
+
         public RenderMesh HeadMesh;
+
+        #endregion
 
         public RenderControl()
         {
             InitializeComponent();
 
             Toolkit.Init();
-         
+
         }
 
         public void Initialize()
@@ -53,8 +64,12 @@ namespace HeadRotation.Controls
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
 
+            SetupViewport(glControl);
+
+
             RenderTimer.Start();
         }
+
 
         private void HeadMesh_OnBeforePartDraw(MeshPart part)
         {
@@ -99,7 +114,6 @@ namespace HeadRotation.Controls
         {
             if (!loaded)  // whlie context not create
                 return;
-            GL.Viewport(this.Location.X, this.Location.Y, Width, Height);
             GL.ClearColor(Color.White);
 
             // Clear the render canvas with the current color
@@ -107,7 +121,7 @@ namespace HeadRotation.Controls
                 ClearBufferMask.ColorBufferBit |
                 ClearBufferMask.DepthBufferBit);
 
-            Camera.PutCamera();
+            camera.PutCamera();
 
             GL.PushMatrix();
             GL.Enable(EnableCap.Texture2D);
@@ -119,25 +133,186 @@ namespace HeadRotation.Controls
             idleShader.Begin();
             DrawHead();
             idleShader.End();
-            
+
+            GL.PopMatrix();
+            GL.Disable(EnableCap.Texture2D);
+            GL.Disable(EnableCap.DepthTest);
+            DrawAxis();
+
             glControl.SwapBuffers();
         }
 
         private void DrawHead()
         {
-            idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(Camera.Position));
+            idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
             var worldMatrix = Matrix4.Identity;
             //Иначе берем Matrix4.Identity
             idleShader.UpdateUniform("u_World", worldMatrix);
-            idleShader.UpdateUniform("u_WorldView", worldMatrix * Camera.ViewMatrix);
-            idleShader.UpdateUniform("u_ViewProjection", Camera.ViewMatrix * Camera.ProjectMatrix);
+            idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
+            idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
 
             HeadMesh.Draw(false);
+        }
+
+        private void DrawAxis()
+        {
+            GL.LineWidth(1.0f);
+            GL.DepthMask(false);
+            GL.Begin(PrimitiveType.Lines);
+            GL.Color3(Color.Red);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(100.0, 0.0, 0.0);
+            GL.Color3(Color.Blue);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, 100.0, 0.0);
+            GL.Color3(Color.Green);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, 0.0, 100.0);
+            GL.End();
+
+            GL.Enable(EnableCap.LineStipple);
+            GL.LineStipple(1, 255);
+            GL.Begin(PrimitiveType.Lines);
+            GL.Color3(Color.Red);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(-100.0, 0.0, 0.0);
+            GL.Color3(Color.Blue);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, -100.0, 0.0);
+            GL.Color3(Color.Green);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, 0.0, -100.0);
+            GL.End();
+            GL.Disable(EnableCap.LineStipple);
+
+            GL.DepthMask(true);
         }
 
         private void RenderTimer_Tick(object sender, EventArgs e)
         {
             Render();
         }
+
+        private void SetupViewport(GLControl c)
+        {
+            if (c.ClientSize.Height == 0)
+                c.ClientSize = new Size(c.ClientSize.Width, 1);
+
+            camera.UpdateViewport(c.ClientSize.Width, c.ClientSize.Height);
+        }
+
+        private void glControl_Resize(object sender, EventArgs e)
+        {
+            if (!loaded)
+                return;
+            var c = sender as GLControl;
+            SetupViewport(c);
+
+        }
+
+        #region ScaleTools
+
+        private void btnUnscale_MouseUp(object sender, MouseEventArgs e)
+        {
+            btnUnscale.Image = Resources.btnUnscaleNormal;
+
+            camera.ResetCamera(true);
+
+            checkArrow.Tag = checkZoom.Tag = "2";
+            checkArrow.Image = Resources.btnArrowNormal;
+            checkZoom.Image = Resources.btnZoomNormal;
+        }
+        private void btnUnscale_MouseDown(object sender, MouseEventArgs e)
+        {
+            btnUnscale.Image = Resources.btnUnscalePressed;
+        }
+
+        private void ResetScaleModeTools()
+        {
+            if (checkZoom.Tag.ToString() == "1")
+                checkZoom_Click(this, EventArgs.Empty);
+            if (checkArrow.Tag.ToString() == "1")
+                checkArrow_Click(this, EventArgs.Empty);
+        }
+        private void checkZoom_Click(object sender, EventArgs e)
+        {
+            if (checkZoom.Tag.ToString() == "2")
+            {
+                ResetScaleModeTools();
+                ScaleMode = ScaleMode.Zoom;
+
+                checkZoom.Tag = "1";
+                checkArrow.Tag = "2";
+
+                checkZoom.Image = Resources.btnZoomPressed;
+                checkArrow.Image = Resources.btnArrowNormal;
+            }
+            else
+            {
+                checkZoom.Tag = "2";
+                checkZoom.Image = Resources.btnZoomNormal;
+
+                ScaleMode = ScaleMode.None;
+            }
+        }
+        private void checkArrow_Click(object sender, EventArgs e)
+        {
+            if (checkArrow.Tag.ToString() == "2")
+            {
+                ResetScaleModeTools();
+                ScaleMode = ScaleMode.Rotate;
+
+                checkArrow.Tag = "1";
+                checkZoom.Tag = "2";
+
+                checkArrow.Image = Resources.btnArrowPressed;
+                checkZoom.Image = Resources.btnZoomNormal;
+            }
+            else
+            {
+                checkArrow.Tag = "2";
+                checkArrow.Image = Resources.btnArrowNormal;
+
+                ScaleMode = ScaleMode.None;
+            }
+        }
+
+        private void glControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            var newPoint = new Vector2(e.X, e.Y);
+            if (leftMousePressed)
+            {
+                switch (ScaleMode)
+                {
+                    case ScaleMode.Rotate:
+                        camera.LeftRight((e.Location.X - mX) * 1.0f / 150.0f);
+                        break;
+                    case ScaleMode.Move:
+                        camera.dy -= (e.Location.Y - mY) * camera.Scale;
+                        break;
+                    case ScaleMode.Zoom:
+                        camera.Wheel((e.Location.Y - mY) / 150f * camera.Scale);
+                        break;
+                }
+            }
+            mX = e.Location.X;
+            mY = e.Location.Y;
+        }
+        private void glControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                leftMousePressed = true;
+            }
+        }
+        private void glControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                leftMousePressed = false;
+            }
+        }
+
+        #endregion
     }
 }

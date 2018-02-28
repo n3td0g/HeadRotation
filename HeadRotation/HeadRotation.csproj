@@ -101,6 +101,7 @@
     <Compile Include="Render\Normal.cs" />
     <Compile Include="Render\OpenGlHelper.cs" />
     <Compile Include="Render\RenderMesh.cs" />
+    <Compile Include="Render\ScaleMode.cs" />
     <Compile Include="Render\ShaderController.cs" />
     <EmbeddedResource Include="Controls\RenderControl.resx">
       <DependentUpon>RenderControl.cs</DependentUpon>
@@ -119,6 +120,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -132,6 +134,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnArrowNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnArrowPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnUnscaleNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnUnscalePressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnZoomNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnZoomPressed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

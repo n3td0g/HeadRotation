@@ -1,8 +1,8 @@
-﻿using System;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System;
 
-namespace HeadRotation.Render
+namespace HeadRotation.Controls
 {
     public class Camera
     {
@@ -57,8 +57,8 @@ namespace HeadRotation.Render
 
             InitCamera(1.5707f + da, 500);
         }
-        // default initialize
-        private void InitCamera()           
+
+        private void InitCamera()            // default initialize
         {
             InitCamera(1.5707f, 500);
         }
@@ -77,6 +77,18 @@ namespace HeadRotation.Render
             Radius = Math.Max(_radius, 0.1f);
 
             Position = new Vector3((float)(Radius * Math.Cos(beta)), (float)(Radius), (float)(Radius * Math.Sin(beta)));
+        }
+
+        public void SetupCamera(Vector2 dataLeft, Vector2 dataRight)
+        {
+            var l = dataRight.X * dataLeft.X;
+            Scale = (float)Math.Sqrt(l * l / (WindowWidth * WindowWidth + WindowHeight * WindowHeight));
+            var h = dataLeft.Y * Scale * WindowHeight;
+            var y0 = dataRight.Y - h;
+            var y1 = y0 + Scale * WindowHeight;
+            dy = (y0 + y1) * 0.5f;
+            UpdateViewport(WindowWidth, WindowHeight);
+            PutCamera();
         }
 
         public float Scale = 0.06772818f;
@@ -159,7 +171,7 @@ namespace HeadRotation.Render
             PutCamera();
         }
 
-        public Vector3 GetWorldPoint(int screenX, int screenY, int screenWidth, int screenHeight, float depth)
+  /*      public Vector3 GetWorldPoint(int screenX, int screenY, int screenWidth, int screenHeight, float depth)
         {
             var x = (screenX * 2.0f / screenWidth) - 1.0f;
             var y = 1.0f - (screenY * 2.0f / screenHeight);
@@ -168,7 +180,7 @@ namespace HeadRotation.Render
             var viewProj = ViewMatrix * ProjectMatrix;
             var invViewProj = viewProj.Inverted();
 
-            p = Vector4.Transform(new Vector4(p), invViewProj).Xyz;
+            p = Vector3.Transform(p, invViewProj);
 
             var dir = new Vector3(Position.X, 0.0f, Position.Z);
             dir.Normalize();
@@ -178,17 +190,11 @@ namespace HeadRotation.Render
 
         public Vector2 GetScreenPoint(Vector3 worldPoint, int screenWidth, int screenHeight)
         {
-            /*
-            var xyz = glControl.PointToClient(new Point(e.X, e.Y));
-            var mp = camera.GetWorldPoint(xyz.X, xyz.Y, Width, Height, 0.0f);
-            mp.X = 0f;
-            var wmp = camera.GetScreenPoint(mp, Width, Height);
-            */
+
             var viewProj = ViewMatrix * ProjectMatrix;
-            var worldPoint4 = new Vector4(worldPoint);
-            var p = Vector4.Transform(worldPoint4, viewProj);
+            var p = Vector3.Transform(worldPoint, viewProj);
             return new Vector2((1f - p.X) * screenWidth * 0.5f,
                     (1f - p.Y) * screenHeight * 0.5f);
-        }
+        }*/
     }
 }
