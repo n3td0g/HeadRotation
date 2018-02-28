@@ -12,12 +12,32 @@ namespace HeadRotation.Render
         public delegate void BeforePartDrawHandler(MeshPart part);
         public event BeforePartDrawHandler OnBeforePartDraw;
 
+        //Угол поворота головы
+        public float HeadAngle
+        {
+            get;
+            set;
+        }
+
+        public RenderMesh ()
+        {
+            HeadAngle = 0.0f;
+        }
+
         public void Destroy()
         {
             foreach (var part in Parts)
             {
                 part.Destroy();
             }
+        }
+
+        void DetectFaceRotation(Vector2 noseTip, Vector2 noseTop, Vector2 noseBottom)
+        {
+            var noseLength = (noseTop.Y - noseTip.Y) * (float)Math.Tan(35.0 * Math.PI / 180.0);
+            var angle = (float)Math.Asin(Math.Abs(noseTip.X - noseTop.X) / noseLength);
+
+            HeadAngle = noseTip.X > noseTop.X ? angle : -angle;
         }
 
         public void Draw(bool debug)
