@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HeadRotation
+﻿namespace HeadRotation
 {
     /// <summary> Enum, for log message type </summary>
     public enum EchoMessageType

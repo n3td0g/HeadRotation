@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeadRotation
@@ -16,7 +13,9 @@ namespace HeadRotation
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            ProgramCore.MainForm = new MainForm();
+            Application.Run(ProgramCore.MainForm);
         }
     }
 }

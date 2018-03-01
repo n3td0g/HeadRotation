@@ -1,4 +1,4 @@
-﻿namespace HeadRotation
+﻿namespace HeadRotation.Controls
 {
     partial class PhotoControl
     {

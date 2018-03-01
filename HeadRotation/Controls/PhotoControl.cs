@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeadRotation.Helpers;
 using System.IO;
+using OpenTK;
 
-namespace HeadRotation
+namespace HeadRotation.Controls
 {
     public partial class PhotoControl : UserControl
     {
@@ -44,6 +40,38 @@ namespace HeadRotation
             pictureTemplate.Refresh();
         }
 
+
+        private Vector2 GetFrontWorldPoint(Vector3 value)
+        {
+            Vector2 v;
+            var result = new Vector2();
+            var imageWidth = pictureTemplate.Image.Width;
+            var imageHeight = pictureTemplate.Image.Height;
+
+            var width = Recognizer.FaceRectRelative.Width * imageWidth;
+            var height = Recognizer.FaceRectRelative.Height * imageHeight;
+
+            var x = Recognizer.FaceRectRelative.X * imageWidth;
+            var y = Recognizer.FaceRectRelative.Y * imageHeight;
+
+            v.X = ((value.X * imageWidth) - x) / width;
+            v.Y = ((value.Y * imageHeight) - y) / height;
+
+                result.X = v.X * ProgramCore.MainForm.RenderControl.HeadMesh.AABB.Size.X + ProgramCore.MainForm.RenderControl.HeadMesh.AABB.A.X;
+                result.Y = v.Y * (-ProgramCore.MainForm.RenderControl.HeadMesh.AABB.Size.Y) + ProgramCore.MainForm.RenderControl.HeadMesh.AABB.B.Y;
+
+                var centerX = ProgramCore.MainForm.RenderControl.HeadMesh.FaceCenterX;
+                var angle = ProgramCore.MainForm.RenderControl.HeadMesh.HeadAngle;
+                var noseDepth = ProgramCore.MainForm.RenderControl.HeadMesh.NoseDepth;
+                float angleDegree = 180.0f * Math.Abs(angle) / (float)Math.PI;
+                var depthScale = Math.Max(Math.Min((angleDegree - 10.0f) / 15.0f, 1.0f), 0.0f);
+                depthScale = 1.0f + depthScale * 0.75f;
+                noseDepth = noseDepth * depthScale;
+                result.X = ((result.X - centerX) + (float)Math.Sin(angle) * value.Z * noseDepth) / (float)Math.Cos(angle);
+
+            return result;
+        }
+
         public void LoadPhoto()
         {
             using (var ofd = new OpenFileDialogEx("Select template file", "Image Files|*.jpg;*.png;*.jpeg;*.bmp"))
@@ -71,6 +99,16 @@ namespace HeadRotation
 
                 RecalcRealTemplateImagePosition();
 
+                var eWidth = pictureTemplate.Width - 100;
+                var TopEdgeTransformed = new RectangleF(pictureTemplate.Width / 2f - eWidth / 2f, 30, eWidth, eWidth);          // затычка. нужен будет подгон верхней части бошки - сделаю
+                var minX = Recognizer.GetMinX();
+                var topPoint = (TopEdgeTransformed.Y - ImageTemplateOffsetY) / ImageTemplateHeight;
+                Recognizer.FaceRectRelative = new RectangleF(minX, topPoint, Recognizer.GetMaxX() - minX, Recognizer.BottomFace.Y - topPoint);
+
+                var noseTip = GetFrontWorldPoint(Recognizer.FacialFeatures[2]);
+                var noseTop = GetFrontWorldPoint(Recognizer.FacialFeatures[22]);
+                var noseBottom = GetFrontWorldPoint(Recognizer.FacialFeatures[49]);
+                ProgramCore.MainForm.RenderControl.HeadMesh.DetectFaceRotation(noseTip, noseTop, noseBottom);
 
                 RenderTimer.Start();
 

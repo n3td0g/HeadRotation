@@ -11,9 +11,20 @@ namespace HeadRotation.Render
         public List<MeshPart> Parts = new List<MeshPart>();
         public delegate void BeforePartDrawHandler(MeshPart part);
         public event BeforePartDrawHandler OnBeforePartDraw;
+        public RectangleAABB AABB = new RectangleAABB();
 
         //Угол поворота головы
         public float HeadAngle
+        {
+            get;
+            set;
+        }
+        public float FaceCenterX
+        {
+            get;
+            set;
+        }
+        public float NoseDepth
         {
             get;
             set;
@@ -32,12 +43,13 @@ namespace HeadRotation.Render
             }
         }
 
-        void DetectFaceRotation(Vector2 noseTip, Vector2 noseTop, Vector2 noseBottom)
+        public void DetectFaceRotation(Vector2 noseTip, Vector2 noseTop, Vector2 noseBottom)
         {
             var noseLength = (noseTop.Y - noseTip.Y) * (float)Math.Tan(35.0 * Math.PI / 180.0);
             var angle = (float)Math.Asin(Math.Abs(noseTip.X - noseTop.X) / noseLength);
 
             HeadAngle = noseTip.X > noseTop.X ? angle : -angle;
+           ProgramCore.MainForm.RenderControl.camera.ResetCamera(true, HeadAngle);
         }
 
         public void Draw(bool debug)
@@ -101,12 +113,19 @@ namespace HeadRotation.Render
 
             Vector3 Center = (A + B) * 0.5f;
 
+           
             foreach (var meshPartInfo in meshPartsInfo)
             {
                 var meshPart = new MeshPart();
                 if (meshPart.Create(meshPartInfo, -Center))
                 {
                     result.Parts.Add(meshPart);
+
+                    var a = result.AABB.A;
+                    var b = result.AABB.B;
+                    UpdateAABB(meshPart, ref a, ref b);
+                    result.AABB.A = a;
+                    result.AABB.B = b;
                 }                
             }
 
@@ -116,6 +135,15 @@ namespace HeadRotation.Render
             }
 
             return result;
+        }
+
+        private static void UpdateAABB(MeshPart part, ref Vector3 a, ref Vector3 b)
+        {
+            foreach (var vertex in part.Vertices)
+            {
+                a.Z = Math.Min(vertex.Position.Z, a.Z);
+                b.Z = Math.Max(vertex.Position.Z, b.Z);
+            }
         }
 
         private static List<MeshPartInfo> LoadHeadMeshes(ObjItem objModel, float scale, ref int lastTriangle)

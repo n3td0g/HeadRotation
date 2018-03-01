@@ -1,18 +1,14 @@
-﻿using Luxand;
+﻿using HeadRotation.Controls;
+using Luxand;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeadRotation
 {
     public partial class MainForm : Form
     {
+        public RenderControl RenderControl { get { return renderControl; } }
+
         public MainForm()
         {
             InitializeComponent();

@@ -34,7 +34,7 @@ namespace HeadRotation
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLoadPhoto = new System.Windows.Forms.Button();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.photoControl = new HeadRotation.PhotoControl();
+            this.photoControl = new HeadRotation.Controls.PhotoControl();
             this.renderControl = new HeadRotation.Controls.RenderControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();

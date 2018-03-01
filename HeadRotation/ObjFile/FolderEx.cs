@@ -1,6 +1,5 @@
 ﻿
 using System.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HeadRotation.ObjFile
 {
