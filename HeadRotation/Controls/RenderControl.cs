@@ -350,10 +350,6 @@ namespace HeadRotation.Controls
 
 
         #endregion
-
-        private void glControl_MouseClick(object sender, MouseEventArgs e)
-        {
-            ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(new Vector3(4, 5, 6));
-        }
+     
     }
 }

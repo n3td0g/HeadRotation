@@ -58,12 +58,7 @@ namespace HeadRotation
         }
         private void btnExportVector_Click(object sender, EventArgs e)
         {
-            var vectors = new List<Vector3>();
-            vectors.Add(new Vector3(1, 2, 3));
-            vectors.Add(new Vector3(4, 5, 6));
-            vectors.Add(new Vector3(7, 8, 9));
-
-            VectorEx.ExportVector(vectors);
+            VectorEx.ExportVector(ProgramCore.MainForm.RenderControl.Points.Points);
         }
 
         private void btnEditPoint_Click(object sender, EventArgs e)

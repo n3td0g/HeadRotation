@@ -32,7 +32,10 @@ namespace HeadRotation.Render
         public void SetSelectedPoint(Vector3 value)
         {
             if (PointIsValid(SelectedPoint))
+            {
                 Points[SelectedPoint] = value;
+                ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(value);
+            }
         }
 
         public void Initialize(int Count)
@@ -40,7 +43,7 @@ namespace HeadRotation.Render
             SelectedPoint = -1;
             Points.Clear();
             Random R = new Random();
-            for (int i = 0; i<Count; ++i)
+            for (int i = 0; i < Count; ++i)
             {
                 Points.Add(Vector3.Zero);
             }
@@ -58,7 +61,7 @@ namespace HeadRotation.Render
                 else
                     GL.Color3(0.0f, 1.0f, 0.0f);
 
-                GL.Vertex3(Points[i]);               
+                GL.Vertex3(Points[i]);
             }
 
             GL.End();
@@ -95,21 +98,26 @@ namespace HeadRotation.Render
         public void SelectPoint(int x, int y)
         {
             if (movingPoint)
+            {
                 return;
+            }
             float minDistance = float.MaxValue;
             Vector2 selectionPoint = new Vector2(x, y);
             SelectedPoint = -1;
             for (int i = 0; i < Points.Count; ++i)
             {
                 float distance = float.MaxValue;
-                if(IsPointSelected(selectionPoint, i, out distance))
+                if (IsPointSelected(selectionPoint, i, out distance))
                 {
-                    if(distance < minDistance)
+                    if (distance < minDistance)
+                    {
                         SelectedPoint = i;
+                        ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(Points[SelectedPoint]);
+                    }
                 }
-            }           
-        }       
-        
+            }
+        }
+
         public bool PointIsValid(int pointIndex)
         {
             return pointIndex >= 0 && pointIndex < Points.Count;
@@ -119,7 +127,7 @@ namespace HeadRotation.Render
         {
             distance = float.MaxValue;
             if (!PointIsValid(pointIndex))
-                return false;            
+                return false;
             var point = Points[pointIndex];
             var screenPoint = RenderCamera.GetScreenPoint(point);
             distance = (screenPoint - selectionPoint).Length;
