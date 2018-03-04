@@ -15,8 +15,35 @@ namespace HeadRotation.Render
     public class Texture : IDisposable
     {
         public int GlHandle { get; protected set; }
-        public int Width { get; protected set; }
-        public int Height { get; protected set; }
+        private int width;
+        private int height;
+
+        public int Width
+        {
+            get
+            {
+                return width;
+            }
+            protected set
+            {
+                width = value;
+                PotWidth = NpotIsSupported ? Width : (int)Math.Pow(2, Math.Ceiling(Math.Log(Width, 2)));
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return height;
+            }
+            protected set
+            {
+                height = value;
+                PotHeight = NpotIsSupported ? Height : (int)Math.Pow(2, Math.Ceiling(Math.Log(Height, 2)));
+
+            }
+        }
 
         #region NPOT
 
@@ -43,20 +70,8 @@ namespace HeadRotation.Render
             }
         }
 
-        public int PotWidth
-        {
-            get
-            {
-                return NpotIsSupported ? Width : (int)Math.Pow(2, Math.Ceiling(Math.Log(Width, 2)));
-            }
-        }
-        public int PotHeight
-        {
-            get
-            {
-                return NpotIsSupported ? Height : (int)Math.Pow(2, Math.Ceiling(Math.Log(Height, 2)));
-            }
-        }
+        public int PotWidth { get; protected set; }
+        public int PotHeight { get; protected set; }
 
         #endregion
 

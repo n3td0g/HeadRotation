@@ -26,7 +26,7 @@ namespace HeadRotation.Controls
         public RenderMesh HeadMesh;
         public HeadPoints Points = new HeadPoints();
 
-        public const int HeadPointsCount = 1;
+        public const int HeadPointsCount = 64;
 
         #endregion
 
