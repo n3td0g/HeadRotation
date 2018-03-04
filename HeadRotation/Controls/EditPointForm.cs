@@ -54,7 +54,7 @@ namespace HeadRotation.Controls
             if (float.IsNaN(x) || float.IsNaN(y) || float.IsNaN(z) || textX.Text.EndsWith(",") || textY.Text.EndsWith(",") || textZ.Text.EndsWith(","))
                 return;
 
-            ProgramCore.MainForm.RenderControl.Points.SetSelectedPoint(new Vector3(x, y, z));
+            ProgramCore.MainForm.RenderControl.HeadPoints.SetSelectedPoint(new Vector3(x, y, z));
         }
         private void EditPointForm_FormClosing(object sender, FormClosingEventArgs e)
         {
