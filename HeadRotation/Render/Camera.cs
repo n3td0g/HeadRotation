@@ -157,12 +157,12 @@ namespace HeadRotation.Render
         public void AfterLoadVoid()
         {
             PutCamera();
-        }
+        }        
 
-        public Vector3 GetWorldPoint(int screenX, int screenY, int screenWidth, int screenHeight, float depth)
+        public Vector3 GetWorldPoint(int screenX, int screenY, float depth)
         {
-            var x = (screenX * 2.0f / screenWidth) - 1.0f;
-            var y = 1.0f - (screenY * 2.0f / screenHeight);
+            var x = (screenX * 2.0f / WindowWidth) - 1.0f;
+            var y = 1.0f - (screenY * 2.0f / WindowHeight);
             var p = new Vector3(x, y, -1.0f);
 
             var viewProj = ViewMatrix * ProjectMatrix;
@@ -176,19 +176,20 @@ namespace HeadRotation.Render
             return p - dir * (length - depth);
         }
 
-        public Vector2 GetScreenPoint(Vector3 worldPoint, int screenWidth, int screenHeight)
+        public float GetPointDepth(Vector3 worldPoint)
         {
-            /*
-            var xyz = glControl.PointToClient(new Point(e.X, e.Y));
-            var mp = camera.GetWorldPoint(xyz.X, xyz.Y, Width, Height, 0.0f);
-            mp.X = 0f;
-            var wmp = camera.GetScreenPoint(mp, Width, Height);
-            */
+            var dir = new Vector3(Position.X, 0.0f, Position.Z);
+            dir.Normalize();
+            return Vector3.Dot(dir, worldPoint);
+        }
+
+        public Vector2 GetScreenPoint(Vector3 worldPoint)
+        {            
             var viewProj = ViewMatrix * ProjectMatrix;
             var worldPoint4 = new Vector4(worldPoint);
             var p = Vector4.Transform(worldPoint4, viewProj);
-            return new Vector2((1f - p.X) * screenWidth * 0.5f,
-                    (1f - p.Y) * screenHeight * 0.5f);
+            return new Vector2((p.X + 1.0f) * WindowWidth * 0.5f,
+                    (1f - p.Y) * WindowHeight * 0.5f);
         }
     }
 }

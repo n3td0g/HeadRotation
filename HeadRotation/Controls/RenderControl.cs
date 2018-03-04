@@ -24,6 +24,9 @@ namespace HeadRotation.Controls
         private bool leftMousePressed;
 
         public RenderMesh HeadMesh;
+        public HeadPoints Points = new HeadPoints();
+
+        public const int HeadPointsCount = 64;
 
         #endregion
 
@@ -32,13 +35,15 @@ namespace HeadRotation.Controls
             InitializeComponent();
 
             Toolkit.Init();
-
+            
         }
 
         public void Initialize()
         {
             loaded = true;
             glControl.CreateControl();
+            Points.Initialize(HeadPointsCount);
+            Points.RenderCamera = camera;
 
             idleShader = new ShaderController("idle.vs", "idle.fs");
             idleShader.SetUniformLocation("u_UseTexture");
@@ -130,6 +135,8 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
             DrawAxis();
+
+            Points.Draw();
 
             glControl.SwapBuffers();
         }
@@ -284,6 +291,9 @@ namespace HeadRotation.Controls
                     case ScaleMode.Zoom:
                         camera.Wheel((e.Location.Y - mY) / 150f * camera.Scale);
                         break;
+                    case ScaleMode.None:
+                        Points.MovePoint(e.X, e.Y);
+                        break;
                 }
             }
             mX = e.Location.X;
@@ -294,6 +304,11 @@ namespace HeadRotation.Controls
             if (e.Button == MouseButtons.Left)
             {
                 leftMousePressed = true;
+
+                if(ScaleMode == ScaleMode.None)
+                {
+                    Points.StartMoving(e.X, e.Y);
+                }
             }
         }
         private void glControl_MouseUp(object sender, MouseEventArgs e)
@@ -301,6 +316,12 @@ namespace HeadRotation.Controls
             if (e.Button == MouseButtons.Left)
             {
                 leftMousePressed = false;
+
+                if (ScaleMode == ScaleMode.None)
+                {
+                    Points.SelectPoint(e.X, e.Y);
+                    Points.StopMoving(e.X, e.Y);
+                }
             }
         }
 
