@@ -34,7 +34,6 @@
             this.textX = new System.Windows.Forms.TextBox();
             this.textY = new System.Windows.Forms.TextBox();
             this.textZ = new System.Windows.Forms.TextBox();
-            this.btnApply = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -70,6 +69,7 @@
             this.textX.Name = "textX";
             this.textX.Size = new System.Drawing.Size(100, 20);
             this.textX.TabIndex = 6;
+            this.textX.TextChanged += new System.EventHandler(this.edit_TextChanged);
             // 
             // textY
             // 
@@ -77,6 +77,7 @@
             this.textY.Name = "textY";
             this.textY.Size = new System.Drawing.Size(100, 20);
             this.textY.TabIndex = 7;
+            this.textY.TextChanged += new System.EventHandler(this.edit_TextChanged);
             // 
             // textZ
             // 
@@ -84,23 +85,13 @@
             this.textZ.Name = "textZ";
             this.textZ.Size = new System.Drawing.Size(100, 20);
             this.textZ.TabIndex = 8;
-            // 
-            // btnApply
-            // 
-            this.btnApply.Location = new System.Drawing.Point(35, 90);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 23);
-            this.btnApply.TabIndex = 9;
-            this.btnApply.Text = "Apply";
-            this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+            this.textZ.TextChanged += new System.EventHandler(this.edit_TextChanged);
             // 
             // EditPointForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(147, 118);
-            this.Controls.Add(this.btnApply);
+            this.ClientSize = new System.Drawing.Size(147, 88);
             this.Controls.Add(this.textZ);
             this.Controls.Add(this.textY);
             this.Controls.Add(this.textX);
@@ -125,6 +116,5 @@
         private System.Windows.Forms.TextBox textX;
         private System.Windows.Forms.TextBox textY;
         private System.Windows.Forms.TextBox textZ;
-        private System.Windows.Forms.Button btnApply;
     }
 }
