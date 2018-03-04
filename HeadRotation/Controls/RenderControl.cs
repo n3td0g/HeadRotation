@@ -213,6 +213,7 @@ namespace HeadRotation.Controls
             btnUnscale.Image = Resources.btnUnscaleNormal;
 
             camera.ResetCamera(true, HeadMesh.HeadAngle);
+            ScaleMode = ScaleMode.None;
 
             checkArrow.Tag = checkZoom.Tag = "2";
             checkArrow.Image = Resources.btnArrowNormal;
