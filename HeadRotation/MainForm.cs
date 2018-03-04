@@ -1,6 +1,9 @@
 ﻿using HeadRotation.Controls;
+using HeadRotation.Helpers;
 using Luxand;
+using OpenTK;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace HeadRotation
@@ -8,6 +11,8 @@ namespace HeadRotation
     public partial class MainForm : Form
     {
         public RenderControl RenderControl { get { return renderControl; } }
+        public EditPointForm frmEditPoint = new EditPointForm();
+
 
         public MainForm()
         {
@@ -45,6 +50,31 @@ namespace HeadRotation
         private void MainForm_Load(object sender, EventArgs e)
         {
             renderControl.Initialize();
+        }
+
+        private void btnImportVector_Click(object sender, EventArgs e)
+        {
+            var vectors = VectorEx.ImportVector();
+        }
+        private void btnExportVector_Click(object sender, EventArgs e)
+        {
+            var vectors = new List<Vector3>();
+            vectors.Add(new Vector3(1, 2, 3));
+            vectors.Add(new Vector3(4, 5, 6));
+            vectors.Add(new Vector3(7, 8, 9));
+
+            VectorEx.ExportVector(vectors);
+        }
+
+        private void btnEditPoint_Click(object sender, EventArgs e)
+        {
+            if (frmEditPoint.Visible)
+            {
+                frmEditPoint.Hide();
+                frmEditPoint.UpdateEditablePoint(Vector3.Zero);
+            }
+            else
+                frmEditPoint.Show(this);
         }
     }
 }

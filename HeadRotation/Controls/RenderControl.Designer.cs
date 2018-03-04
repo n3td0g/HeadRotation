@@ -33,9 +33,11 @@ namespace HeadRotation.Controls
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RenderControl));
             this.glControl = new OpenTK.GLControl();
             this.RenderTimer = new System.Windows.Forms.Timer(this.components);
+            this.checkHand = new System.Windows.Forms.PictureBox();
             this.btnUnscale = new System.Windows.Forms.PictureBox();
             this.checkZoom = new System.Windows.Forms.PictureBox();
             this.checkArrow = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.checkHand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnUnscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).BeginInit();
@@ -51,6 +53,7 @@ namespace HeadRotation.Controls
             this.glControl.Size = new System.Drawing.Size(539, 452);
             this.glControl.TabIndex = 3;
             this.glControl.VSync = false;
+            this.glControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseClick);
             this.glControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseDown);
             this.glControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseMove);
             this.glControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseUp);
@@ -61,8 +64,24 @@ namespace HeadRotation.Controls
             this.RenderTimer.Interval = 40;
             this.RenderTimer.Tick += new System.EventHandler(this.RenderTimer_Tick);
             // 
+            // checkHand
+            // 
+            this.checkHand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkHand.BackColor = System.Drawing.SystemColors.Control;
+            this.checkHand.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkHand.BackgroundImage")));
+            this.checkHand.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.checkHand.Image = global::HeadRotation.Properties.Resources.btnHandNormal;
+            this.checkHand.Location = new System.Drawing.Point(360, 3);
+            this.checkHand.Name = "checkHand";
+            this.checkHand.Size = new System.Drawing.Size(36, 36);
+            this.checkHand.TabIndex = 8;
+            this.checkHand.TabStop = false;
+            this.checkHand.Tag = "2";
+            this.checkHand.Click += new System.EventHandler(this.checkHand_Click);
+            // 
             // btnUnscale
             // 
+            this.btnUnscale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnUnscale.BackColor = System.Drawing.SystemColors.Control;
             this.btnUnscale.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnUnscale.Image = global::HeadRotation.Properties.Resources.btnUnscaleNormal;
@@ -76,6 +95,7 @@ namespace HeadRotation.Controls
             // 
             // checkZoom
             // 
+            this.checkZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkZoom.BackColor = System.Drawing.SystemColors.Control;
             this.checkZoom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkZoom.BackgroundImage")));
             this.checkZoom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -90,6 +110,7 @@ namespace HeadRotation.Controls
             // 
             // checkArrow
             // 
+            this.checkArrow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkArrow.BackColor = System.Drawing.SystemColors.Control;
             this.checkArrow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkArrow.BackgroundImage")));
             this.checkArrow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -106,12 +127,14 @@ namespace HeadRotation.Controls
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkHand);
             this.Controls.Add(this.btnUnscale);
             this.Controls.Add(this.checkZoom);
             this.Controls.Add(this.checkArrow);
             this.Controls.Add(this.glControl);
             this.Name = "RenderControl";
             this.Size = new System.Drawing.Size(539, 452);
+            ((System.ComponentModel.ISupportInitialize)(this.checkHand)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnUnscale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).EndInit();
@@ -127,5 +150,6 @@ namespace HeadRotation.Controls
         private System.Windows.Forms.PictureBox btnUnscale;
         internal System.Windows.Forms.PictureBox checkZoom;
         internal System.Windows.Forms.PictureBox checkArrow;
+        internal System.Windows.Forms.PictureBox checkHand;
     }
 }

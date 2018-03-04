@@ -83,6 +83,26 @@ namespace HeadRotation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btnHandNormal {
+            get {
+                object obj = ResourceManager.GetObject("btnHandNormal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnHandPressed {
+            get {
+                object obj = ResourceManager.GetObject("btnHandPressed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btnUnscaleNormal {
             get {
                 object obj = ResourceManager.GetObject("btnUnscaleNormal", resourceCulture);
