@@ -137,15 +137,12 @@ namespace HeadRotation.Render
                         {
                             Texture.Dispose();
                         }
-                        bitmap.Save("1.png");
                         Texture = new Texture(bitmap);
                     }
                 }
                 NeedToRenderTexture = false;
             }
-
-            Texture.Bind();
-
+            
             GL.Disable(EnableCap.Texture2D);
             GL.Color4(Color4.White);
 
@@ -155,9 +152,11 @@ namespace HeadRotation.Render
             GL.Vertex2(Width * Scale, Height * Scale);
             GL.Vertex2(0, Height * Scale);
             GL.End();
+            
+            Texture.Bind();
 
             GL.Enable(EnableCap.Texture2D);
-            GL.Color4(Color);
+            GL.Color4(Color4.White);
 
             GL.Begin(PrimitiveType.Quads);
 
