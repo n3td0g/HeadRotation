@@ -70,6 +70,8 @@
     <Compile Include="Helpers\FolderEx.cs" />
     <Compile Include="Helpers\ImageEx.cs" />
     <Compile Include="Helpers\LuxandFaceRecognition.cs" />
+    <Compile Include="Helpers\StringConverter.cs" />
+    <Compile Include="Helpers\VectorEx.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

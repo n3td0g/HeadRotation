@@ -63,6 +63,7 @@ namespace HeadRotation.Controls
             // 
             // btnUnscale
             // 
+            this.btnUnscale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnUnscale.BackColor = System.Drawing.SystemColors.Control;
             this.btnUnscale.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnUnscale.Image = global::HeadRotation.Properties.Resources.btnUnscaleNormal;
@@ -76,6 +77,7 @@ namespace HeadRotation.Controls
             // 
             // checkZoom
             // 
+            this.checkZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkZoom.BackColor = System.Drawing.SystemColors.Control;
             this.checkZoom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkZoom.BackgroundImage")));
             this.checkZoom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -90,6 +92,7 @@ namespace HeadRotation.Controls
             // 
             // checkArrow
             // 
+            this.checkArrow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkArrow.BackColor = System.Drawing.SystemColors.Control;
             this.checkArrow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkArrow.BackgroundImage")));
             this.checkArrow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;

@@ -31,16 +31,20 @@ namespace HeadRotation
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnImportVector = new System.Windows.Forms.Button();
+            this.btnExportVector = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLoadPhoto = new System.Windows.Forms.Button();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.photoControl = new HeadRotation.Controls.PhotoControl();
             this.renderControl = new HeadRotation.Controls.RenderControl();
+            this.photoControl = new HeadRotation.Controls.PhotoControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnImportVector);
+            this.panel1.Controls.Add(this.btnExportVector);
             this.panel1.Controls.Add(this.btnExit);
             this.panel1.Controls.Add(this.btnLoadPhoto);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -48,6 +52,26 @@ namespace HeadRotation
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1067, 47);
             this.panel1.TabIndex = 0;
+            // 
+            // btnImportVector
+            // 
+            this.btnImportVector.Location = new System.Drawing.Point(458, 4);
+            this.btnImportVector.Name = "btnImportVector";
+            this.btnImportVector.Size = new System.Drawing.Size(75, 40);
+            this.btnImportVector.TabIndex = 3;
+            this.btnImportVector.Text = "Импорт точек";
+            this.btnImportVector.UseVisualStyleBackColor = true;
+            this.btnImportVector.Click += new System.EventHandler(this.btnImportVector_Click);
+            // 
+            // btnExportVector
+            // 
+            this.btnExportVector.Location = new System.Drawing.Point(553, 4);
+            this.btnExportVector.Name = "btnExportVector";
+            this.btnExportVector.Size = new System.Drawing.Size(75, 40);
+            this.btnExportVector.TabIndex = 2;
+            this.btnExportVector.Text = "Экспорт точек";
+            this.btnExportVector.UseVisualStyleBackColor = true;
+            this.btnExportVector.Click += new System.EventHandler(this.btnExportVector_Click);
             // 
             // btnExit
             // 
@@ -77,14 +101,6 @@ namespace HeadRotation
             this.splitter1.TabIndex = 2;
             this.splitter1.TabStop = false;
             // 
-            // photoControl
-            // 
-            this.photoControl.Dock = System.Windows.Forms.DockStyle.Left;
-            this.photoControl.Location = new System.Drawing.Point(0, 47);
-            this.photoControl.Name = "photoControl";
-            this.photoControl.Size = new System.Drawing.Size(478, 585);
-            this.photoControl.TabIndex = 1;
-            // 
             // renderControl
             // 
             this.renderControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -92,6 +108,14 @@ namespace HeadRotation
             this.renderControl.Name = "renderControl";
             this.renderControl.Size = new System.Drawing.Size(586, 585);
             this.renderControl.TabIndex = 3;
+            // 
+            // photoControl
+            // 
+            this.photoControl.Dock = System.Windows.Forms.DockStyle.Left;
+            this.photoControl.Location = new System.Drawing.Point(0, 47);
+            this.photoControl.Name = "photoControl";
+            this.photoControl.Size = new System.Drawing.Size(478, 585);
+            this.photoControl.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -118,6 +142,8 @@ namespace HeadRotation
         private PhotoControl photoControl;
         private System.Windows.Forms.Splitter splitter1;
         private RenderControl renderControl;
+        private System.Windows.Forms.Button btnImportVector;
+        private System.Windows.Forms.Button btnExportVector;
     }
 }
 
