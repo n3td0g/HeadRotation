@@ -133,7 +133,6 @@ namespace HeadRotation.Controls
 
             glControl.SwapBuffers();
         }
-
         private void DrawHead()
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
@@ -144,7 +143,6 @@ namespace HeadRotation.Controls
 
             HeadMesh.Draw(false);
         }
-
         private void DrawAxis()
         {
             GL.LineWidth(1.0f);
@@ -233,10 +231,11 @@ namespace HeadRotation.Controls
                 ScaleMode = ScaleMode.Zoom;
 
                 checkZoom.Tag = "1";
-                checkArrow.Tag = "2";
+                checkArrow.Tag = checkHand.Tag = "2";
 
                 checkZoom.Image = Resources.btnZoomPressed;
                 checkArrow.Image = Resources.btnArrowNormal;
+                checkHand.Image = Resources.btnHandNormal;
             }
             else
             {
@@ -254,15 +253,38 @@ namespace HeadRotation.Controls
                 ScaleMode = ScaleMode.Rotate;
 
                 checkArrow.Tag = "1";
-                checkZoom.Tag = "2";
+                checkZoom.Tag = checkHand.Tag = "2";
 
                 checkArrow.Image = Resources.btnArrowPressed;
                 checkZoom.Image = Resources.btnZoomNormal;
+                checkHand.Image = Resources.btnHandNormal;
             }
             else
             {
                 checkArrow.Tag = "2";
                 checkArrow.Image = Resources.btnArrowNormal;
+
+                ScaleMode = ScaleMode.None;
+            }
+        }
+        private void checkHand_Click(object sender, EventArgs e)
+        {
+            if (checkHand.Tag.ToString() == "2")
+            {
+                ResetScaleModeTools();
+                ScaleMode = ScaleMode.Move;
+
+                checkHand.Tag = "1";
+                checkArrow.Tag = checkZoom.Tag = "2";
+
+                checkHand.Image = Resources.btnHandPressed;
+                checkArrow.Image = Resources.btnArrowNormal;
+                checkZoom.Image = Resources.btnZoomNormal;
+            }
+            else
+            {
+                checkHand.Tag = "2";
+                checkHand.Image = Resources.btnHandNormal;
 
                 ScaleMode = ScaleMode.None;
             }
@@ -304,6 +326,13 @@ namespace HeadRotation.Controls
             }
         }
 
+
+
         #endregion
+
+        private void glControl_MouseClick(object sender, MouseEventArgs e)
+        {
+            ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(new Vector3(4, 5, 6));
+        }
     }
 }

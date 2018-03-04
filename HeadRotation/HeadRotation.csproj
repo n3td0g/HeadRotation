@@ -58,6 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\EditPointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EditPointForm.Designer.cs">
+      <DependentUpon>EditPointForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -106,6 +112,9 @@
     <Compile Include="Render\RenderMesh.cs" />
     <Compile Include="Render\ScaleMode.cs" />
     <Compile Include="Render\ShaderController.cs" />
+    <EmbeddedResource Include="Controls\EditPointForm.resx">
+      <DependentUpon>EditPointForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\RenderControl.resx">
       <DependentUpon>RenderControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -155,6 +164,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\btnZoomPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnHandNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btnHandPressed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

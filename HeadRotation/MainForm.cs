@@ -11,6 +11,8 @@ namespace HeadRotation
     public partial class MainForm : Form
     {
         public RenderControl RenderControl { get { return renderControl; } }
+        public EditPointForm frmEditPoint = new EditPointForm();
+
 
         public MainForm()
         {
@@ -62,6 +64,17 @@ namespace HeadRotation
             vectors.Add(new Vector3(7, 8, 9));
 
             VectorEx.ExportVector(vectors);
+        }
+
+        private void btnEditPoint_Click(object sender, EventArgs e)
+        {
+            if (frmEditPoint.Visible)
+            {
+                frmEditPoint.Hide();
+                frmEditPoint.UpdateEditablePoint(Vector3.Zero);
+            }
+            else
+                frmEditPoint.Show(this);
         }
     }
 }

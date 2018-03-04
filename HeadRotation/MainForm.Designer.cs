@@ -38,11 +38,13 @@ namespace HeadRotation
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.renderControl = new HeadRotation.Controls.RenderControl();
             this.photoControl = new HeadRotation.Controls.PhotoControl();
+            this.btnEditPoint = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnEditPoint);
             this.panel1.Controls.Add(this.btnImportVector);
             this.panel1.Controls.Add(this.btnExportVector);
             this.panel1.Controls.Add(this.btnExit);
@@ -55,21 +57,21 @@ namespace HeadRotation
             // 
             // btnImportVector
             // 
-            this.btnImportVector.Location = new System.Drawing.Point(458, 4);
+            this.btnImportVector.Location = new System.Drawing.Point(378, 12);
             this.btnImportVector.Name = "btnImportVector";
-            this.btnImportVector.Size = new System.Drawing.Size(75, 40);
+            this.btnImportVector.Size = new System.Drawing.Size(75, 23);
             this.btnImportVector.TabIndex = 3;
-            this.btnImportVector.Text = "Импорт точек";
+            this.btnImportVector.Text = "Import points";
             this.btnImportVector.UseVisualStyleBackColor = true;
             this.btnImportVector.Click += new System.EventHandler(this.btnImportVector_Click);
             // 
             // btnExportVector
             // 
-            this.btnExportVector.Location = new System.Drawing.Point(553, 4);
+            this.btnExportVector.Location = new System.Drawing.Point(473, 12);
             this.btnExportVector.Name = "btnExportVector";
-            this.btnExportVector.Size = new System.Drawing.Size(75, 40);
+            this.btnExportVector.Size = new System.Drawing.Size(75, 23);
             this.btnExportVector.TabIndex = 2;
-            this.btnExportVector.Text = "Экспорт точек";
+            this.btnExportVector.Text = "Export points";
             this.btnExportVector.UseVisualStyleBackColor = true;
             this.btnExportVector.Click += new System.EventHandler(this.btnExportVector_Click);
             // 
@@ -117,6 +119,16 @@ namespace HeadRotation
             this.photoControl.Size = new System.Drawing.Size(478, 585);
             this.photoControl.TabIndex = 1;
             // 
+            // btnEditPoint
+            // 
+            this.btnEditPoint.Location = new System.Drawing.Point(591, 12);
+            this.btnEditPoint.Name = "btnEditPoint";
+            this.btnEditPoint.Size = new System.Drawing.Size(75, 23);
+            this.btnEditPoint.TabIndex = 4;
+            this.btnEditPoint.Text = "Edit point";
+            this.btnEditPoint.UseVisualStyleBackColor = true;
+            this.btnEditPoint.Click += new System.EventHandler(this.btnEditPoint_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -144,6 +156,7 @@ namespace HeadRotation
         private RenderControl renderControl;
         private System.Windows.Forms.Button btnImportVector;
         private System.Windows.Forms.Button btnExportVector;
+        private System.Windows.Forms.Button btnEditPoint;
     }
 }
 
