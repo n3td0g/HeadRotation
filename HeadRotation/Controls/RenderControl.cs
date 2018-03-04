@@ -24,7 +24,7 @@ namespace HeadRotation.Controls
         private bool leftMousePressed;
 
         public RenderMesh HeadMesh;
-        public HeadPoints Points = new HeadPoints();
+        public HeadPoints HeadPoints = new HeadPoints();
 
         public const int HeadPointsCount = 64;
 
@@ -42,8 +42,8 @@ namespace HeadRotation.Controls
         {
             loaded = true;
             glControl.CreateControl();
-            Points.Initialize(HeadPointsCount);
-            Points.RenderCamera = camera;
+            HeadPoints.Initialize(HeadPointsCount);
+            HeadPoints.RenderCamera = camera;
 
             idleShader = new ShaderController("idle.vs", "idle.fs");
             idleShader.SetUniformLocation("u_UseTexture");
@@ -136,7 +136,7 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.DepthTest);
             DrawAxis();
 
-            Points.Draw();
+            HeadPoints.Draw();
 
             glControl.SwapBuffers();
         }
@@ -315,7 +315,7 @@ namespace HeadRotation.Controls
                         camera.Wheel((e.Location.Y - mY) / 150f * camera.Scale);
                         break;
                     case ScaleMode.None:
-                        Points.MovePoint(e.X, e.Y);
+                        HeadPoints.MovePoint(e.X, e.Y);
                         break;
                 }
             }
@@ -330,7 +330,7 @@ namespace HeadRotation.Controls
 
                 if(ScaleMode == ScaleMode.None)
                 {
-                    Points.StartMoving(e.X, e.Y);
+                    HeadPoints.StartMoving(e.X, e.Y);
                 }
             }
         }
@@ -342,8 +342,8 @@ namespace HeadRotation.Controls
 
                 if (ScaleMode == ScaleMode.None)
                 {
-                    Points.SelectPoint(e.X, e.Y);
-                    Points.StopMoving(e.X, e.Y);
+                    HeadPoints.SelectPoint(e.X, e.Y);
+                    HeadPoints.StopMoving(e.X, e.Y);
                 }
             }
         }

@@ -35,6 +35,8 @@ namespace HeadRotation
 
             FSDK.InitializeLibrary();
             FSDK.SetFaceDetectionParameters(true, true, 384);
+
+
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -50,15 +52,17 @@ namespace HeadRotation
         private void MainForm_Load(object sender, EventArgs e)
         {
             renderControl.Initialize();
+            btnImportVector_Click(null, EventArgs.Empty);
         }
 
         private void btnImportVector_Click(object sender, EventArgs e)
         {
-            var vectors = VectorEx.ImportVector();
+            ProgramCore.MainForm.RenderControl.HeadPoints.Points.Clear();
+            ProgramCore.MainForm.RenderControl.HeadPoints.Points.AddRange(VectorEx.ImportVector());
         }
         private void btnExportVector_Click(object sender, EventArgs e)
         {
-            VectorEx.ExportVector(ProgramCore.MainForm.RenderControl.Points.Points);
+            VectorEx.ExportVector(ProgramCore.MainForm.RenderControl.HeadPoints.Points);
         }
 
         private void btnEditPoint_Click(object sender, EventArgs e)
