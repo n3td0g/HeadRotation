@@ -144,7 +144,7 @@ namespace HeadRotation.Render
             float minDistance = float.MaxValue;
             Vector2 selectionPoint = new Vector2(x, y);
             SelectedPoint = -1;
-            for (int i = 0; i < Points.Count; ++i)
+            for (var i = Points.Count-1; i >=0; i--)
             {
                 float distance = float.MaxValue;
                 if (IsPointSelected(selectionPoint, i, out distance))
@@ -153,6 +153,7 @@ namespace HeadRotation.Render
                     {
                         SelectedPoint = i;
                         ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(Points[SelectedPoint]);
+                        break;
                     }
                 }
             }
