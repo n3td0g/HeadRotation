@@ -114,6 +114,8 @@
     <Compile Include="Render\ScaleMode.cs" />
     <Compile Include="Render\ShaderController.cs" />
     <Compile Include="Render\SolidSphere.cs" />
+    <Compile Include="Render\TextRender.cs" />
+    <Compile Include="Render\Texture.cs" />
     <EmbeddedResource Include="Controls\EditPointForm.resx">
       <DependentUpon>EditPointForm.cs</DependentUpon>
     </EmbeddedResource>

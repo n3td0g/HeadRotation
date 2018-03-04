@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Drawing;
+using System.Drawing.Text;
+using OpenTK.Graphics;
+using System.Globalization;
 
 namespace HeadRotation.Render
 {
@@ -20,6 +24,11 @@ namespace HeadRotation.Render
         private bool movingPoint = false;
         private float selectionDepth;
 
+        #endregion
+
+        #region Render
+        public List<TextRender> TextRenderList = null;
+        public Font TextFont = new Font(new FontFamily(GenericFontFamilies.SansSerif), 20, GraphicsUnit.Pixel);
         #endregion
 
         #endregion
@@ -48,6 +57,10 @@ namespace HeadRotation.Render
 
         public void Draw()
         {
+            const float scale = 0.7f;
+            float textScale = scale * RenderCamera.Scale;
+            InitializeTextRender();
+
             GL.PointSize(5.0f);
             GL.Begin(PrimitiveType.Points);
 
@@ -58,11 +71,38 @@ namespace HeadRotation.Render
                 else
                     GL.Color3(0.0f, 1.0f, 0.0f);
 
-                GL.Vertex3(Points[i]);               
+                GL.Vertex3(Points[i]);
+                TextRenderList[i].Position = Points[i];
+                TextRenderList[i].Scale = textScale;
             }
 
             GL.End();
-            GL.PointSize(1.0f);
+            GL.PointSize(1.0f);           
+            
+            foreach (var text in TextRenderList)
+            {
+                GL.Translate(text.Position);
+                text.Render();
+                GL.Translate(-text.Position);
+            }
+
+            GL.Disable(EnableCap.Texture2D);
+
+        }
+
+        private void InitializeTextRender()
+        {           
+            if (TextRenderList == null)
+            {
+                TextRenderList = new List<TextRender>();
+                for (var i = 0; i < Points.Count; i++)
+                    TextRenderList.Add(new TextRender(TextFont, Color4.Black,
+                        i.ToString(CultureInfo.InvariantCulture))
+                    {
+                        Scale = 1.0f,
+                        Position = Points[i]
+                    });
+            }
         }
 
         public void StartMoving(int x, int y)
