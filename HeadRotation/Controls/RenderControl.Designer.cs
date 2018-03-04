@@ -37,10 +37,12 @@ namespace HeadRotation.Controls
             this.btnUnscale = new System.Windows.Forms.PictureBox();
             this.checkZoom = new System.Windows.Forms.PictureBox();
             this.checkArrow = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.checkHand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnUnscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl
@@ -122,10 +124,25 @@ namespace HeadRotation.Controls
             this.checkArrow.Tag = "2";
             this.checkArrow.Click += new System.EventHandler(this.checkArrow_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.Image = global::HeadRotation.Properties.Resources.btnArrowNormal;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
+            this.pictureBox1.TabIndex = 9;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Tag = "2";
+            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
+            // 
             // RenderControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.checkHand);
             this.Controls.Add(this.btnUnscale);
             this.Controls.Add(this.checkZoom);
@@ -137,6 +154,7 @@ namespace HeadRotation.Controls
             ((System.ComponentModel.ISupportInitialize)(this.btnUnscale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -150,5 +168,6 @@ namespace HeadRotation.Controls
         internal System.Windows.Forms.PictureBox checkZoom;
         internal System.Windows.Forms.PictureBox checkArrow;
         internal System.Windows.Forms.PictureBox checkHand;
+        internal System.Windows.Forms.PictureBox pictureBox1;
     }
 }

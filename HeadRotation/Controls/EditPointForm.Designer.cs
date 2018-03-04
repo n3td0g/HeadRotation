@@ -104,6 +104,7 @@
             this.Name = "EditPointForm";
             this.ShowIcon = false;
             this.Text = "Edit point";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditPointForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

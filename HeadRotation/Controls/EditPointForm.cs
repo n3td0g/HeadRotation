@@ -43,8 +43,20 @@ namespace HeadRotation.Controls
             var x = Helpers.StringConverter.ToFloat(textX.Text);
             var y = Helpers.StringConverter.ToFloat(textY.Text);
             var z = Helpers.StringConverter.ToFloat(textZ.Text);
-            if (ProgramCore.MainForm != null)
+            if (ProgramCore.MainForm == null)
+                return;
+
+            if (float.IsNaN(x) || float.IsNaN(y) || float.IsNaN(z) || textX.Text.EndsWith(",") || textY.Text.EndsWith(",") || textZ.Text.EndsWith(","))
+                return;
+
             ProgramCore.MainForm.RenderControl.Points.SetSelectedPoint(new Vector3(x, y, z));
+        }
+
+        private void EditPointForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Hide();
+            UpdateEditablePoint(Vector3.Zero);
+            e.Cancel = true;
         }
     }
 }

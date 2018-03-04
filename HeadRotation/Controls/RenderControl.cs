@@ -350,6 +350,12 @@ namespace HeadRotation.Controls
 
 
         #endregion
-     
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            camera.LeftRight(Math.PI/2f);
+        }
+
+ 
     }
 }

@@ -80,8 +80,8 @@ namespace HeadRotation.Render
             }
 
             GL.End();
-            GL.PointSize(1.0f);           
-            
+            GL.PointSize(1.0f);
+
             foreach (var text in TextRenderList)
             {
                 GL.Translate(text.Position);
