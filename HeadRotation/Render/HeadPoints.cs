@@ -84,9 +84,18 @@ namespace HeadRotation.Render
 
             foreach (var text in TextRenderList)
             {
+                float cameraAngle = -(float)(RenderCamera.beta); //(float)(RenderCamera.beta);
+                cameraAngle *= 180.0f;
+                cameraAngle /= (float)Math.PI;
+                cameraAngle += 90.0f;
+
+                
                 GL.Translate(text.Position);
+                GL.Rotate(cameraAngle, 0.0f, 1.0f, 0.0f);
                 text.Render();
+                GL.Rotate(cameraAngle, 0.0f, -1.0f, 0.0f);
                 GL.Translate(-text.Position);
+                
             }
 
             GL.Disable(EnableCap.Texture2D);
@@ -110,9 +119,8 @@ namespace HeadRotation.Render
 
         public void StartMoving(int x, int y)
         {
-            float distance = float.MaxValue;
             Vector2 selectionPoint = new Vector2(x, y);
-            if (IsPointSelected(selectionPoint, SelectedPoint, out distance))
+            if (IsPointSelected(selectionPoint, SelectedPoint))
             {
                 selectionDepth = RenderCamera.GetPointDepth(Points[SelectedPoint]);
                 movingPoint = true;
@@ -141,20 +149,15 @@ namespace HeadRotation.Render
             {
                 return;
             }
-            float minDistance = float.MaxValue;
             Vector2 selectionPoint = new Vector2(x, y);
             SelectedPoint = -1;
-            for (var i = Points.Count-1; i >=0; i--)
+            for (var i = Points.Count - 1; i >= 0; i--)
             {
-                float distance = float.MaxValue;
-                if (IsPointSelected(selectionPoint, i, out distance))
+                if (IsPointSelected(selectionPoint, i))
                 {
-                    if (distance < minDistance)
-                    {
-                        SelectedPoint = i;
-                        ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(Points[SelectedPoint]);
-                        break;
-                    }
+                    SelectedPoint = i;
+                    ProgramCore.MainForm.frmEditPoint.UpdateEditablePoint(Points[SelectedPoint]);
+                    break;
                 }
             }
         }
@@ -164,14 +167,13 @@ namespace HeadRotation.Render
             return pointIndex >= 0 && pointIndex < Points.Count;
         }
 
-        private bool IsPointSelected(Vector2 selectionPoint, int pointIndex, out float distance)
+        private bool IsPointSelected(Vector2 selectionPoint, int pointIndex)
         {
-            distance = float.MaxValue;
             if (!PointIsValid(pointIndex))
                 return false;
             var point = Points[pointIndex];
             var screenPoint = RenderCamera.GetScreenPoint(point);
-            distance = (screenPoint - selectionPoint).Length;
+            float distance = (screenPoint - selectionPoint).Length;
             return distance < SelectionRadius;
         }
     }
