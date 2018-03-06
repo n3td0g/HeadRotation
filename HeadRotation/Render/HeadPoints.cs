@@ -29,9 +29,72 @@ namespace HeadRotation.Render
         #region Render
         public List<TextRender> TextRenderList = null;
         public Font TextFont = new Font(new FontFamily(GenericFontFamilies.SansSerif), 20, GraphicsUnit.Pixel);
+
+        public int IndexBuffer, VertexBuffer = 0;
+        public List<uint> Indices = new List<uint>();
+        public Vertex3d[] Vertices = null;
         #endregion
 
         #endregion
+
+        public void GenerateSphere(float radius, int rings, int sectors)
+        {
+            Destroy();
+
+            float R = 1.0f / (rings - 1);
+            float S = 1.0f / (sectors - 1);
+
+            Vertices = new Vertex3d[rings * sectors];
+            int index = 0;
+            for (int r = 0; r < rings; r++) {
+                for (int s = 0; s < sectors; s++)
+                {                    
+                    float x = (float)(Math.Cos(2.0 * Math.PI * s * S) * Math.Sin(Math.PI * r * R));
+                    float y = (float)(Math.Sin(2.0 * Math.PI * s * S) * Math.Sin(Math.PI * r * R));
+                    float z = (float)Math.Cos(Math.PI * r * R);
+
+                    var vertex = new Vertex3d();
+
+                    vertex.TexCoord.X = s * S;
+                    vertex.TexCoord.Y = r * R;
+
+                    vertex.Position.X = x * radius;
+                    vertex.Position.Y = y * radius;
+                    vertex.Position.Z = z * radius;
+
+                    vertex.Normal.X = x;
+                    vertex.Normal.X = y;
+                    vertex.Normal.X = z;
+
+                    vertex.Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+
+                    Vertices[index++] = vertex;
+                }
+            }
+            
+            index = 0;
+            for (int r = 0; r < rings; r++)
+            {
+                for (int s = 0; s < sectors; s++)
+                {
+                    Indices.Add((uint)(r * sectors + s));
+                    Indices.Add((uint)(r * sectors + (s + 1)));
+                    Indices.Add((uint)((r + 1) * sectors + (s + 1)));
+                    Indices.Add((uint)((r + 1) * sectors + s));
+                }
+            }
+
+            GL.GenBuffers(1, out VertexBuffer);
+            GL.GenBuffers(1, out IndexBuffer);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertices.Length * Vertex3d.Stride), Vertices, BufferUsageHint.StreamDraw);
+            OpenGlHelper.CheckErrors();
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndexBuffer);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(Indices.Count * sizeof(uint)), Indices.ToArray(), BufferUsageHint.DynamicDraw);
+            OpenGlHelper.CheckErrors();
+        }
 
         public Vector3 GetSelectedPoint()
         {
@@ -48,7 +111,7 @@ namespace HeadRotation.Render
         }
 
         public void Initialize(int Count)
-        {
+        {            
             SelectedPoint = -1;
             Points.Clear();
             Random R = new Random();
@@ -58,12 +121,60 @@ namespace HeadRotation.Render
             }
         }
 
-        public void Draw()
+        public void Destroy()
+        {
+            if (VertexBuffer != 0)
+            {
+                GL.DeleteBuffers(1, ref VertexBuffer);
+                VertexBuffer = 0;
+            }
+
+            if (IndexBuffer != 0)
+            {
+                GL.DeleteBuffers(1, ref IndexBuffer);
+                IndexBuffer = 0;
+            }
+        }
+
+        public void DrawSpheres()
+        {
+            GL.Disable(EnableCap.Texture2D);
+            GL.Color3(1.0f, 1.0f, 1.0f);
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.NormalArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.EnableClientState(ArrayCap.ColorArray);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndexBuffer);
+
+            GL.VertexPointer(3, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(0));
+            GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(Vector3.SizeInBytes));
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
+            GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes));
+            
+            foreach(var point in Points)
+            {
+                GL.Translate(point);
+                GL.DrawRangeElements(PrimitiveType.Quads, 0, Indices.Count, Indices.Count, DrawElementsType.UnsignedInt, new IntPtr(0));
+                GL.Translate(-point);
+            }
+            
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.DisableClientState(ArrayCap.VertexArray);
+            GL.DisableClientState(ArrayCap.NormalArray);
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
+            GL.DisableClientState(ArrayCap.ColorArray);
+        }
+
+        public void DrawDots()
         {
             const float scale = 0.7f;
             float textScale = scale * RenderCamera.Scale;
             InitializeTextRender();
-
+                      
             GL.PointSize(5.0f);
             GL.Begin(PrimitiveType.Points);
 

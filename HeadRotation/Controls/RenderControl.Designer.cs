@@ -55,6 +55,7 @@ namespace HeadRotation.Controls
             this.glControl.Size = new System.Drawing.Size(539, 452);
             this.glControl.TabIndex = 3;
             this.glControl.VSync = false;
+            this.glControl.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControl_KeyDown);
             this.glControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseDown);
             this.glControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseMove);
             this.glControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseUp);

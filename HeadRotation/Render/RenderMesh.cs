@@ -81,9 +81,6 @@ namespace HeadRotation.Render
             GL.DisableClientState(ArrayCap.NormalArray);
             GL.DisableClientState(ArrayCap.TextureCoordArray);
             GL.DisableClientState(ArrayCap.ColorArray);
-
-            GL.Disable(EnableCap.Texture2D);
-            GL.Disable(EnableCap.DepthTest);
         }
 
         public static RenderMesh LoadFromFile(string filePath)

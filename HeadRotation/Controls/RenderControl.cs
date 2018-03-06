@@ -28,6 +28,9 @@ namespace HeadRotation.Controls
 
         public const int HeadPointsCount = 64;
 
+        bool drawDots = true;
+        bool drawSpheres = true;
+
         #endregion
 
         public RenderControl()
@@ -44,6 +47,7 @@ namespace HeadRotation.Controls
             glControl.CreateControl();
             HeadPoints.Initialize(HeadPointsCount);
             HeadPoints.RenderCamera = camera;
+            HeadPoints.GenerateSphere(0.3f, 5, 5);
 
             idleShader = new ShaderController("idle.vs", "idle.fs");
             idleShader.SetUniformLocation("u_UseTexture");
@@ -128,15 +132,24 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.CullFace);
 
             idleShader.Begin();
-            DrawHead();
+            DrawHead();            
             idleShader.End();
+
+            if (drawSpheres)
+            {
+                HeadPoints.DrawSpheres();
+            }
 
             GL.PopMatrix();
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
             DrawAxis();
 
-            HeadPoints.Draw();
+            if(drawDots)
+            {
+                HeadPoints.DrawDots();
+            }
+           
 
             glControl.SwapBuffers();
         }
@@ -357,6 +370,16 @@ namespace HeadRotation.Controls
             camera.LeftRight(Math.PI/2f);
         }
 
- 
+        private void glControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.D)
+            {
+                drawDots = !drawDots;
+            }
+            if(e.KeyCode == Keys.S)
+            {
+                drawSpheres = !drawSpheres;
+            }
+        }
     }
 }
