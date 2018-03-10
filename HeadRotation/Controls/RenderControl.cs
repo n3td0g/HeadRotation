@@ -380,6 +380,10 @@ namespace HeadRotation.Controls
             {
                 drawSpheres = !drawSpheres;
             }
+            if (e.KeyCode == Keys.R)
+            {
+                pictureBox1_MouseUp(null, null);
+            }
         }
     }
 }
