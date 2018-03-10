@@ -30,19 +30,19 @@ namespace HeadRotation.Helpers
 
         public void Initialize(LuxandFaceRecognition recognizer, HeadPoints headPoints)
         {
-            if(recognizer.FacialFeatures.Count < headPoints.Points.Count)
+            if (recognizer.FacialFeatures.Count < headPoints.Points.Count)
                 return;
 
-           /* if (headPoints.Points.Count <= RootIndex)
+            if (headPoints.Points.Count <= RootIndex)
                 return;
 
             if (headPoints.Points.Count <= HelperIndex)
-                return;*/
+                return;
 
             Points.Clear();
 
-            var rootPointWorld = headPoints.GetWorldPoint(62);
-            var helperPointWorld = headPoints.GetWorldPoint(63);
+            var rootPointWorld = headPoints.GetWorldPoint(RootIndex);
+            var helperPointWorld = headPoints.GetWorldPoint(HelperIndex);
 
             var rootPointPhoto = recognizer.FacialFeatures[RootIndex];
             var helperPointPhoto = recognizer.FacialFeatures[HelperIndex];
@@ -52,7 +52,7 @@ namespace HeadRotation.Helpers
 
             float scale = distWorld / distPhoto;
 
-            foreach(var point in recognizer.FacialFeatures)
+            foreach (var point in recognizer.FacialFeatures)
             {
                 var p = point - rootPointPhoto;
                 p.X *= scale;
