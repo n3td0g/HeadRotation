@@ -76,6 +76,7 @@
     <Compile Include="Helpers\FolderEx.cs" />
     <Compile Include="Helpers\ImageEx.cs" />
     <Compile Include="Helpers\LuxandFaceRecognition.cs" />
+    <Compile Include="Helpers\ProjectedDots.cs" />
     <Compile Include="Helpers\StringConverter.cs" />
     <Compile Include="Helpers\VectorEx.cs" />
     <Compile Include="MainForm.cs">
@@ -109,7 +110,6 @@
     <Compile Include="Render\MeshPartInfo.cs" />
     <Compile Include="Render\Normal.cs" />
     <Compile Include="Render\OpenGlHelper.cs" />
-    <Compile Include="Render\RectangleAABB.cs" />
     <Compile Include="Render\RenderMesh.cs" />
     <Compile Include="Render\ScaleMode.cs" />
     <Compile Include="Render\ShaderController.cs" />

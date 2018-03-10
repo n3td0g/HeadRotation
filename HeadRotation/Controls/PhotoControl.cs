@@ -40,38 +40,6 @@ namespace HeadRotation.Controls
             pictureTemplate.Refresh();
         }
 
-
-        private Vector2 GetFrontWorldPoint(Vector3 value)
-        {
-            Vector2 v;
-            var result = new Vector2();
-            var imageWidth = pictureTemplate.Image.Width;
-            var imageHeight = pictureTemplate.Image.Height;
-
-            var width = Recognizer.FaceRectRelative.Width * imageWidth;
-            var height = Recognizer.FaceRectRelative.Height * imageHeight;
-
-            var x = Recognizer.FaceRectRelative.X * imageWidth;
-            var y = Recognizer.FaceRectRelative.Y * imageHeight;
-
-            v.X = ((value.X * imageWidth) - x) / width;
-            v.Y = ((value.Y * imageHeight) - y) / height;
-
-                result.X = v.X * ProgramCore.MainForm.RenderControl.HeadMesh.AABB.Size.X + ProgramCore.MainForm.RenderControl.HeadMesh.AABB.A.X;
-                result.Y = v.Y * (-ProgramCore.MainForm.RenderControl.HeadMesh.AABB.Size.Y) + ProgramCore.MainForm.RenderControl.HeadMesh.AABB.B.Y;
-
-                var centerX = ProgramCore.MainForm.RenderControl.HeadMesh.FaceCenterX;
-                var angle = ProgramCore.MainForm.RenderControl.HeadMesh.HeadAngle;
-                var noseDepth = ProgramCore.MainForm.RenderControl.HeadMesh.NoseDepth;
-                float angleDegree = 180.0f * Math.Abs(angle) / (float)Math.PI;
-                var depthScale = Math.Max(Math.Min((angleDegree - 10.0f) / 15.0f, 1.0f), 0.0f);
-                depthScale = 1.0f + depthScale * 0.75f;
-                noseDepth = noseDepth * depthScale;
-                result.X = ((result.X - centerX) + (float)Math.Sin(angle) * value.Z * noseDepth) / (float)Math.Cos(angle);
-
-            return result;
-        }
-
         public void LoadPhoto()
         {
             using (var ofd = new OpenFileDialogEx("Select template file", "Image Files|*.jpg;*.png;*.jpeg;*.bmp"))
@@ -105,10 +73,11 @@ namespace HeadRotation.Controls
                 var topPoint = (TopEdgeTransformed.Y - ImageTemplateOffsetY) / ImageTemplateHeight;
                 Recognizer.FaceRectRelative = new RectangleF(minX, topPoint, Recognizer.GetMaxX() - minX, Recognizer.BottomFace.Y - topPoint);
 
-                var noseTip = GetFrontWorldPoint(Recognizer.FacialFeatures[2]);
-                var noseTop = GetFrontWorldPoint(Recognizer.FacialFeatures[22]);
-                var noseBottom = GetFrontWorldPoint(Recognizer.FacialFeatures[49]);
+                var noseTip = Recognizer.FacialFeatures[2].Xy;
+                var noseTop = Recognizer.FacialFeatures[22].Xy;
+                var noseBottom = Recognizer.FacialFeatures[49].Xy;
                 ProgramCore.MainForm.RenderControl.HeadMesh.DetectFaceRotation(noseTip, noseTop, noseBottom);
+                ProgramCore.MainForm.RenderControl.ProjectedPoints.Initialize(Recognizer, ProgramCore.MainForm.RenderControl.HeadPoints);
 
                 RenderTimer.Start();
 

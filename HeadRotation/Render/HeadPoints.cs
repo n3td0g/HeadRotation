@@ -15,7 +15,8 @@ namespace HeadRotation.Render
 
         public const float SelectionRadius = 10.0f;
         public List<Vector3> Points = new List<Vector3>();
-        public Camera RenderCamera;
+        public Camera RenderCamera;        
+        public RenderMesh HeadMesh;
 
         #region Selection
 
@@ -33,6 +34,8 @@ namespace HeadRotation.Render
         public int IndexBuffer, VertexBuffer = 0;
         public List<uint> Indices = new List<uint>();
         public Vertex3d[] Vertices = null;
+
+        private Matrix4 RotationMatrix;
         #endregion
 
         #endregion
@@ -138,6 +141,8 @@ namespace HeadRotation.Render
 
         public void DrawSpheres()
         {
+            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out RotationMatrix);
+
             GL.Disable(EnableCap.Texture2D);
             GL.Color3(1.0f, 1.0f, 1.0f);
             GL.EnableClientState(ArrayCap.VertexArray);
@@ -153,8 +158,9 @@ namespace HeadRotation.Render
             GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
             GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes));
             
-            foreach(var point in Points)
+            foreach(var p in Points)
             {
+                var point = GetWorldPoint(p);
                 GL.Translate(point);
                 GL.DrawRangeElements(PrimitiveType.Quads, 0, Indices.Count, Indices.Count, DrawElementsType.UnsignedInt, new IntPtr(0));
                 GL.Translate(-point);
@@ -169,8 +175,21 @@ namespace HeadRotation.Render
             GL.DisableClientState(ArrayCap.ColorArray);
         }
 
+        public Vector3 GetWorldPoint(int pointIndex)
+        {
+            return GetWorldPoint(Points[pointIndex]);
+        }
+
+        public Vector3 GetWorldPoint(Vector3 point)
+        {
+            var point4 = new Vector4(point);
+            return Vector4.Transform(point4, RotationMatrix).Xyz;
+        }
+
         public void DrawDots()
         {
+            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out RotationMatrix);
+
             const float scale = 0.7f;
             float textScale = scale * RenderCamera.Scale;
             InitializeTextRender();
@@ -185,8 +204,9 @@ namespace HeadRotation.Render
                 else
                     GL.Color3(0.0f, 1.0f, 0.0f);
 
-                GL.Vertex3(Points[i]);
-                TextRenderList[i].Position = Points[i];
+                var point = GetWorldPoint(Points[i]);
+                GL.Vertex3(point);
+                TextRenderList[i].Position = point;
                 TextRenderList[i].Scale = textScale;
             }
 

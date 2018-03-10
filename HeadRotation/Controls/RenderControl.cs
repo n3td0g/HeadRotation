@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL;
 using HeadRotation.Render;
 using System.IO;
 using HeadRotation.Properties;
+using HeadRotation.Helpers;
 
 namespace HeadRotation.Controls
 {
@@ -18,6 +19,7 @@ namespace HeadRotation.Controls
         private ShaderController idleShader;
 
         public Camera camera = new Camera();
+        public ProjectedDots ProjectedPoints = new ProjectedDots();
         public ScaleMode ScaleMode = ScaleMode.None;
         private int mX;
         private int mY;
@@ -30,6 +32,7 @@ namespace HeadRotation.Controls
 
         bool drawDots = true;
         bool drawSpheres = true;
+        bool drawPoints = true;
 
         #endregion
 
@@ -38,7 +41,7 @@ namespace HeadRotation.Controls
             InitializeComponent();
 
             Toolkit.Init();
-            
+
         }
 
         public void Initialize()
@@ -64,6 +67,7 @@ namespace HeadRotation.Controls
             var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
+            HeadPoints.HeadMesh = HeadMesh;
 
             SetupViewport(glControl);
 
@@ -132,7 +136,7 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.CullFace);
 
             idleShader.Begin();
-            DrawHead();            
+            DrawHead();
             idleShader.End();
 
             if (drawSpheres)
@@ -145,11 +149,15 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.DepthTest);
             DrawAxis();
 
-            if(drawDots)
+            if (drawDots)
             {
                 HeadPoints.DrawDots();
             }
-           
+
+            if (drawPoints)
+            {
+                ProjectedPoints.Draw();
+            }
 
             glControl.SwapBuffers();
         }
@@ -157,6 +165,7 @@ namespace HeadRotation.Controls
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
             var worldMatrix = Matrix4.Identity;
+            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out worldMatrix);
             idleShader.UpdateUniform("u_World", worldMatrix);
             idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
@@ -225,7 +234,7 @@ namespace HeadRotation.Controls
         {
             btnUnscale.Image = Resources.btnUnscaleNormal;
 
-            camera.ResetCamera(true, HeadMesh.HeadAngle);
+            camera.ResetCamera(true);//, HeadMesh.HeadAngle);
             ScaleMode = ScaleMode.None;
 
             checkArrow.Tag = checkZoom.Tag = "2";
@@ -341,7 +350,7 @@ namespace HeadRotation.Controls
             {
                 leftMousePressed = true;
 
-                if(ScaleMode == ScaleMode.None)
+                if (ScaleMode == ScaleMode.None)
                 {
                     HeadPoints.StartMoving(e.X, e.Y);
                 }
@@ -367,22 +376,30 @@ namespace HeadRotation.Controls
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            camera.LeftRight(Math.PI/2f);
+            camera.LeftRight(Math.PI / 2f);
         }
 
         private void glControl_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.D)
+            if (e.KeyCode == Keys.D)
             {
                 drawDots = !drawDots;
             }
-            if(e.KeyCode == Keys.S)
+            if (e.KeyCode == Keys.S)
             {
                 drawSpheres = !drawSpheres;
+            }
+            if (e.KeyCode == Keys.F)
+            {
+                drawPoints = !drawPoints;
             }
             if (e.KeyCode == Keys.R)
             {
                 pictureBox1_MouseUp(null, null);
+            }
+            if (e.KeyCode == Keys.Space)
+            {
+                UseTexture = !UseTexture;
             }
         }
     }
