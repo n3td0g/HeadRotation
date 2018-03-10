@@ -76,6 +76,7 @@
     <Compile Include="Helpers\FolderEx.cs" />
     <Compile Include="Helpers\ImageEx.cs" />
     <Compile Include="Helpers\LuxandFaceRecognition.cs" />
+    <Compile Include="Helpers\MorphHelper.cs" />
     <Compile Include="Helpers\ProjectedDots.cs" />
     <Compile Include="Helpers\StringConverter.cs" />
     <Compile Include="Helpers\VectorEx.cs" />
