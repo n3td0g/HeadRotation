@@ -11,6 +11,7 @@ namespace HeadRotation.Render
         public List<MeshPart> Parts = new List<MeshPart>();
         public delegate void BeforePartDrawHandler(MeshPart part);
         public event BeforePartDrawHandler OnBeforePartDraw;
+        public RectangleAABB AABB = new RectangleAABB();
 
         //Угол поворота головы
         public float HeadAngle
@@ -40,6 +41,25 @@ namespace HeadRotation.Render
             {
                 part.Destroy();
             }
+        }
+
+        public void UpdateAABB(MeshPart part)
+        {
+            var a = AABB.A;
+            var b = AABB.B;
+            foreach (var vertex in part.Vertices)
+            {
+                a.X = Math.Min(vertex.Position.X, a.X);
+                b.X = Math.Max(vertex.Position.X, b.X);
+
+                a.Y = Math.Min(vertex.Position.Y, a.Y);
+                b.Y = Math.Max(vertex.Position.Y, b.Y);
+
+                a.Z = Math.Min(vertex.Position.Z, a.Z);
+                b.Z = Math.Max(vertex.Position.Z, b.Z);
+            }
+            AABB.A = a;
+            AABB.B = b;
         }
 
         public void DetectFaceRotation(Vector2 noseTip, Vector2 noseTop, Vector2 noseBottom)
@@ -79,7 +99,12 @@ namespace HeadRotation.Render
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
             GL.DisableClientState(ArrayCap.TextureCoordArray);
-            GL.DisableClientState(ArrayCap.ColorArray);            
+            GL.DisableClientState(ArrayCap.ColorArray);
+
+            if(debug)
+            {
+                AABB.Draw();
+            }
         }
 
         public static RenderMesh LoadFromFile(string filePath)
@@ -115,6 +140,7 @@ namespace HeadRotation.Render
                 var meshPart = new MeshPart();
                 if (meshPart.Create(meshPartInfo, -Center))
                 {
+                    result.UpdateAABB(meshPart);
                     result.Parts.Add(meshPart);
                 }
             }

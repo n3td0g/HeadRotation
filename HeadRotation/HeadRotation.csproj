@@ -78,6 +78,7 @@
     <Compile Include="Helpers\LuxandFaceRecognition.cs" />
     <Compile Include="Helpers\MorphHelper.cs" />
     <Compile Include="Helpers\ProjectedDots.cs" />
+    <Compile Include="Helpers\RenderHelper.cs" />
     <Compile Include="Helpers\StringConverter.cs" />
     <Compile Include="Helpers\VectorEx.cs" />
     <Compile Include="MainForm.cs">
@@ -92,6 +93,7 @@
     <Compile Include="Controls\PhotoControl.Designer.cs">
       <DependentUpon>PhotoControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Morphing\HeadMorphing.cs" />
     <Compile Include="ObjFile\FolderEx.cs" />
     <Compile Include="ObjFile\ImageEx.cs" />
     <Compile Include="ObjFile\ObjExport.cs" />
@@ -111,12 +113,14 @@
     <Compile Include="Render\MeshPartInfo.cs" />
     <Compile Include="Render\Normal.cs" />
     <Compile Include="Render\OpenGlHelper.cs" />
+    <Compile Include="Render\RectangleAABB.cs" />
     <Compile Include="Render\RenderMesh.cs" />
     <Compile Include="Render\ScaleMode.cs" />
     <Compile Include="Render\ShaderController.cs" />
     <Compile Include="Render\SolidSphere.cs" />
     <Compile Include="Render\TextRender.cs" />
     <Compile Include="Render\Texture.cs" />
+    <Compile Include="Render\Vertex.cs" />
     <EmbeddedResource Include="Controls\EditPointForm.resx">
       <DependentUpon>EditPointForm.cs</DependentUpon>
     </EmbeddedResource>

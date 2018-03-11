@@ -7,6 +7,7 @@ using HeadRotation.Render;
 using System.IO;
 using HeadRotation.Properties;
 using HeadRotation.Helpers;
+using HeadRotation.Morphing;
 
 namespace HeadRotation.Controls
 {
@@ -21,6 +22,7 @@ namespace HeadRotation.Controls
         public Camera camera = new Camera();
         public ProjectedDots ProjectedPoints = new ProjectedDots();
         public MorphHelper morphHelper = new MorphHelper();
+        public HeadMorphing headMorphing = new HeadMorphing();
         public ScaleMode ScaleMode = ScaleMode.None;
         private int mX;
         private int mY;
@@ -29,11 +31,13 @@ namespace HeadRotation.Controls
         public RenderMesh HeadMesh;
         public HeadPoints HeadPoints = new HeadPoints();
 
-        public const int HeadPointsCount = 64;
+        public const int HeadPointsCount = 70;
 
         bool drawDots = true;
         bool drawSpheres = true;
         bool drawPoints = true;
+        bool drawTriangles = true;
+        bool drawAABB = true;
 
         #endregion
 
@@ -42,7 +46,13 @@ namespace HeadRotation.Controls
             InitializeComponent();
 
             Toolkit.Init();
+        }
 
+        public void ImportPoints()
+        {
+            HeadPoints.Points.Clear();
+            HeadPoints.Points.AddRange(VectorEx.ImportVector());
+            headMorphing.Initialize(HeadPoints);
         }
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer)
@@ -78,7 +88,6 @@ namespace HeadRotation.Controls
             HeadPoints.HeadMesh = HeadMesh;
 
             SetupViewport(glControl);
-
 
             RenderTimer.Start();
         }
@@ -167,6 +176,11 @@ namespace HeadRotation.Controls
                 ProjectedPoints.Draw();
             }
 
+            if(drawTriangles)
+            {
+                headMorphing.Draw();
+            }            
+
             glControl.SwapBuffers();
         }
         private void DrawHead()
@@ -178,7 +192,7 @@ namespace HeadRotation.Controls
             idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
 
-            HeadMesh.Draw(false);
+            HeadMesh.Draw(drawAABB);
         }
         private void DrawAxis()
         {
@@ -378,8 +392,6 @@ namespace HeadRotation.Controls
             }
         }
 
-
-
         #endregion
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -389,6 +401,10 @@ namespace HeadRotation.Controls
 
         private void glControl_KeyDown(object sender, KeyEventArgs e)
         {
+            if(e.KeyCode == Keys.A)
+            {
+                drawAABB = !drawAABB;
+            }
             if (e.KeyCode == Keys.D)
             {
                 drawDots = !drawDots;
@@ -400,6 +416,10 @@ namespace HeadRotation.Controls
             if (e.KeyCode == Keys.F)
             {
                 drawPoints = !drawPoints;
+            }
+            if (e.KeyCode == Keys.T)
+            {
+                drawTriangles = !drawTriangles;
             }
             if (e.KeyCode == Keys.R)
             {

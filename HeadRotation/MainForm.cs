@@ -57,8 +57,7 @@ namespace HeadRotation
 
         private void btnImportVector_Click(object sender, EventArgs e)
         {
-            ProgramCore.MainForm.RenderControl.HeadPoints.Points.Clear();
-            ProgramCore.MainForm.RenderControl.HeadPoints.Points.AddRange(VectorEx.ImportVector());
+            ProgramCore.MainForm.RenderControl.ImportPoints();
         }
         private void btnExportVector_Click(object sender, EventArgs e)
         {
