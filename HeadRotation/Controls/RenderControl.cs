@@ -20,6 +20,7 @@ namespace HeadRotation.Controls
 
         public Camera camera = new Camera();
         public ProjectedDots ProjectedPoints = new ProjectedDots();
+        public MorphHelper morphHelper = new MorphHelper();
         public ScaleMode ScaleMode = ScaleMode.None;
         private int mX;
         private int mY;
@@ -42,6 +43,13 @@ namespace HeadRotation.Controls
 
             Toolkit.Init();
 
+        }
+
+        public void PhotoLoaded(LuxandFaceRecognition recognizer)
+        {
+            HeadPoints.UpdateRotationMatrix();
+            ProjectedPoints.Initialize(recognizer, HeadPoints);
+            morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
         }
 
         public void Initialize()
