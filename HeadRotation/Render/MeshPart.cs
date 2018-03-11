@@ -1,13 +1,14 @@
-﻿using System.Runtime.InteropServices;
-using OpenTK;
+﻿using OpenTK;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using System;
+using HeadRotation.Morphing;
 
 namespace HeadRotation.Render
 {    
     public class MeshPart
     {
+        public List<MorphingPoint> MorphPoints = new List<MorphingPoint>();
         public List<uint> Indices = new List<uint>();
         public Vertex3d[] Vertices = null;
 
@@ -78,25 +79,42 @@ namespace HeadRotation.Render
             var positions = new List<Vector3>();
             var texCoords = new List<Vector2>();
 
-            var positionsDict = new Dictionary<VertexInfo, uint>(new VectorEqualityComparer());
-            var pointsIndicesDict = new Dictionary<int, int>();
+            var pointnsDict = new Dictionary<VertexInfo, int>(new VectorEqualityComparer());
+            var positionsDict = new Dictionary<Vector3, int>(new VectorEqualityComparer());
+
             for (var i = 0; i < info.VertexPositions.Count; i++)
             {
                 var vertexInfo = new VertexInfo
                 {
-                    Position = info.VertexPositions[i],
+                    Position = info.VertexPositions[i] + Offset,
                     TexCoords = info.TextureCoords[i]
                 };
-                if (!positionsDict.ContainsKey(vertexInfo))
+                if (!pointnsDict.ContainsKey(vertexInfo))
                 {
-                    var index = (uint)positions.Count;
-                    positionsDict.Add(vertexInfo, index);
-                    Indices.Add(index);
+                    var index = positions.Count;                    
+
+                    if (!positionsDict.ContainsKey(vertexInfo.Position))
+                    {
+                        positionsDict.Add(vertexInfo.Position, MorphPoints.Count);
+                        MorphPoints.Add(new MorphingPoint
+                        {
+                            Indices = new List<int> { index },
+                            Position = vertexInfo.Position
+                        });
+                    }
+                    else
+                    {
+                        var id = positionsDict[vertexInfo.Position];
+                        MorphPoints[id].Indices.Add(index);
+                    }
+
+                    pointnsDict.Add(vertexInfo, index);
+                    Indices.Add((uint)index);
                     positions.Add(vertexInfo.Position);
-                    texCoords.Add(vertexInfo.TexCoords);                   
+                    texCoords.Add(vertexInfo.TexCoords);
                 }
                 else
-                    Indices.Add(positionsDict[vertexInfo]);
+                    Indices.Add((uint)pointnsDict[vertexInfo]);
             }
 
             CountIndices = Indices.Count;
@@ -105,7 +123,7 @@ namespace HeadRotation.Render
             var normals = Normal.CalculateNormals(positions, Indices);
             for (var i = 0; i < Vertices.Length; i++)
             {
-                Vertices[i].Position = positions[i] + Offset;
+                Vertices[i].Position = positions[i];
                 Vertices[i].Normal = normals[i];
                 Vertices[i].TexCoord = texCoords[i];
                 Vertices[i].Color = Vector4.One;
