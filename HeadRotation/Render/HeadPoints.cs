@@ -240,7 +240,7 @@ namespace HeadRotation.Render
 
         private void InitializeTextRender()
         {           
-            if (TextRenderList == null)
+            if (TextRenderList == null || TextRenderList.Count != Points.Count)
             {
                 TextRenderList = new List<TextRender>();
                 for (var i = 0; i < Points.Count; i++)

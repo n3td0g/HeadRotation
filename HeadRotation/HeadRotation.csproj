@@ -94,6 +94,7 @@
       <DependentUpon>PhotoControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Morphing\HeadMorphing.cs" />
+    <Compile Include="Morphing\MorphingPoint.cs" />
     <Compile Include="ObjFile\FolderEx.cs" />
     <Compile Include="ObjFile\ImageEx.cs" />
     <Compile Include="ObjFile\ObjExport.cs" />

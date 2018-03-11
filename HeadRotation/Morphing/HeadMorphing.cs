@@ -17,7 +17,7 @@ namespace HeadRotation.Morphing
     {
         public List<MorphTriangle> TrianglesFront = new List<MorphTriangle>();
         public List<MorphTriangle> TrianglesRight = new List<MorphTriangle>();
-        public HeadPoints headPoints;
+        public HeadPoints headPoints;       
 
         public void Initialize(HeadPoints hPoints)
         {
@@ -39,8 +39,58 @@ namespace HeadRotation.Morphing
             headPoints.Points.Add(b3);
             headPoints.Points.Add((b3 + b) * 0.5f);
 
+            TrianglesFront.Clear();
+
             TrianglesFront.Add(new MorphTriangle { A = 66, B = 52, C = 68 });
+
+            InitializeMorphin();
         }
+
+        private void InitializeMorphin()
+        {
+            var headMesh = headPoints.HeadMesh;
+            for (int index = 0; index < TrianglesFront.Count; ++index)
+            {
+                var triangle = TrianglesFront[index];
+                var a = headPoints.Points[triangle.A].Xy;
+                var b = headPoints.Points[triangle.B].Xy;
+                var c = headPoints.Points[triangle.C].Xy;
+
+                foreach (var part in headMesh.Parts)
+                {
+                    foreach (var point in part.MorphPoints)
+                    {
+                        point.Initialize(ref a, ref b, ref c, index, true);
+                    }
+                }
+            }
+        }
+
+        public void Morph()
+        {
+            var headMesh = headPoints.HeadMesh;
+            foreach (var part in headMesh.Parts)
+            {
+                foreach (var point in part.MorphPoints)
+                {
+                    if(point.FrontTriangle.TriangleIndex > -1 )
+                    {
+                        var triangle = TrianglesFront[point.FrontTriangle.TriangleIndex];
+                        var a = headPoints.Points[triangle.A].Xy;
+                        var b = headPoints.Points[triangle.B].Xy;
+                        var c = headPoints.Points[triangle.C].Xy;
+
+                        point.Morph(ref a, ref b, ref c);
+
+                        foreach(var index in point.Indices)
+                        {
+                            part.Vertices[index].Position = point.Position;
+                        }
+                    }
+                }
+                part.UpdateBuffers();
+            }
+        }        
 
         public void Draw()
         {
@@ -49,9 +99,12 @@ namespace HeadRotation.Morphing
 
             foreach (var triangle in TrianglesFront)
             {
-                RenderHelper.DrawLine(headPoints.Points[triangle.A], headPoints.Points[triangle.B]);
-                RenderHelper.DrawLine(headPoints.Points[triangle.B], headPoints.Points[triangle.C]);
-                RenderHelper.DrawLine(headPoints.Points[triangle.A], headPoints.Points[triangle.C]);
+                var a = headPoints.GetWorldPoint(triangle.A);
+                var b = headPoints.GetWorldPoint(triangle.B);
+                var c = headPoints.GetWorldPoint(triangle.C);
+                RenderHelper.DrawLine(a, b);
+                RenderHelper.DrawLine(b, c);
+                RenderHelper.DrawLine(c, a);
             }
 
             GL.End();

@@ -46,9 +46,7 @@ namespace HeadRotation.Render
             RenderHelper.DrawLine(b, a3);            
 
             GL.End();
-        }
-
-        
+        }       
 
         public RectangleAABB()
         {

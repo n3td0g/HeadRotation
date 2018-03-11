@@ -25,7 +25,7 @@ namespace HeadRotation.Helpers
             headPoints = points;
 
             headIndices.Clear();
-            for (int i = 0; i < headPoints.Points.Count; ++i)
+            for (int i = 0; i < dots.Points.Count; ++i)
                 headIndices.Add(i);
 
             Matrix4.CreateRotationY(-headPoints.HeadMesh.HeadAngle, out RotationMatrix);
