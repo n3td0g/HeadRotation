@@ -252,9 +252,9 @@ namespace HeadRotation.Morphing
                 var a = headPoints.GetWorldPoint(triangle.A);
                 var b = headPoints.GetWorldPoint(triangle.B);
                 var c = headPoints.GetWorldPoint(triangle.C);
-                GL.Vertex2(a.Xy);
-                GL.Vertex2(b.Xy);
-                GL.Vertex2(c.Xy);
+                GL.Vertex3(a);
+                GL.Vertex3(b);
+                GL.Vertex3(c);
             }
             GL.End();
         }

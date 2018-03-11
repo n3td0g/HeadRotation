@@ -33,11 +33,12 @@ namespace HeadRotation.Controls
 
         public const int HeadPointsCount = 70;
 
-        bool drawDots = true;
-        bool drawSpheres = true;
-        bool drawPoints = true;
-        bool drawTriangles = true;
-        bool drawAABB = true;
+        bool drawDots = false;
+        bool drawSpheres = false;
+        bool drawPoints = false;
+        bool drawTriangles = false;
+        bool drawAABB = false;
+        bool drawAxis = false;
 
         #endregion
 
@@ -165,7 +166,11 @@ namespace HeadRotation.Controls
             GL.PopMatrix();
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
-            DrawAxis();
+
+            if (drawAxis)
+            {
+                DrawAxis();
+            }           
 
             if (drawDots)
             {
@@ -448,6 +453,11 @@ namespace HeadRotation.Controls
             {
                 pictureBox1_MouseUp(null, null);
             }
+            if (e.KeyCode == Keys.G)
+            {
+                drawAxis = !drawAxis;
+            }
+            
             if (e.KeyCode == Keys.Space)
             {
                 UseTexture = !UseTexture;
