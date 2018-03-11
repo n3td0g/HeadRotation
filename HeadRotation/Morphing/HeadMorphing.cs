@@ -219,7 +219,23 @@ namespace HeadRotation.Morphing
                 }
                 part.UpdateBuffers();
             }
-        }        
+        }
+
+        public void DrawTriangles()
+        {
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(0.0f, 1.0f, 0.0f, 0.3f);
+            foreach (var triangle in TrianglesFront)
+            {
+                var a = headPoints.GetWorldPoint(triangle.A);
+                var b = headPoints.GetWorldPoint(triangle.B);
+                var c = headPoints.GetWorldPoint(triangle.C);
+                GL.Vertex2(a.Xy);
+                GL.Vertex2(b.Xy);
+                GL.Vertex2(c.Xy);
+            }
+            GL.End();
+        }
 
         public void Draw()
         {

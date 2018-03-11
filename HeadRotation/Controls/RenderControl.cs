@@ -93,7 +93,6 @@ namespace HeadRotation.Controls
             RenderTimer.Start();
         }
 
-
         private void HeadMesh_OnBeforePartDraw(MeshPart part)
         {
             var transparent = UseTexture ? part.TransparentTexture : 0.0f;
@@ -127,6 +126,7 @@ namespace HeadRotation.Controls
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.DepthMask(false);
         }
+
         private void DisableTransparent()
         {
             GL.Disable(EnableCap.Blend);
@@ -180,10 +180,14 @@ namespace HeadRotation.Controls
             if(drawTriangles)
             {
                 headMorphing.Draw();
+                EnableTransparent();
+                headMorphing.DrawTriangles();
+                DisableTransparent();
             }            
 
             glControl.SwapBuffers();
         }
+
         private void DrawHead()
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
@@ -195,6 +199,7 @@ namespace HeadRotation.Controls
 
             HeadMesh.Draw(drawAABB);
         }
+
         private void DrawAxis()
         {
             GL.LineWidth(1.0f);
@@ -267,6 +272,23 @@ namespace HeadRotation.Controls
         private void btnUnscale_MouseDown(object sender, MouseEventArgs e)
         {
             btnUnscale.Image = Resources.btnUnscalePressed;
+        }
+
+        private void btnFront_MouseDown(object sender, MouseEventArgs e)
+        {
+            btnFront.Image = Resources.btnUnscalePressed; 
+        }
+
+        private void btnFront_MouseUp(object sender, MouseEventArgs e)
+        {
+            btnFront.Image = Resources.btnUnscaleNormal;
+
+            camera.ResetCamera(true, -HeadMesh.HeadAngle);
+            ScaleMode = ScaleMode.None;
+
+            checkArrow.Tag = checkZoom.Tag = "2";
+            checkArrow.Image = Resources.btnArrowNormal;
+            checkZoom.Image = Resources.btnZoomNormal;
         }
 
         private void ResetScaleModeTools()
@@ -430,6 +452,6 @@ namespace HeadRotation.Controls
             {
                 UseTexture = !UseTexture;
             }
-        }
+        }        
     }
 }

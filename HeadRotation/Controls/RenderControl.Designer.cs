@@ -38,11 +38,13 @@ namespace HeadRotation.Controls
             this.checkZoom = new System.Windows.Forms.PictureBox();
             this.checkArrow = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnFront = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.checkHand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnUnscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnFront)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl
@@ -73,7 +75,7 @@ namespace HeadRotation.Controls
             this.checkHand.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkHand.BackgroundImage")));
             this.checkHand.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.checkHand.Image = global::HeadRotation.Properties.Resources.btnHandNormal;
-            this.checkHand.Location = new System.Drawing.Point(360, 3);
+            this.checkHand.Location = new System.Drawing.Point(324, 3);
             this.checkHand.Name = "checkHand";
             this.checkHand.Size = new System.Drawing.Size(36, 36);
             this.checkHand.TabIndex = 8;
@@ -87,7 +89,7 @@ namespace HeadRotation.Controls
             this.btnUnscale.BackColor = System.Drawing.SystemColors.Control;
             this.btnUnscale.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnUnscale.Image = global::HeadRotation.Properties.Resources.btnUnscaleNormal;
-            this.btnUnscale.Location = new System.Drawing.Point(486, 3);
+            this.btnUnscale.Location = new System.Drawing.Point(450, 3);
             this.btnUnscale.Name = "btnUnscale";
             this.btnUnscale.Size = new System.Drawing.Size(36, 36);
             this.btnUnscale.TabIndex = 7;
@@ -102,7 +104,7 @@ namespace HeadRotation.Controls
             this.checkZoom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkZoom.BackgroundImage")));
             this.checkZoom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.checkZoom.Image = global::HeadRotation.Properties.Resources.btnZoomNormal;
-            this.checkZoom.Location = new System.Drawing.Point(444, 3);
+            this.checkZoom.Location = new System.Drawing.Point(408, 3);
             this.checkZoom.Name = "checkZoom";
             this.checkZoom.Size = new System.Drawing.Size(36, 36);
             this.checkZoom.TabIndex = 6;
@@ -117,7 +119,7 @@ namespace HeadRotation.Controls
             this.checkArrow.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("checkArrow.BackgroundImage")));
             this.checkArrow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.checkArrow.Image = global::HeadRotation.Properties.Resources.btnArrowNormal;
-            this.checkArrow.Location = new System.Drawing.Point(402, 3);
+            this.checkArrow.Location = new System.Drawing.Point(366, 3);
             this.checkArrow.Name = "checkArrow";
             this.checkArrow.Size = new System.Drawing.Size(36, 36);
             this.checkArrow.TabIndex = 5;
@@ -139,10 +141,25 @@ namespace HeadRotation.Controls
             this.pictureBox1.Tag = "2";
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
+            // btnFront
+            // 
+            this.btnFront.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFront.BackColor = System.Drawing.SystemColors.Control;
+            this.btnFront.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnFront.Image = global::HeadRotation.Properties.Resources.btnUnscaleNormal;
+            this.btnFront.Location = new System.Drawing.Point(492, 3);
+            this.btnFront.Name = "btnFront";
+            this.btnFront.Size = new System.Drawing.Size(36, 36);
+            this.btnFront.TabIndex = 10;
+            this.btnFront.TabStop = false;
+            this.btnFront.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnFront_MouseDown);
+            this.btnFront.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnFront_MouseUp);
+            // 
             // RenderControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnFront);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.checkHand);
             this.Controls.Add(this.btnUnscale);
@@ -156,6 +173,7 @@ namespace HeadRotation.Controls
             ((System.ComponentModel.ISupportInitialize)(this.checkZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.checkArrow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnFront)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -170,5 +188,6 @@ namespace HeadRotation.Controls
         internal System.Windows.Forms.PictureBox checkArrow;
         internal System.Windows.Forms.PictureBox checkHand;
         internal System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox btnFront;
     }
 }
