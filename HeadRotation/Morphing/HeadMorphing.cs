@@ -40,7 +40,8 @@ namespace HeadRotation.Morphing
             headPoints.Points.Add((b3 + b) * 0.5f);
 
             // left oval
-            TrianglesFront.Add(new MorphTriangle { A = 66, B = 3, C = 68 });
+            TrianglesFront.Add(new MorphTriangle { A = 52, B = 3, C = 68 });
+            TrianglesFront.Add(new MorphTriangle { A = 52, B = 66, C = 68 });
             TrianglesFront.Add(new MorphTriangle { A = 66, B = 73, C = 68 });
             TrianglesFront.Add(new MorphTriangle { A = 66, B = 73, C = 12 });
             TrianglesFront.Add(new MorphTriangle { A = 5, B = 3, C = 68 });
@@ -53,14 +54,21 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 9, B = 55, C = 11 });
             TrianglesFront.Add(new MorphTriangle { A = 9, B = 7, C = 74 });
             TrianglesFront.Add(new MorphTriangle { A = 9, B = 11, C = 75 });
-
             TrianglesFront.Add(new MorphTriangle { A = 45, B = 66, C = 43 });
             TrianglesFront.Add(new MorphTriangle { A = 23, B = 66, C = 43 });
+            TrianglesFront.Add(new MorphTriangle { A = 72, B = 73, C = 12 });
+            TrianglesFront.Add(new MorphTriangle { A = 72, B = 71, C = 16 });
+            TrianglesFront.Add(new MorphTriangle { A = 66, B = 12, C = 23 });
+            TrianglesFront.Add(new MorphTriangle { A = 66, B = 52, C = 45 });
+            TrianglesFront.Add(new MorphTriangle { A = 73, B = 74, C = 68});
+            TrianglesFront.Add(new MorphTriangle { A = 74, B = 75, C = 9 });
+
             //right oval
-            TrianglesFront.Add(new MorphTriangle { A = 67, B = 4, C = 69 });
+            TrianglesFront.Add(new MorphTriangle { A = 4, B = 53, C = 69 });
+            TrianglesFront.Add(new MorphTriangle { A = 67, B = 53, C = 69 });
             TrianglesFront.Add(new MorphTriangle { A = 67, B = 77, C = 69 });
             TrianglesFront.Add(new MorphTriangle { A = 67, B = 77, C = 15 });
-            TrianglesFront.Add(new MorphTriangle { A = 6, B = 53, C = 69 });
+            TrianglesFront.Add(new MorphTriangle { A = 6, B = 4, C = 69 });
             TrianglesFront.Add(new MorphTriangle { A = 6, B = 76, C = 69 });
             TrianglesFront.Add(new MorphTriangle { A = 6, B = 4, C = 8 });
             TrianglesFront.Add(new MorphTriangle { A = 6, B = 76, C = 8 });
@@ -73,6 +81,12 @@ namespace HeadRotation.Morphing
 
             TrianglesFront.Add(new MorphTriangle { A = 46, B = 67, C = 44 });
             TrianglesFront.Add(new MorphTriangle { A = 26, B = 67, C = 44 });
+            TrianglesFront.Add(new MorphTriangle { A = 75, B = 10, C = 76 });
+            TrianglesFront.Add(new MorphTriangle { A = 46, B = 53, C = 67 });
+            TrianglesFront.Add(new MorphTriangle { A = 76, B = 77, C = 69 });
+            TrianglesFront.Add(new MorphTriangle { A = 70, B = 77, C = 15 });
+            TrianglesFront.Add(new MorphTriangle { A = 71, B = 70, C = 17 });
+            TrianglesFront.Add(new MorphTriangle { A = 26, B = 67, C = 15 });
 
             //left eye
             TrianglesFront.Add(new MorphTriangle { A = 23, B = 35, C = 37 });
@@ -91,8 +105,11 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 28, B = 19, C = 16 });
             TrianglesFront.Add(new MorphTriangle { A = 28, B = 19, C = 36 });
             TrianglesFront.Add(new MorphTriangle { A = 13, B = 19, C = 36 });
-            TrianglesFront.Add(new MorphTriangle { A = 24, B = 19, C = 36 });
             TrianglesFront.Add(new MorphTriangle { A = 24, B = 22, C = 13 });
+            TrianglesFront.Add(new MorphTriangle { A = 13, B = 36, C = 24 });
+            TrianglesFront.Add(new MorphTriangle { A = 38, B = 24, C = 43 });
+            TrianglesFront.Add(new MorphTriangle { A = 37, B = 27, C = 43 });
+            TrianglesFront.Add(new MorphTriangle { A = 37, B = 23, C = 43 });
 
             //right eye
             TrianglesFront.Add(new MorphTriangle { A = 26, B = 40, C = 42 });
@@ -111,8 +128,11 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 32, B = 20, C = 17 });
             TrianglesFront.Add(new MorphTriangle { A = 32, B = 20, C = 39 });
             TrianglesFront.Add(new MorphTriangle { A = 14, B = 20, C = 39 });
-            TrianglesFront.Add(new MorphTriangle { A = 25, B = 20, C = 39 });
             TrianglesFront.Add(new MorphTriangle { A = 25, B = 22, C = 14 });
+            TrianglesFront.Add(new MorphTriangle { A = 14, B = 25, C = 39 });
+            TrianglesFront.Add(new MorphTriangle { A = 25, B = 41, C = 44 });
+            TrianglesFront.Add(new MorphTriangle { A = 31, B = 42, C = 44 });
+            TrianglesFront.Add(new MorphTriangle { A = 26, B = 42, C = 44 });
 
             //middle face
             TrianglesFront.Add(new MorphTriangle { A = 14, B = 22, C = 13 });
@@ -136,6 +156,7 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 44, B = 46, C = 2 });
             TrianglesFront.Add(new MorphTriangle { A = 46, B = 48, C = 2 });
             TrianglesFront.Add(new MorphTriangle { A = 48, B = 49, C = 2 });
+            TrianglesFront.Add(new MorphTriangle { A = 47, B = 49, C = 2 });
             // nose-eyes
             TrianglesFront.Add(new MorphTriangle { A = 25, B = 22, C = 44 });
             TrianglesFront.Add(new MorphTriangle { A = 44, B = 41, C = 31 });
@@ -144,8 +165,7 @@ namespace HeadRotation.Morphing
 
             // left mouth
             TrianglesFront.Add(new MorphTriangle { A = 3, B = 52, C = 56 });
-            TrianglesFront.Add(new MorphTriangle { A = 50, B = 52, C = 56 });
-            TrianglesFront.Add(new MorphTriangle { A = 50, B = 45, C = 56 });
+            TrianglesFront.Add(new MorphTriangle { A = 45, B = 52, C = 56 });
             TrianglesFront.Add(new MorphTriangle { A = 45, B = 47, C = 56 });
             TrianglesFront.Add(new MorphTriangle { A = 49, B = 47, C = 56 });
             TrianglesFront.Add(new MorphTriangle { A = 49, B = 54, C = 56 });
@@ -156,10 +176,11 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 63, B = 61, C = 64 });
             TrianglesFront.Add(new MorphTriangle { A = 60, B = 54, C = 61 });
             TrianglesFront.Add(new MorphTriangle { A = 60, B = 54, C = 56 });
+            TrianglesFront.Add(new MorphTriangle { A = 63, B = 64, C = 58 });
+            TrianglesFront.Add(new MorphTriangle { A = 63, B = 60, C = 61 });
             // right mouth
             TrianglesFront.Add(new MorphTriangle { A = 4, B = 53, C = 57 });
-            TrianglesFront.Add(new MorphTriangle { A = 51, B = 53, C = 57 });
-            TrianglesFront.Add(new MorphTriangle { A = 51, B = 46, C = 57 });
+            TrianglesFront.Add(new MorphTriangle { A = 46, B = 53, C = 57 });
             TrianglesFront.Add(new MorphTriangle { A = 46, B = 48, C = 57 });
             TrianglesFront.Add(new MorphTriangle { A = 49, B = 48, C = 57 });
             TrianglesFront.Add(new MorphTriangle { A = 49, B = 54, C = 57 });
@@ -170,7 +191,8 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 65, B = 61, C = 64 });
             TrianglesFront.Add(new MorphTriangle { A = 62, B = 54, C = 61 });
             TrianglesFront.Add(new MorphTriangle { A = 62, B = 54, C = 57 });
-
+            TrianglesFront.Add(new MorphTriangle { A = 65, B = 64, C = 59 });
+            TrianglesFront.Add(new MorphTriangle { A = 65, B = 62, C = 61 });
 
             InitializeMorphin();
         }
