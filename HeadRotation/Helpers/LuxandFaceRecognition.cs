@@ -136,6 +136,8 @@ namespace HeadRotation.Helpers
         }
 
         public List<Vector3> FacialFeatures;
+        /// <summary> Не отнормированные </summary>
+        public List<Vector2> RealPoints;
 
         /// <summary> Угол, на который повернута голова. </summary>
         public double RotatedAngle;
@@ -267,10 +269,14 @@ namespace HeadRotation.Helpers
             RightMiddleFace2 = new Vector2(RightMiddleFace2.X / (image.Width * 1f), RightMiddleFace2.Y / (image.Height * 1f));
 
             FacialFeatures = new List<Vector3>();
+            RealPoints = new List<Vector2>();
             int index = 0;
             var pointDepths = GetPointDepths();
             foreach (var point in pointFeature)
+            {
                 FacialFeatures.Add(new Vector3(point.x / (image.Width * 1f), point.y / (image.Height * 1f), pointDepths[index++]));
+                RealPoints.Add(new Vector2(point.x, point.y));
+            }
 
             #endregion
 
