@@ -86,6 +86,8 @@ namespace HeadRotation.Controls
             }
         }
 
+
+
         private void pictureTemplate_Paint(object sender, PaintEventArgs e)
         {
             if (string.IsNullOrEmpty(templateImage))
@@ -94,6 +96,8 @@ namespace HeadRotation.Controls
             foreach (var point in facialFeaturesTransformed)
                 e.Graphics.FillEllipse(DrawingTools.BlueSolidBrush, point.X - 2, point.Y - 2, 4, 4);
 
+
+       
         }
 
         /// <summary> Пересчитать положение прямоугольника в зависимост от размера картинки на picturetemplate </summary>
