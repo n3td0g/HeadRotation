@@ -212,21 +212,32 @@ namespace HeadRotation.Morphing
         private void InitializeMorphin()
         {
             var headMesh = headPoints.HeadMesh;
-            for (int index = 0; index < TrianglesFront.Count; ++index)
-            {
-                var triangle = TrianglesFront[index];
-                var a = headPoints.Points[triangle.A].Xy;
-                var b = headPoints.Points[triangle.B].Xy;
-                var c = headPoints.Points[triangle.C].Xy;
 
-                foreach (var part in headMesh.Parts)
+            foreach (var part in headMesh.Parts)
+            {
+                foreach (var point in part.MorphPoints)
                 {
-                    foreach (var point in part.MorphPoints)
+                    for (int index = 0; index < TrianglesFront.Count; ++index)
                     {
+                        var triangle = TrianglesFront[index];
+                        var a = headPoints.Points[triangle.A].Xy;
+                        var b = headPoints.Points[triangle.B].Xy;
+                        var c = headPoints.Points[triangle.C].Xy;
+
                         point.Initialize(ref a, ref b, ref c, index, true);
                     }
+
+                    for (int index = 0; index < TrianglesRight.Count; ++index)
+                    {
+                        var triangle = TrianglesRight[index];
+                        var a = headPoints.Points[triangle.A].Zy;
+                        var b = headPoints.Points[triangle.B].Zy;
+                        var c = headPoints.Points[triangle.C].Zy;
+
+                        point.Initialize(ref a, ref b, ref c, index, false);
+                    }
                 }
-            }
+            }            
         }
 
         public void Morph()
@@ -236,19 +247,33 @@ namespace HeadRotation.Morphing
             {
                 foreach (var point in part.MorphPoints)
                 {
-                    if(point.FrontTriangle.TriangleIndex > -1 )
+                    bool hasFrontPoint = false;
+                    if (point.FrontTriangle.TriangleIndex > -1 )
                     {
                         var triangle = TrianglesFront[point.FrontTriangle.TriangleIndex];
                         var a = headPoints.Points[triangle.A].Xy;
                         var b = headPoints.Points[triangle.B].Xy;
                         var c = headPoints.Points[triangle.C].Xy;
 
-                        point.Morph(ref a, ref b, ref c);
+                        point.Position = point.MorphFront(ref a, ref b, ref c);
+                        hasFrontPoint = true;
+                    }
 
-                        foreach(var index in point.Indices)
-                        {
-                            part.Vertices[index].Position = point.Position;
-                        }
+                    if (point.RightTriangle.TriangleIndex > -1)
+                    {
+                        var triangle = TrianglesRight[point.RightTriangle.TriangleIndex];
+                        var a = headPoints.Points[triangle.A].Zy;
+                        var b = headPoints.Points[triangle.B].Zy;
+                        var c = headPoints.Points[triangle.C].Zy;
+
+                        Vector3 rightPoisition = point.MorphRight(ref a, ref b, ref c);
+                        point.Position.Y = hasFrontPoint ? (rightPoisition.Y + point.Position.Y) * 0.5f : rightPoisition.Y;
+                        point.Position.Z = rightPoisition.Z;
+                    }
+
+                    foreach (var index in point.Indices)
+                    {
+                        part.Vertices[index].Position = point.Position;
                     }
                 }
                 part.UpdateBuffers();
