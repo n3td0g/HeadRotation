@@ -15,7 +15,8 @@ namespace HeadRotation.Render
 
         public const float SelectionRadius = 10.0f;
         public List<Vector3> Points = new List<Vector3>();
-        public Camera RenderCamera;        
+        public List<bool> IsVisible = new List<bool>();
+        public Camera RenderCamera;
         public RenderMesh HeadMesh;
 
         #region Selection
@@ -47,9 +48,10 @@ namespace HeadRotation.Render
 
             Vertices = new Vertex3d[rings * sectors];
             int index = 0;
-            for (int r = 0; r < rings; r++) {
+            for (int r = 0; r < rings; r++)
+            {
                 for (int s = 0; s < sectors; s++)
-                {                    
+                {
                     float x = (float)(Math.Cos(2.0 * Math.PI * s * S) * Math.Sin(Math.PI * r * R));
                     float y = (float)(Math.Sin(2.0 * Math.PI * s * S) * Math.Sin(Math.PI * r * R));
                     float z = (float)Math.Cos(Math.PI * r * R);
@@ -72,7 +74,7 @@ namespace HeadRotation.Render
                     Vertices[index++] = vertex;
                 }
             }
-            
+
             index = 0;
             for (int r = 0; r < rings; r++)
             {
@@ -112,7 +114,7 @@ namespace HeadRotation.Render
         }
 
         public void Initialize(int Count)
-        {            
+        {
             SelectedPoint = -1;
             Points.Clear();
             Random R = new Random();
@@ -153,15 +155,15 @@ namespace HeadRotation.Render
             GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(Vector3.SizeInBytes));
             GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
             GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes));
-            
-            foreach(var p in Points)
+
+            foreach (var p in Points)
             {
                 var point = GetWorldPoint(p);
                 GL.Translate(point);
                 GL.DrawRangeElements(PrimitiveType.Quads, 0, Indices.Count, Indices.Count, DrawElementsType.UnsignedInt, new IntPtr(0));
                 GL.Translate(-point);
             }
-            
+
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
@@ -188,12 +190,15 @@ namespace HeadRotation.Render
             const float scale = 0.7f;
             float textScale = scale * RenderCamera.Scale;
             InitializeTextRender();
-                      
+
             GL.PointSize(5.0f);
             GL.Begin(PrimitiveType.Points);
 
             for (int i = 0; i < Points.Count; ++i)
             {
+                if (!IsVisible[i])
+                    continue;
+
                 if (i == SelectedPoint)
                     GL.Color3(1.0f, 0.0f, 0.0f);
                 else
@@ -208,20 +213,24 @@ namespace HeadRotation.Render
             GL.End();
             GL.PointSize(1.0f);
 
-            foreach (var text in TextRenderList)
+            for (var i = 0; i < TextRenderList.Count; i++)
             {
+                var text = TextRenderList[i];
+                if (!IsVisible[i])
+                    continue;
+
                 float cameraAngle = -(float)(RenderCamera.beta); //(float)(RenderCamera.beta);
                 cameraAngle *= 180.0f;
                 cameraAngle /= (float)Math.PI;
                 cameraAngle += 90.0f;
 
-                
+
                 GL.Translate(text.Position);
                 GL.Rotate(cameraAngle, 0.0f, 1.0f, 0.0f);
                 text.Render();
                 GL.Rotate(cameraAngle, 0.0f, -1.0f, 0.0f);
                 GL.Translate(-text.Position);
-                
+
             }
 
             GL.Disable(EnableCap.Texture2D);
@@ -229,7 +238,7 @@ namespace HeadRotation.Render
         }
 
         private void InitializeTextRender()
-        {           
+        {
             if (TextRenderList == null || TextRenderList.Count != Points.Count)
             {
                 TextRenderList = new List<TextRender>();

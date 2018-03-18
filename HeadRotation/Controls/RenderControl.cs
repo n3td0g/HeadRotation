@@ -8,6 +8,8 @@ using System.IO;
 using HeadRotation.Properties;
 using HeadRotation.Helpers;
 using HeadRotation.Morphing;
+using System.Collections;
+using System.Linq;
 
 namespace HeadRotation.Controls
 {
@@ -53,6 +55,9 @@ namespace HeadRotation.Controls
         {
             HeadPoints.Points.Clear();
             HeadPoints.Points.AddRange(VectorEx.ImportVector());
+            HeadPoints.IsVisible.AddRange(Enumerable.Repeat(true, HeadPoints.Points.Count));
+
+            headMorphing.Initialize(HeadPoints);
         }
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer)
@@ -464,6 +469,11 @@ namespace HeadRotation.Controls
             if (e.KeyCode == Keys.Space)
             {
                 UseTexture = !UseTexture;
+            }
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (HeadPoints.SelectedPoint != -1)
+                    HeadPoints.IsVisible[HeadPoints.SelectedPoint] = false;
             }
         }
     }
