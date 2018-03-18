@@ -8,6 +8,7 @@ using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace HeadRotation
@@ -103,6 +104,49 @@ namespace HeadRotation
             modelPoints.Add(new MCvPoint3D32f(RenderControl.HeadPoints.Points[4].X, RenderControl.HeadPoints.Points[4].Y, RenderControl.HeadPoints.Points[4].Z));
             modelPoints.Add(new MCvPoint3D32f(RenderControl.HeadPoints.Points[2].X, RenderControl.HeadPoints.Points[2].Y, RenderControl.HeadPoints.Points[2].Z));
 
+            #region Varian 1
+            // безопасный код
+            /*          #region CamMatrix
+
+                      var img = CvInvoke.Imread(photoControl.TemplateImage);
+                      var max_d = Math.Max(img.Rows, img.Cols);
+                      var camMatrix = new Emgu.CV.Matrix<double>(3, 3);
+                      camMatrix[0, 0] = max_d;
+                      camMatrix[0, 1] = 0;
+                      camMatrix[0, 2] = img.Cols / 2.0;
+                      camMatrix[1, 0] = 0;
+                      camMatrix[1, 1] = max_d;
+                      camMatrix[1, 2] = img.Rows / 2.0;
+                      camMatrix[2, 0] = 0;
+                      camMatrix[2, 1] = 0;
+                      camMatrix[2, 2] = 1;
+
+                      #endregion
+
+                      var rvec = new Mat(3, 1, DepthType.Default, 1);
+                      var tvec = new Mat(3, 1, DepthType.Default, 1);
+
+
+                      var distArray = new double[] { 0, 0, 0, 0 };
+                      var distMatrix = new Matrix<double>(1, 4,distArray.);      // не используемый коэф.
+                      distMatrix[0, 0] = 0;
+                      distMatrix[0, 1] = 0;
+                      distMatrix[0, 2] = 0;
+                      distMatrix[0, 3] = 0;
+
+                      Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
+
+                      var translationVector = new Matrix<float>(tvec.Rows, tvec.Cols, tvec.DataPointer);
+
+                      var rotM = new Mat(3, 3, DepthType.Cv64F, 1);
+
+                      CvInvoke.Rodrigues(rvec, rotM);
+                      var rotationMatrix = new Matrix<float>(rotM.Rows, rotM.Cols, rotM.DataPointer);         // МАТРИЦА ПОВОРОТА!
+                      */
+            #endregion
+
+            #region Varian 2
+
             #region CamMatrix
 
             var img = CvInvoke.Imread(photoControl.TemplateImage);
@@ -116,28 +160,30 @@ namespace HeadRotation
             camMatrix[1, 2] = img.Rows / 2.0;
             camMatrix[2, 0] = 0;
             camMatrix[2, 1] = 0;
-            camMatrix[2, 2] = 1;
+            camMatrix[2, 2] = 1.0;
 
             #endregion
 
-            var rvec = new Mat(3, 1, DepthType.Default, 1);
-            var tvec = new Mat(3, 1, DepthType.Default, 1);
+            var distArray = new double[] { 0, 0, 0, 0 };
+            var distMatrix = new Matrix<double>(distArray);      // не используемый коэф.
 
-            var distMatrix = new Matrix<double>(1, 4);      // не используемый коэф.
-            distMatrix[0, 0] = 0;
-            distMatrix[0, 1] = 0;
-            distMatrix[0, 2] = 0;
-            distMatrix[0, 3] = 0;
+            var rv = new double[] { 0, 0, 0 };
+            var rvec = new Matrix<double>(rv);
+
+            var tv = new double[] { 0, 0, 1 };
+            var tvec = new Matrix<double>(tv);
+
+
+           
+    
+       
 
             Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
 
-            var translationVector = new Matrix<float>(tvec.Rows, tvec.Cols, tvec.DataPointer);
-
-            var rotM = new Mat(3, 3, DepthType.Cv64F, 1);
-
+            var rotM = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rvec, rotM);
-            var rotationMatrix = new Matrix<float>(rotM.Rows, rotM.Cols, rotM.DataPointer);         // МАТРИЦА ПОВОРОТА!
 
+            #endregion
 
             isSetted = true;
         }
