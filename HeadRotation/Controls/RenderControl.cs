@@ -57,15 +57,15 @@ namespace HeadRotation.Controls
             HeadPoints.Points.AddRange(VectorEx.ImportVector());
             HeadPoints.IsVisible.AddRange(Enumerable.Repeat(true, HeadPoints.Points.Count));
 
-            headMorphing.Initialize(HeadPoints);
+            //headMorphing.Initialize(HeadPoints);
         }
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer)
         {
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(HeadPoints);
-            //morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
-            //     headMorphing.Morph();
+            morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
+            headMorphing.Morph();
         }
 
         public void Initialize()

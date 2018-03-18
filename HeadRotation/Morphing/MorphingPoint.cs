@@ -35,8 +35,8 @@ namespace HeadRotation.Morphing
         public Vector3 MorphRight(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3)
         {
             Vector3 result = Position;
-            result.Z = FrontTriangle.U * v1.X + FrontTriangle.V * v2.X + FrontTriangle.W * v3.X;
-            result.Y = FrontTriangle.U * v1.Y + FrontTriangle.V * v2.Y + FrontTriangle.W * v3.Y;
+            result.Z = RightTriangle.U * v1.X + RightTriangle.V * v2.X + RightTriangle.W * v3.X;
+            result.Y = RightTriangle.U * v1.Y + RightTriangle.V * v2.Y + RightTriangle.W * v3.Y;
             return result;
         }
 

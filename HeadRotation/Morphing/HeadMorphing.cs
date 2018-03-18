@@ -337,6 +337,8 @@ namespace HeadRotation.Morphing
                         var b = headPoints.Points[triangle.B].Zy;
                         var c = headPoints.Points[triangle.C].Zy;
 
+                        /*point.Position = point.MorphRight(ref a, ref b, ref c);*/
+
                         Vector3 rightPoisition = point.MorphRight(ref a, ref b, ref c);
                         point.Position.Y = hasFrontPoint ? (rightPoisition.Y + point.Position.Y) * 0.5f : rightPoisition.Y;
                         point.Position.Z = rightPoisition.Z;
