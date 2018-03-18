@@ -173,15 +173,16 @@ namespace HeadRotation
             var tv = new double[] { 0, 0, 1 };
             var tvec = new Matrix<double>(tv);
 
-
-           
-    
-       
-
             Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
 
             var rotM = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rvec, rotM);
+            renderControl.HeadMesh.RotationMatrix = Matrix4.Identity;
+            renderControl.HeadMesh.RotationMatrix = new Matrix4(
+                (float)-rotM[0, 0], (float)rotM[1, 0], (float)rotM[2, 0], 0.0f,
+                (float)rotM[0, 1], (float)-rotM[1, 1], (float)rotM[2, 1], 0.0f,
+                (float)rotM[0, 2], (float)rotM[1, 2], (float)-rotM[2, 2], 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f );
 
             #endregion
 

@@ -34,8 +34,6 @@ namespace HeadRotation.Render
         public int IndexBuffer, VertexBuffer = 0;
         public List<uint> Indices = new List<uint>();
         public Vertex3d[] Vertices = null;
-
-        public Matrix4 RotationMatrix;
         #endregion
 
         #endregion
@@ -141,8 +139,6 @@ namespace HeadRotation.Render
 
         public void DrawSpheres()
         {
-            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out RotationMatrix);
-
             GL.Disable(EnableCap.Texture2D);
             GL.Color3(1.0f, 1.0f, 1.0f);
             GL.EnableClientState(ArrayCap.VertexArray);
@@ -175,11 +171,6 @@ namespace HeadRotation.Render
             GL.DisableClientState(ArrayCap.ColorArray);
         }
 
-        public void UpdateRotationMatrix()
-        {
-            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out RotationMatrix);
-        }
-
         public Vector3 GetWorldPoint(int pointIndex)
         {
             return GetWorldPoint(Points[pointIndex]);
@@ -188,12 +179,11 @@ namespace HeadRotation.Render
         public Vector3 GetWorldPoint(Vector3 point)
         {
             var point4 = new Vector4(point);
-            return Vector4.Transform(point4, RotationMatrix).Xyz;
+            return Vector4.Transform(point4, HeadMesh.RotationMatrix).Xyz;
         }
 
         public void DrawDots()
         {
-            UpdateRotationMatrix();
 
             const float scale = 0.7f;
             float textScale = scale * RenderCamera.Scale;

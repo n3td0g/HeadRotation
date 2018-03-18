@@ -12,6 +12,7 @@ namespace HeadRotation.Render
         public delegate void BeforePartDrawHandler(MeshPart part);
         public event BeforePartDrawHandler OnBeforePartDraw;
         public RectangleAABB AABB = new RectangleAABB();
+        public Matrix4 RotationMatrix = Matrix4.Identity;
 
         //Угол поворота головы
         public float HeadAngle
@@ -68,7 +69,7 @@ namespace HeadRotation.Render
             var angle = (float)Math.Asin(Math.Abs(noseTip.X - noseTop.X) / noseLength);
 
             HeadAngle = noseTip.X < noseTop.X ? angle : -angle;
-            ProgramCore.MainForm.RenderControl.camera.ResetCamera(true);//, HeadAngle);
+            Matrix4.CreateRotationY(HeadAngle, out RotationMatrix);
         }
 
         public void Draw(bool debug)

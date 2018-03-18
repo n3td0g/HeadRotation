@@ -57,7 +57,6 @@ namespace HeadRotation.Controls
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer)
         {
-            HeadPoints.UpdateRotationMatrix();
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(HeadPoints);
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
@@ -196,8 +195,7 @@ namespace HeadRotation.Controls
         private void DrawHead()
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
-            var worldMatrix = Matrix4.Identity;
-            Matrix4.CreateRotationY(HeadMesh.HeadAngle, out worldMatrix);
+            var worldMatrix = HeadMesh.RotationMatrix;            
             idleShader.UpdateUniform("u_World", worldMatrix);
             idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);

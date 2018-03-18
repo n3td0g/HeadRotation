@@ -50,7 +50,6 @@ namespace HeadRotation.Helpers
         };
 
         //new List<int> { 66, 67, 68, 69, 5, 6, 7, 8, 9, 10, 11 };
-        private Matrix4 RotationMatrix;
 
         public void ProcessPoints(ProjectedDots dots, HeadPoints points)
         { 
@@ -60,8 +59,6 @@ namespace HeadRotation.Helpers
             headIndices.Clear();
             for (int i = 0; i < dots.Points.Count; ++i)
                 headIndices.Add(i);
-
-            Matrix4.CreateRotationY(-headPoints.HeadMesh.HeadAngle, out RotationMatrix);
 
             rightPower = 1.0f - Math.Abs(headPoints.HeadMesh.HeadAngle) * 2.0f / (float)Math.PI;
             rightPower = Math.Min(1.0f, Math.Max(rightPower, 0.0f));
@@ -87,7 +84,7 @@ namespace HeadRotation.Helpers
                 Vector3 c = (a * rightPower) + (b * (1.0f - rightPower));
                 result.X = c.X;
                 result.Z = c.Z;
-                headPoints.Points[index] = Vector4.Transform(new Vector4(result), RotationMatrix).Xyz;
+                headPoints.Points[index] = Vector4.Transform(new Vector4(result), headPoints.HeadMesh.RotationMatrix).Xyz;
             }
         }
 
