@@ -30,15 +30,25 @@ namespace HeadRotation.Morphing
             var b2 = new Vector3(a.X, a.Y, b.Z);
             var b3 = new Vector3(b.X, a.Y, b.Z);
 
-            headPoints.Points.Add(b);
-            headPoints.Points.Add((b + b1) * 0.5f);
-            headPoints.Points.Add(b1);
-            headPoints.Points.Add((b1 + b2) * 0.5f);
-            headPoints.Points.Add(b2);
-            headPoints.Points.Add((b2 + b3) * 0.5f);
-            headPoints.Points.Add(b3);
-            headPoints.Points.Add((b3 + b) * 0.5f);
+            float centerX = (a.X + b.X) * 0.5f;
+            float centerZ = (a.Z + b.Z) * 0.5f;
 
+            var a1 = new Vector3(centerX, a.Y, centerZ);
+            var a2 = new Vector3(centerX, b.Y, centerZ);
+
+            headPoints.Points.Add(b); //70
+            headPoints.Points.Add((b + b1) * 0.5f); //71
+            headPoints.Points.Add(b1); //72
+            headPoints.Points.Add((b1 + b2) * 0.5f); //73
+            headPoints.Points.Add(b2); //74
+            headPoints.Points.Add((b2 + b3) * 0.5f); //75
+            headPoints.Points.Add(b3); //76
+            headPoints.Points.Add((b3 + b) * 0.5f); //77
+            
+            headPoints.Points.Add(a1); //78
+            headPoints.Points.Add(a2); //79
+
+            #region TrianglesFront
             // left oval
             TrianglesFront.Add(new MorphTriangle { A = 52, B = 3, C = 68 });
             TrianglesFront.Add(new MorphTriangle { A = 52, B = 66, C = 68 });
@@ -193,6 +203,8 @@ namespace HeadRotation.Morphing
             TrianglesFront.Add(new MorphTriangle { A = 62, B = 54, C = 57 });
             TrianglesFront.Add(new MorphTriangle { A = 65, B = 64, C = 59 });
             TrianglesFront.Add(new MorphTriangle { A = 65, B = 62, C = 61 });
+
+            #endregion
 
             InitializeMorphin();
         }

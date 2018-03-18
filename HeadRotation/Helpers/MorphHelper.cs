@@ -64,14 +64,15 @@ namespace HeadRotation.Helpers
             Matrix4.Invert(ref headPoints.HeadMesh.RotationMatrix, out RotationMatrix);
 
             rightPower = 1.0f - Math.Abs(headPoints.HeadMesh.HeadAngle) * 2.0f / (float)Math.PI;
-            rightPower = Math.Min(1.0f, Math.Max(rightPower, 0.0f));
+            //rightPower = Math.Min(1.0f, Math.Max(rightPower, 0.0f));
+            // (float)Math.Cos(headPoints.HeadMesh.HeadAngle);
 
             rightVector = headPoints.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f));
             forwardVector = headPoints.GetWorldPoint(new Vector3(0.0f, 0.0f, 1.0f));
 
             ProcessHeadPoints();
 
-            //MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
+            MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
         }
 
         private void ProcessHeadPoints()

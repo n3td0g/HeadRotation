@@ -59,7 +59,7 @@ namespace HeadRotation.Controls
         {
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(HeadPoints);
-            //     morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
+            //morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
             //     headMorphing.Morph();
         }
 
