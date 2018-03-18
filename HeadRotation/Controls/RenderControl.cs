@@ -52,15 +52,15 @@ namespace HeadRotation.Controls
         public void ImportPoints()
         {
             HeadPoints.Points.Clear();
-            HeadPoints.Points.AddRange(VectorEx.ImportVector());            
+            HeadPoints.Points.AddRange(VectorEx.ImportVector());
         }
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer)
         {
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(HeadPoints);
-            morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
-            headMorphing.Morph();
+            //     morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
+            //     headMorphing.Morph();
         }
 
         public void Initialize()
@@ -169,7 +169,7 @@ namespace HeadRotation.Controls
             if (drawAxis)
             {
                 DrawAxis();
-            }           
+            }
 
             if (drawDots)
             {
@@ -181,13 +181,13 @@ namespace HeadRotation.Controls
                 ProjectedPoints.Draw();
             }
 
-            if(drawTriangles)
+            if (drawTriangles)
             {
-                headMorphing.Draw();
+                headMorphing.Draw(useProfileTriangles);
                 EnableTransparent();
-                headMorphing.DrawTriangles();
+                headMorphing.DrawTriangles(useProfileTriangles);
                 DisableTransparent();
-            }            
+            }
 
             glControl.SwapBuffers();
         }
@@ -195,7 +195,7 @@ namespace HeadRotation.Controls
         private void DrawHead()
         {
             idleShader.UpdateUniform("u_LightDirection", Vector3.Normalize(camera.Position));
-            var worldMatrix = HeadMesh.RotationMatrix;            
+            var worldMatrix = HeadMesh.RotationMatrix;
             idleShader.UpdateUniform("u_World", worldMatrix);
             idleShader.UpdateUniform("u_WorldView", worldMatrix * camera.ViewMatrix);
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
@@ -279,7 +279,7 @@ namespace HeadRotation.Controls
 
         private void btnFront_MouseDown(object sender, MouseEventArgs e)
         {
-            btnFront.Image = Resources.btnUnscalePressed; 
+            btnFront.Image = Resources.btnUnscalePressed;
         }
 
         private void btnFront_MouseUp(object sender, MouseEventArgs e)
@@ -425,9 +425,10 @@ namespace HeadRotation.Controls
             camera.LeftRight(Math.PI / 2f);
         }
 
+        private bool useProfileTriangles = false;
         private void glControl_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.A)
+            if (e.KeyCode == Keys.A)
             {
                 drawAABB = !drawAABB;
             }
@@ -455,11 +456,15 @@ namespace HeadRotation.Controls
             {
                 drawAxis = !drawAxis;
             }
-            
+            if (e.KeyCode == Keys.P)
+            {
+                useProfileTriangles = !useProfileTriangles;
+            }
+
             if (e.KeyCode == Keys.Space)
             {
                 UseTexture = !UseTexture;
             }
-        }        
+        }
     }
 }

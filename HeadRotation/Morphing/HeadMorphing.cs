@@ -243,10 +243,12 @@ namespace HeadRotation.Morphing
             }
         }
 
-        public void DrawTriangles()
+        public void DrawTriangles(bool useProfilePoints)
         {
             GL.Begin(PrimitiveType.Triangles);
             GL.Color4(0.0f, 1.0f, 0.0f, 0.3f);
+
+            var points = useProfilePoints ? TrianglesRight : TrianglesFront;
             foreach (var triangle in TrianglesFront)
             {
                 var a = headPoints.GetWorldPoint(triangle.A);
@@ -259,11 +261,12 @@ namespace HeadRotation.Morphing
             GL.End();
         }
 
-        public void Draw()
+        public void Draw(bool useProfilePoints)
         {
             GL.Color3(1.0f, 0.0f, 0.0f);
             GL.Begin(PrimitiveType.Lines);
 
+            var points = useProfilePoints ? TrianglesRight : TrianglesFront;
             foreach (var triangle in TrianglesFront)
             {
                 var a = headPoints.GetWorldPoint(triangle.A);
