@@ -128,7 +128,18 @@ namespace HeadRotation.Render
             var eulerVector = MatrixToEuler(rotM);
 
             HeadAngle = (float)(Math.PI) - eulerVector.Y;
-            Matrix4.CreateRotationY((float)(Math.PI) - eulerVector.Y, out RotationMatrix);
+            if(HeadAngle > Math.PI)
+            {
+                HeadAngle -= (float)(Math.PI * 2.0);
+            }
+            else
+            {
+                if (HeadAngle < -Math.PI)
+                {
+                    HeadAngle += (float)(Math.PI * 2.0);
+                }
+            }
+            Matrix4.CreateRotationY(HeadAngle, out RotationMatrix);
         }
         private static Vector3 MatrixToEuler(Matrix<double> m)
         {

@@ -62,7 +62,7 @@ namespace HeadRotation.Helpers
                 headIndices.Add(i);
 
             Matrix4.Invert(ref headPoints.HeadMesh.RotationMatrix, out RotationMatrix);
-
+            
             rightPower = 1.0f - Math.Abs(headPoints.HeadMesh.HeadAngle) * 2.0f / (float)Math.PI;
             //rightPower = Math.Min(1.0f, Math.Max(rightPower, 0.0f));
             // (float)Math.Cos(headPoints.HeadMesh.HeadAngle);
