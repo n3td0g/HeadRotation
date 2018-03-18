@@ -174,19 +174,36 @@ namespace HeadRotation
             var tvec = new Matrix<double>(tv);
 
             Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
-
             var rotM = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rvec, rotM);
-            renderControl.HeadMesh.RotationMatrix = Matrix4.Identity;
-            renderControl.HeadMesh.RotationMatrix = new Matrix4(
-                (float)-rotM[0, 0], (float)rotM[1, 0], (float)rotM[2, 0], 0.0f,
-                (float)rotM[0, 1], (float)-rotM[1, 1], (float)rotM[2, 1], 0.0f,
-                (float)rotM[0, 2], (float)rotM[1, 2], (float)-rotM[2, 2], 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f );
+
+            var eulerVector = MatrixToEuler(rotM);
+
+            Matrix4.CreateRotationY((float)(Math.PI) - eulerVector.Y, out renderControl.HeadMesh.RotationMatrix);
 
             #endregion
 
             isSetted = true;
+        }
+
+        public static Vector3 MatrixToEuler(Matrix<double> m)
+        {
+            float x, y, z;
+            double cy = Math.Sqrt(m[2, 2] * m[2, 2] + m[2, 0] * m[2, 0]);
+            if (cy > 16 * float.Epsilon)
+            {
+                z = (float)Math.Atan2(m[0, 1], m[1, 1]);
+                x = (float)Math.Atan2(-m[2, 1], (float)cy);
+                y = (float)Math.Atan2(m[2, 0], m[2, 2]);
+            }
+            else
+            {
+                z = (float)Math.Atan2(-m[1, 0], m[0, 0]);
+                x = (float)Math.Atan2(-m[2, 1], (float)cy);
+                y = 0;
+            }
+
+            return new Vector3(x, y, z);
         }
     }
 }
