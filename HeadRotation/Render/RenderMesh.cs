@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
+using Emgu.CV.Structure;
+using Emgu.CV;
 
 namespace HeadRotation.Render
 {
@@ -63,6 +66,7 @@ namespace HeadRotation.Render
             AABB.B = b;
         }
 
+        [Obsolete]
         public void DetectFaceRotation(Vector2 noseTip, Vector2 noseTop, Vector2 noseBottom)
         {
             var noseLength = (noseTop.Y - noseTip.Y) * (float)Math.Tan(35.0 * Math.PI / 180.0);
@@ -71,6 +75,81 @@ namespace HeadRotation.Render
             HeadAngle = noseTip.X < noseTop.X ? angle : -angle;
             Matrix4.CreateRotationY(HeadAngle, out RotationMatrix);
         }
+        public void DetectFaceRotationEmgu()
+        {
+            var imagePoints = new List<PointF>();
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[66].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[66].Y));        // уши
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[67].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[67].Y));
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[0].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[0].Y));       // глаза центры
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[1].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[1].Y));
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[3].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[3].Y));       // левый-правый угол рта
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[4].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[4].Y));
+            imagePoints.Add(new PointF(ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[2].X, ProgramCore.MainForm.PhotoControl.Recognizer.RealPoints[2].Y));       // центр носа
+
+            var modelPoints = new List<MCvPoint3D32f>();
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[66].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[66].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[66].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[67].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[67].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[67].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[0].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[0].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[0].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[1].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[1].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[1].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[3].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[3].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[3].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[4].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[4].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[4].Z));
+            modelPoints.Add(new MCvPoint3D32f(ProgramCore.MainForm.RenderControl.HeadPoints.Points[2].X, ProgramCore.MainForm.RenderControl.HeadPoints.Points[2].Y, ProgramCore.MainForm.RenderControl.HeadPoints.Points[2].Z));
+
+            #region CamMatrix
+
+            var img = CvInvoke.Imread(ProgramCore.MainForm.PhotoControl.TemplateImage);
+            var max_d = Math.Max(img.Rows, img.Cols);
+            var camMatrix = new Emgu.CV.Matrix<double>(3, 3);
+            camMatrix[0, 0] = max_d;
+            camMatrix[0, 1] = 0;
+            camMatrix[0, 2] = img.Cols / 2.0;
+            camMatrix[1, 0] = 0;
+            camMatrix[1, 1] = max_d;
+            camMatrix[1, 2] = img.Rows / 2.0;
+            camMatrix[2, 0] = 0;
+            camMatrix[2, 1] = 0;
+            camMatrix[2, 2] = 1.0;
+
+            #endregion
+
+            var distArray = new double[] { 0, 0, 0, 0 };
+            var distMatrix = new Matrix<double>(distArray);      // не используемый коэф.
+
+            var rv = new double[] { 0, 0, 0 };
+            var rvec = new Matrix<double>(rv);
+
+            var tv = new double[] { 0, 0, 1 };
+            var tvec = new Matrix<double>(tv);
+
+            Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
+            var rotM = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(rvec, rotM);
+
+            var eulerVector = MatrixToEuler(rotM);
+
+            HeadAngle = (float)(Math.PI) - eulerVector.Y;
+            Matrix4.CreateRotationY((float)(Math.PI) - eulerVector.Y, out RotationMatrix);
+        }
+        private static Vector3 MatrixToEuler(Matrix<double> m)
+        {
+            float x, y, z;
+            double cy = Math.Sqrt(m[2, 2] * m[2, 2] + m[2, 0] * m[2, 0]);
+            if (cy > 16 * float.Epsilon)
+            {
+                z = (float)Math.Atan2(m[0, 1], m[1, 1]);
+                x = (float)Math.Atan2(-m[2, 1], (float)cy);
+                y = (float)Math.Atan2(m[2, 0], m[2, 2]);
+            }
+            else
+            {
+                z = (float)Math.Atan2(-m[1, 0], m[0, 0]);
+                x = (float)Math.Atan2(-m[2, 1], (float)cy);
+                y = 0;
+            }
+
+            return new Vector3(x, y, z);
+        }
+
 
         public void Draw(bool debug)
         {            
