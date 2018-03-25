@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using HeadRotation.Render;
+using OpenTK;
 using System.Collections.Generic;
 
 namespace HeadRotation.Morphing
@@ -40,7 +41,7 @@ namespace HeadRotation.Morphing
             return result;
         }
 
-        public void Initialize(ref Vector2 a, ref Vector2 b, ref Vector2 c, int triangleIndex, bool isFront)
+        public bool Initialize(ref Vector2 a, ref Vector2 b, ref Vector2 c, int triangleIndex, bool isFront)
         {
             var point = isFront ? Position.Xy : Position.Zy;
 
@@ -60,6 +61,20 @@ namespace HeadRotation.Morphing
                     triangle.W = uv.X / uv.Z;
                 }
                 triangle.TriangleIndex = triangleIndex;
+                return true;
+            }
+            return false;
+        }
+
+        public void InitializeTexCoords(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3, MeshPart meshPart)
+        {
+            foreach (var i in Indices)
+            {
+                var v = meshPart.Vertices[i];
+                v.AutodotsTexCoord.X = FrontTriangle.U * v1.X + FrontTriangle.V * v2.X + FrontTriangle.W * v3.X;
+                v.AutodotsTexCoord.Y = FrontTriangle.U * v1.Y + FrontTriangle.V * v2.Y + FrontTriangle.W * v3.Y;
+
+                meshPart.Vertices[i] = v;
             }
         }
     }

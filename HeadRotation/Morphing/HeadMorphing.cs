@@ -19,8 +19,9 @@ namespace HeadRotation.Morphing
         public List<MorphTriangle> TrianglesFront = new List<MorphTriangle>();
         public List<MorphTriangle> TrianglesRight = new List<MorphTriangle>();
         public HeadPoints headPoints;
+        public List<Vector2> AutodotsTexCords = new List<Vector2>();
 
-        public void Initialize(HeadPoints hPoints)
+        public void Initialize(LuxandFaceRecognition recognizer, HeadPoints hPoints)
         {
             headPoints = hPoints;
 
@@ -37,14 +38,34 @@ namespace HeadRotation.Morphing
             var a1 = new Vector3(centerX, a.Y, centerZ);
             var a2 = new Vector3(centerX, b.Y, centerZ);
 
+            foreach(var point in recognizer.FacialFeatures)
+            {
+                AutodotsTexCords.Add(point.Xy);
+            }
+
             headPoints.Points.Add(b); //70
+            AutodotsTexCords.Add(new Vector2(1f, 0f));
+
             headPoints.Points.Add((b + b1) * 0.5f); //71
+            AutodotsTexCords.Add(new Vector2(0.5f, 0f));
+
             headPoints.Points.Add(b1); //72
+            AutodotsTexCords.Add(new Vector2(0f, 0f));
+
             headPoints.Points.Add((b1 + b2) * 0.5f); //73
+            AutodotsTexCords.Add(new Vector2(0f, 0.5f));
+
             headPoints.Points.Add(b2); //74
+            AutodotsTexCords.Add(new Vector2(0f, 1f));
+
             headPoints.Points.Add((b2 + b3) * 0.5f); //75
+            AutodotsTexCords.Add(new Vector2(0.5f, 1f));
+
             headPoints.Points.Add(b3); //76
+            AutodotsTexCords.Add(new Vector2(1f, 1f));
+
             headPoints.Points.Add((b3 + b) * 0.5f); //77
+            AutodotsTexCords.Add(new Vector2(1f, 0.5f));
 
             headPoints.Points.Add(a1); //78
             headPoints.Points.Add(a2); //79
@@ -295,7 +316,14 @@ namespace HeadRotation.Morphing
                         var b = headPoints.Points[triangle.B].Xy;
                         var c = headPoints.Points[triangle.C].Xy;
 
-                        point.Initialize(ref a, ref b, ref c, index, true);
+                        if(point.Initialize(ref a, ref b, ref c, index, true))
+                        {
+                            var ta = AutodotsTexCords[triangle.A];
+                            var tb = AutodotsTexCords[triangle.B];
+                            var tc = AutodotsTexCords[triangle.C];
+
+                            point.InitializeTexCoords(ref ta, ref tb, ref tc, part);
+                        }
                     }
 
                     for (int index = 0; index < TrianglesRight.Count; ++index)

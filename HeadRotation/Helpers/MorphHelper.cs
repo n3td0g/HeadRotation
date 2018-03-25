@@ -72,7 +72,7 @@ namespace HeadRotation.Helpers
 
             ProcessHeadPoints();
 
-            MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
+            //MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
         }
 
         private void ProcessHeadPoints()

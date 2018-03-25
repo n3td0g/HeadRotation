@@ -10,6 +10,11 @@ using HeadRotation.Helpers;
 using HeadRotation.Morphing;
 using System.Collections;
 using System.Linq;
+using OpenTK.Graphics;
+using OpenTK.Platform;
+using HeadRotation.ObjFile;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
 
 namespace HeadRotation.Controls
 {
@@ -18,8 +23,10 @@ namespace HeadRotation.Controls
         #region var
 
         private bool UseTexture = true;
+        private int headTextureId = 0;
         public bool loaded = false;
         private ShaderController idleShader;
+        private ShaderController blendShader;
 
         public Camera camera = new Camera();
         public ProjectedDots ProjectedPoints = new ProjectedDots();
@@ -42,6 +49,12 @@ namespace HeadRotation.Controls
         bool drawAABB = false;
         bool drawAxis = false;
 
+        public List<int> smoothedTextures = new List<int>();
+
+        private readonly Panel renderPanel = new Panel();
+        private GraphicsContext graphicsContext;
+        private IWindowInfo windowInfo;
+
         #endregion
 
         public RenderControl()
@@ -60,12 +73,16 @@ namespace HeadRotation.Controls
             //headMorphing.Initialize(HeadPoints);
         }
 
-        public void PhotoLoaded(LuxandFaceRecognition recognizer)
+        public void PhotoLoaded(LuxandFaceRecognition recognizer, string photoPath)
         {
+            headTextureId = TextureHelper.GetTexture(photoPath);
+
             ProjectedPoints.Initialize(recognizer, HeadPoints);
-            headMorphing.Initialize(HeadPoints);
+            headMorphing.Initialize(recognizer, HeadPoints);
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
             headMorphing.Morph();
+
+            ApplySmoothedTextures();
         }
 
         public void Initialize()
@@ -87,6 +104,11 @@ namespace HeadRotation.Controls
             idleShader.SetUniformLocation("u_ViewProjection");
             idleShader.SetUniformLocation("u_LightDirection");
 
+            blendShader = new ShaderController("blending.vs", "blending.fs");
+            blendShader.SetUniformLocation("u_Texture");
+            blendShader.SetUniformLocation("u_BlendStartDepth");
+            blendShader.SetUniformLocation("u_BlendDepth");
+
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
             var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
@@ -94,6 +116,11 @@ namespace HeadRotation.Controls
             HeadPoints.HeadMesh = HeadMesh;
 
             SetupViewport(glControl);
+
+            windowInfo = Utilities.CreateWindowsWindowInfo(renderPanel.Handle);
+            graphicsContext = new GraphicsContext(GraphicsMode.Default, windowInfo);
+            renderPanel.Resize += (sender, args) => graphicsContext.Update(windowInfo);
+            glControl.Context.MakeCurrent(glControl.WindowInfo);
 
             RenderTimer.Start();
         }
@@ -242,6 +269,23 @@ namespace HeadRotation.Controls
             GL.DepthMask(true);
         }
 
+        private void DrawQuad(float r, float g, float b, float a)
+        {
+            GL.Color4(r, g, b, a);
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(0.0f, 1.0f);
+            GL.Vertex2(-1.0f, -1.0f);
+            GL.TexCoord2(1.0f, 1.0f);
+            GL.Vertex2(1.0f, -1.0f);
+            GL.TexCoord2(1.0f, 0.0f);
+            GL.Vertex2(1.0f, 1.0f);
+            GL.TexCoord2(0.0f, 0.0f);
+            GL.Vertex2(-1.0f, 1.0f);
+
+            GL.End();
+        }
+
         private void RenderTimer_Tick(object sender, EventArgs e)
         {
             Render();
@@ -263,6 +307,111 @@ namespace HeadRotation.Controls
             SetupViewport(c);
 
         }
+
+        #region RenderToTexture
+
+        public void ApplySmoothedTextures()
+        {
+            if(smoothedTextures.Count == 0)
+            {
+                foreach(var part in HeadMesh.Parts)
+                {
+                    if (!smoothedTextures.Contains(part.Texture) && part.Texture > 0)
+                        smoothedTextures.Add(part.Texture);
+                }
+            }
+
+            foreach (var smoothTex in smoothedTextures)
+            {
+                var bitmap = RenderToTexture(smoothTex);
+                TextureHelper.SetTexture(smoothTex, bitmap);
+                bitmap.Save(Guid.NewGuid().ToString() + ".png");
+            }
+        }
+
+        public Bitmap RenderToTexture(int textureId)
+        {
+            int textureWidth;
+            int textureHeight;
+            var texPath = TextureHelper.GetTexturePath(textureId);
+            using (var img = new Bitmap(texPath))
+            {
+                textureWidth = img.Width;
+                textureHeight = img.Height;
+            }
+            return RenderToTexture(textureId, textureWidth, textureHeight, blendShader);
+        }
+
+        public Bitmap RenderToTexture(int textureId, int textureWidth, int textureHeight, ShaderController shader, bool useAlpha = false)
+        {
+            graphicsContext.MakeCurrent(windowInfo);
+            renderPanel.Size = new Size(textureWidth, textureHeight);
+            GL.Viewport(0, 0, textureWidth, textureHeight);
+
+            GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.PushMatrix();
+            GL.LoadIdentity();
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.DepthMask(false);
+
+            DrawToTexture(shader, textureId);
+            //renderFunc(shader, oldTextureId, textureId);
+
+            GL.DepthMask(true);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.PopMatrix();
+
+            var result = GrabScreenshot(string.Empty, textureWidth, textureHeight, useAlpha);
+            glControl.Context.MakeCurrent(glControl.WindowInfo);
+            SetupViewport(glControl);
+            return result;
+        }
+
+        private bool DrawToTexture(ShaderController shader, int textureId)
+        {
+            //GL.BindTexture(TextureTarget.Texture2D, oldTextureId);
+            DrawQuad(1f, 1f, 1f, 1f);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.Blend);
+
+            shader.Begin();
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, headTextureId);
+            shader.UpdateUniform("u_Texture", 0);
+            //shader.UpdateUniform("u_BlendStartDepth", -0.5f);
+            //shader.UpdateUniform("u_BlendDepth", 4f);
+
+            HeadMesh.DrawToTexture(textureId);
+
+            shader.End();
+            GL.Disable(EnableCap.Blend);
+            return true;
+        }
+
+        public Bitmap GrabScreenshot(string filePath, int width, int height, bool useAlpha = false)
+        {
+            var bmp = new Bitmap(width, height);
+            var rect = new Rectangle(0, 0, width, height);
+            var data = bmp.LockBits(rect, ImageLockMode.WriteOnly, useAlpha ? System.Drawing.Imaging.PixelFormat.Format32bppArgb : System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            GL.ReadPixels(0, 0, width, height, useAlpha ? OpenTK.Graphics.OpenGL.PixelFormat.Bgra : OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+            GL.Finish();
+            bmp.UnlockBits(data);
+            bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+            if (!string.IsNullOrEmpty(filePath))
+                bmp.Save(filePath, ImageFormat.Jpeg);
+            return bmp;
+        }
+
+        #endregion
 
         #region ScaleTools
 

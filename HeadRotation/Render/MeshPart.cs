@@ -123,7 +123,7 @@ namespace HeadRotation.Render
             var normals = Normal.CalculateNormals(positions, Indices);
             for (var i = 0; i < Vertices.Length; i++)
             {
-                Vertices[i].Position = positions[i];
+                Vertices[i].OriginalPosition = Vertices[i].Position = positions[i];
                 Vertices[i].Normal = normals[i];
                 Vertices[i].TexCoord = texCoords[i];
                 Vertices[i].Color = Vector4.One;

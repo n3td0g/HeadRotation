@@ -1,10 +1,7 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HeadRotation.Render
 {
@@ -15,6 +12,8 @@ namespace HeadRotation.Render
         public Vector3 Normal;
         public Vector2 TexCoord;
         public Vector4 Color;
+        public Vector3 AutodotsTexCoord;
+        public Vector3 OriginalPosition;
         public static readonly int Stride = Marshal.SizeOf(default(Vertex3d));
     }
 

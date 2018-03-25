@@ -77,7 +77,7 @@ namespace HeadRotation.Controls
                 var noseTop = Recognizer.FacialFeatures[22].Xy;
                 var noseBottom = Recognizer.FacialFeatures[49].Xy;
                 ProgramCore.MainForm.RenderControl.HeadMesh.DetectFaceRotationEmgu();
-                ProgramCore.MainForm.RenderControl.PhotoLoaded(Recognizer);
+                ProgramCore.MainForm.RenderControl.PhotoLoaded(Recognizer, TemplateImage);
 
                 RenderTimer.Start();
 

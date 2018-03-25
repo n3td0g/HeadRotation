@@ -198,6 +198,35 @@ namespace HeadRotation.Render
             }
         }
 
+
+        public void DrawToTexture(int textureId)
+        {
+            GL.Color3(1.0f, 1.0f, 1.0f);
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.NormalArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+
+            foreach (var part in Parts)
+            {
+                if (part.Texture != textureId)
+                    continue;
+                GL.BindBuffer(BufferTarget.ArrayBuffer, part.VertexBuffer);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, part.IndexBuffer);
+
+                GL.VertexPointer(2, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes)); //Как позицию используем основные текстурные координаты
+                GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(0));//Как нормаль используем позиции (координата Z потребуется для вычисления смешивания 
+                GL.TexCoordPointer(3, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes));//Как текстурные координаты берем дополнительные текстурные координаты
+
+                GL.DrawRangeElements(PrimitiveType.Triangles, 0, part.CountIndices, part.CountIndices, DrawElementsType.UnsignedInt, new IntPtr(0));
+            }
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.DisableClientState(ArrayCap.VertexArray);
+            GL.DisableClientState(ArrayCap.NormalArray);
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
+        }
+
         public static RenderMesh LoadFromFile(string filePath)
         {
             var result = new RenderMesh();
