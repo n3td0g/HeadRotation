@@ -3,11 +3,13 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using HeadRotation.Controls;
 using HeadRotation.Helpers;
+using HeadRotation.Render;
 using Luxand;
 using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -42,7 +44,7 @@ namespace HeadRotation
             FSDK.InitializeLibrary();
             FSDK.SetFaceDetectionParameters(true, true, 384);
 
-
+            btnImportVector.Visible = btnExportVector.Visible = btnEditPoint.Visible = false;   // служебные кнопки. для показа старику не нужны.
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -52,18 +54,22 @@ namespace HeadRotation
 
         private void btnLoadPhoto_Click(object sender, EventArgs e)
         {
+            photoControl.Reset();
+            RenderControl.ReloadModel();
+            RenderControl.ImportPoints();
+
             photoControl.LoadPhoto();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             renderControl.Initialize();
-            btnImportVector_Click(null, EventArgs.Empty);
+            RenderControl.ImportPoints();
         }
 
         private void btnImportVector_Click(object sender, EventArgs e)
         {
-            ProgramCore.MainForm.RenderControl.ImportPoints();
+            RenderControl.ImportPoints();
         }
         private void btnExportVector_Click(object sender, EventArgs e)
         {

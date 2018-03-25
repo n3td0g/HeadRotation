@@ -72,7 +72,8 @@ namespace HeadRotation.Helpers
 
             ProcessHeadPoints();
 
-            MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
+            SpecialAlignment();
+         //   MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
         }
 
         private void ProcessHeadPoints()
@@ -92,6 +93,73 @@ namespace HeadRotation.Helpers
             }
         }
 
+        /// <summary> Выравнивание отдельных частей лица по центру (рот, нос) </summary>
+        private void SpecialAlignment()
+        {
+            var leftPoint = headPoints.Points[68];                                     // крайняя левая-правай боковые точки лица на моделе (вдоль носа)
+            var rightPoint = headPoints.Points[69];
+            var centerXPos = leftPoint.X + ((rightPoint.X - leftPoint.X) / 2f);        // центр лица по крайним боковым точкам..
+            var diff = centerXPos - headPoints.Points[2].X;                            // смещение основных частей лица относительно центра. на основе кончика носа
+
+            MovePoint(2, diff);                            // основной нос
+            MovePoint(43, diff);
+            MovePoint(45, diff);
+            MovePoint(47, diff);
+            MovePoint(49, diff);
+            MovePoint(48, diff);
+            MovePoint(46, diff);
+            MovePoint(44, diff);
+
+            leftPoint = headPoints.Points[66];                                     // крайняя левая-правай боковые точки лица на моделе (вдоль глаз)
+            rightPoint = headPoints.Points[67];
+            centerXPos = leftPoint.X + ((rightPoint.X - leftPoint.X) / 2f);        // центр лица по крайним боковым точкам..
+            diff = centerXPos - headPoints.Points[22].X;                            // смещение основных частей лица относительно центра. на основе переносицы
+
+            MovePoint(22, diff);                        // переносица
+
+            MovePoint(23, diff);                        // левый глаз
+            MovePoint(35, diff);
+            MovePoint(28, diff);
+            MovePoint(36, diff);
+            MovePoint(24, diff);
+            MovePoint(38, diff);
+            MovePoint(27, diff);
+            MovePoint(37, diff);
+            MovePoint(29, diff);
+            MovePoint(0, diff);
+            MovePoint(30, diff);
+
+            MovePoint(25, diff);                        // правый глаз
+            MovePoint(39, diff);
+            MovePoint(32, diff);
+            MovePoint(40, diff);
+            MovePoint(26, diff);
+            MovePoint(42, diff);
+            MovePoint(31, diff);
+            MovePoint(41, diff);
+            MovePoint(33, diff);
+            MovePoint(1, diff);
+            MovePoint(34, diff);
+
+            MovePoint(12, diff);                     // левая бровь
+            MovePoint(18, diff);
+            MovePoint(16, diff);
+            MovePoint(19, diff);
+            MovePoint(13, diff);
+
+            MovePoint(14, diff);                     // правая бровь
+            MovePoint(20, diff);
+            MovePoint(17, diff);
+            MovePoint(21, diff);
+            MovePoint(15, diff);
+
+        }
+        private void MovePoint(int index, float diff)
+        {
+            var point = headPoints.Points[index];
+            headPoints.Points[index] = new Vector3(point.X + diff, point.Y, point.Z);
+        }
+
         private void MirrorPoints(bool leftToRight)
         {
             for(int i = 0; i < mirroredPoints.Count; i += 2)
@@ -107,3 +175,4 @@ namespace HeadRotation.Helpers
         }
     }
 }
+

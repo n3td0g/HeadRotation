@@ -18,6 +18,10 @@ namespace HeadRotation.ObjFile
     {
         private static Dictionary<string, TextureInfo> textures = new Dictionary<string, TextureInfo>();
 
+        public static void ReloadTextures()
+        {
+            textures.Clear();
+        }
         public static int GetTexture(string textureName)
         {
             var textureId = 0;

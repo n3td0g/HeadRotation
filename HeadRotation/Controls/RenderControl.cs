@@ -10,6 +10,7 @@ using HeadRotation.Helpers;
 using HeadRotation.Morphing;
 using System.Collections;
 using System.Linq;
+using HeadRotation.ObjFile;
 
 namespace HeadRotation.Controls
 {
@@ -87,18 +88,14 @@ namespace HeadRotation.Controls
             idleShader.SetUniformLocation("u_ViewProjection");
             idleShader.SetUniformLocation("u_LightDirection");
 
-            var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
-            HeadMesh = RenderMesh.LoadFromFile(fullPath);
-            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
-            HeadPoints.HeadMesh = HeadMesh;
+            ReloadModel();
 
             SetupViewport(glControl);
 
             RenderTimer.Start();
         }
 
-        private void HeadMesh_OnBeforePartDraw(MeshPart part)
+        internal void HeadMesh_OnBeforePartDraw(MeshPart part)
         {
             var transparent = UseTexture ? part.TransparentTexture : 0.0f;
             if (transparent > 0.0f)
@@ -428,6 +425,36 @@ namespace HeadRotation.Controls
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             camera.LeftRight(Math.PI / 2f);
+        }
+
+        internal void ReloadModel()
+        {
+            if (HeadMesh != null)
+            {
+                HeadMesh.OnBeforePartDraw -= HeadMesh_OnBeforePartDraw;
+                foreach (var part in HeadMesh.Parts)
+                {
+                    if (part.TransparentTexture != 0)
+                    {
+                        GL.DeleteTexture(part.TransparentTexture);
+                    }
+                    if (part.Texture != 0)
+                    {
+                        GL.DeleteTexture(part.Texture);
+                    }
+                }
+
+                TextureHelper.ReloadTextures();
+            }
+
+
+            var dir = Path.GetDirectoryName(Application.ExecutablePath);
+            var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
+            HeadMesh = RenderMesh.LoadFromFile(fullPath);
+            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
+            HeadPoints.HeadMesh = HeadMesh;
+
+            camera.ResetCamera(true);
         }
 
         private bool useProfileTriangles = false;
