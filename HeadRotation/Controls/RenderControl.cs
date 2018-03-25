@@ -363,13 +363,13 @@ namespace HeadRotation.Controls
 
             foreach (var smoothTex in smoothedTextures)
             {
-                var bitmap = RenderToTexture(smoothTex, 1.0f);
+                var bitmap = RenderToTexture(smoothTex, HeadMesh.HeadAngle >= 0 ? 1.0f : -1.0f);
                 TextureHelper.SetTexture(smoothTex, bitmap);
             }
 
             foreach (var smoothTex in smoothedTextures)
             {
-                var bitmap = RenderToTexture(smoothTex, -1.0f);
+                var bitmap = RenderToTexture(smoothTex, HeadMesh.HeadAngle >= 0 ? -1.0f : 1.0f);
                 TextureHelper.SetTexture(smoothTex, bitmap);
             }
         }
