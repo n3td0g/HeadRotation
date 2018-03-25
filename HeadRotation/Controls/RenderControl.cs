@@ -91,7 +91,12 @@ namespace HeadRotation.Controls
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
 
-            HeadMesh.CalculateBlendingWeights(new List<BlendingInfo> { new BlendingInfo { Position = Vector2.Zero, Radius = 2.0f } });
+            var blendingInfo = new List<BlendingInfo>();
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-0.01f, -4.46f), Radius = 2.8f });           // центр лица
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-3.20f, 0.20f), Radius = 2.2f });            // левый глаз
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(3.20f, 0.20f), Radius = 2.2f });            // правый глаз
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(0f, -8.6f), Radius = 1.5f });                  // подбородок
+            HeadMesh.CalculateBlendingWeights(blendingInfo);
 
             camera.ResetCamera(true);
         }
@@ -139,14 +144,14 @@ namespace HeadRotation.Controls
             blendShader = new ShaderController("blending.vs", "blending.fs");
             blendShader.SetUniformLocation("u_Texture");
             blendShader.SetUniformLocation("u_BaseTexture");
-            blendShader.SetUniformLocation("u_BlendDirectionX");            
+            blendShader.SetUniformLocation("u_BlendDirectionX");
 
             blendShader.SetUniformLocation("u_BlendStartDepth");
             blendShader.SetUniformLocation("u_BlendDepth");
 
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
             var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
-            HeadMesh = RenderMesh.LoadFromFile(fullPath);            
+            HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
 
@@ -347,15 +352,15 @@ namespace HeadRotation.Controls
 
         public void ApplySmoothedTextures()
         {
-            if(smoothedTextures.Count == 0)
+            if (smoothedTextures.Count == 0)
             {
-                foreach(var part in HeadMesh.Parts)
+                foreach (var part in HeadMesh.Parts)
                 {
                     if (!smoothedTextures.Contains(part.Texture) && part.Texture > 0)
                         smoothedTextures.Add(part.Texture);
                 }
             }
-            
+
             foreach (var smoothTex in smoothedTextures)
             {
                 var bitmap = RenderToTexture(smoothTex, 1.0f);
