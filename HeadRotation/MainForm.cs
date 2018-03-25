@@ -42,7 +42,7 @@ namespace HeadRotation
             FSDK.InitializeLibrary();
             FSDK.SetFaceDetectionParameters(true, true, 384);
 
-
+            btnImportVector.Visible = btnExportVector.Visible = btnEditPoint.Visible = false;   // служебные кнопки. для показа старику не нужны.
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -52,6 +52,10 @@ namespace HeadRotation
 
         private void btnLoadPhoto_Click(object sender, EventArgs e)
         {
+            photoControl.Reset();
+            RenderControl.ReloadModel();
+            RenderControl.ImportPoints();
+
             photoControl.LoadPhoto();
         }
 

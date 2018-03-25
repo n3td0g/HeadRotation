@@ -32,7 +32,12 @@ namespace HeadRotation.Controls
         {
             InitializeComponent();
         }
-
+        internal void Reset()
+        {
+            pictureTemplate.Image = null;
+            templateImage = string.Empty;
+            Recognizer = null;
+        }
 
 
         private void RenderTimer_Tick(object sender, EventArgs e)

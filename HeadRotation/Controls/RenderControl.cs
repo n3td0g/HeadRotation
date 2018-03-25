@@ -63,6 +63,35 @@ namespace HeadRotation.Controls
 
             Toolkit.Init();
         }
+        internal void ReloadModel()
+        {
+            if (HeadMesh != null)
+            {
+                HeadMesh.OnBeforePartDraw -= HeadMesh_OnBeforePartDraw;
+                foreach (var part in HeadMesh.Parts)
+                {
+                    if (part.TransparentTexture != 0)
+                    {
+                        GL.DeleteTexture(part.TransparentTexture);
+                    }
+                    if (part.Texture != 0)
+                    {
+                        GL.DeleteTexture(part.Texture);
+                    }
+                }
+
+                TextureHelper.ReloadTextures();
+            }
+
+
+            var dir = Path.GetDirectoryName(Application.ExecutablePath);
+            var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
+            HeadMesh = RenderMesh.LoadFromFile(fullPath);
+            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
+            HeadPoints.HeadMesh = HeadMesh;
+
+            camera.ResetCamera(true);
+        }
 
         public void ImportPoints()
         {
