@@ -9,5 +9,5 @@ void main(void)
 	v_OrigitnalPosition = gl_Normal.xyz;
 
 	gl_FrontColor = gl_Color;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_TexCoord[0] = gl_Vertex;
 }

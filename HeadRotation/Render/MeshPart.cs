@@ -125,7 +125,7 @@ namespace HeadRotation.Render
             {
                 Vertices[i].OriginalPosition = Vertices[i].Position = positions[i];
                 Vertices[i].Normal = normals[i];
-                Vertices[i].TexCoord = texCoords[i];
+                Vertices[i].TexCoord = new Vector3(texCoords[i].X, texCoords[i].Y, 0.0f);//texCoords[i];//
                 Vertices[i].Color = Vector4.One;
             }
             
@@ -134,6 +134,29 @@ namespace HeadRotation.Render
             GL.GenBuffers(1, out IndexBuffer);
 
             return true;
+        }
+
+        public void CalculateBlendingWeights(List<BlendingInfo> blendingInfo)
+        {
+            for(int i = 0; i < Vertices.Length; ++i)
+            {
+                var v = Vertices[i];
+
+                var k = 0.0f;
+                foreach (var b in blendingInfo)
+                {
+                    var length = (b.Position - v.OriginalPosition.Xy).Length;
+                    if (length < b.Radius)
+                        k = 1.0f;
+                    else if (length < (b.Radius + b.HalfRadius))
+                        k = Math.Max(k, (1.0f - ((length - b.Radius) / b.HalfRadius)));
+                }
+
+                v.TexCoord.Z = k;
+
+                Vertices[i] = v;
+            }
+            UpdateVertexBuffer();      
         }
     }
 }

@@ -90,6 +90,8 @@ namespace HeadRotation.Controls
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
 
+            HeadMesh.CalculateBlendingWeights(new List<BlendingInfo> { new BlendingInfo { Position = Vector2.Zero, Radius = 2.0f } });
+
             camera.ResetCamera(true);
         }
 
@@ -143,7 +145,7 @@ namespace HeadRotation.Controls
 
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
             var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
-            HeadMesh = RenderMesh.LoadFromFile(fullPath);
+            HeadMesh = RenderMesh.LoadFromFile(fullPath);            
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
 

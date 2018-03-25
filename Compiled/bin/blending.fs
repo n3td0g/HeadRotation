@@ -11,7 +11,7 @@ void main(void)
 	float b = clamp(sign(v_OrigitnalPosition.z), 0.0, 1.0);
 	float s = 1.0 - clamp(u_BlendDirectionX * sign(v_OrigitnalPosition.x), 0.0, 1.0);
 	
-	b = b * s;
+	b = b * s * gl_TexCoord[0].z;
 
 	vec2 t;
 	if(u_BlendDirectionX > 0.0) {
