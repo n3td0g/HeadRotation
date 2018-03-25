@@ -78,9 +78,10 @@ namespace HeadRotation.Controls
                     {
                         GL.DeleteTexture(part.Texture);
                     }
+                    part.Destroy();
                 }
-
                 TextureHelper.ReloadTextures();
+                smoothedTextures.Clear();
             }
 
 

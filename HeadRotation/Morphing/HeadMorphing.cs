@@ -25,7 +25,8 @@ namespace HeadRotation.Morphing
 
         public void Initialize(LuxandFaceRecognition recognizer, HeadPoints hPoints)
         {
-            //MirroredPoints
+            MirroredPoints.Clear();
+            AutodotsTexCords.Clear();
 
             for (int i = 0; i < MorphHelper.mirroredPoints.Count; i += 2)
             {
