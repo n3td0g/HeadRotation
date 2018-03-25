@@ -153,6 +153,18 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="..\Compiled\bin\blending.fs">
+      <Link>Shaders\blending.fs</Link>
+    </None>
+    <None Include="..\Compiled\bin\blending.vs">
+      <Link>Shaders\blending.vs</Link>
+    </None>
+    <None Include="..\Compiled\bin\idle.fs">
+      <Link>Shaders\idle.fs</Link>
+    </None>
+    <None Include="..\Compiled\bin\idle.vs">
+      <Link>Shaders\idle.vs</Link>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

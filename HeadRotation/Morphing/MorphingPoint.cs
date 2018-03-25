@@ -66,13 +66,19 @@ namespace HeadRotation.Morphing
             return false;
         }
 
-        public void InitializeTexCoords(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3, MeshPart meshPart)
+        public void InitializeTexCoords(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3,
+            ref Vector2 vm1, ref Vector2 vm2, ref Vector2 vm3,
+            MeshPart meshPart)
         {
             foreach (var i in Indices)
             {
                 var v = meshPart.Vertices[i];
+
                 v.AutodotsTexCoord.X = FrontTriangle.U * v1.X + FrontTriangle.V * v2.X + FrontTriangle.W * v3.X;
                 v.AutodotsTexCoord.Y = FrontTriangle.U * v1.Y + FrontTriangle.V * v2.Y + FrontTriangle.W * v3.Y;
+
+                v.AutodotsTexCoord.Z = FrontTriangle.U * vm1.X + FrontTriangle.V * vm2.X + FrontTriangle.W * vm3.X;
+                v.AutodotsTexCoord.W = FrontTriangle.U * vm1.Y + FrontTriangle.V * vm2.Y + FrontTriangle.W * vm3.Y;
 
                 meshPart.Vertices[i] = v;
             }

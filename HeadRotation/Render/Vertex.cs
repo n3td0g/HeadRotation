@@ -12,7 +12,7 @@ namespace HeadRotation.Render
         public Vector3 Normal;
         public Vector2 TexCoord;
         public Vector4 Color;
-        public Vector3 AutodotsTexCoord;
+        public Vector4 AutodotsTexCoord;
         public Vector3 OriginalPosition;
         public static readonly int Stride = Marshal.SizeOf(default(Vertex3d));
     }
