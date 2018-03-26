@@ -55,7 +55,6 @@ namespace HeadRotation
             photoControl.Reset();
             RenderControl.ReloadModel();
             RenderControl.ImportPoints();
-           
 
             photoControl.LoadPhoto();
         }

@@ -78,10 +78,9 @@ namespace HeadRotation.Controls
                     {
                         GL.DeleteTexture(part.Texture);
                     }
-                    part.Destroy();
                 }
+
                 TextureHelper.ReloadTextures();
-                smoothedTextures.Clear();
             }
 
 
@@ -90,13 +89,6 @@ namespace HeadRotation.Controls
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
-
-            var blendingInfo = new List<BlendingInfo>();
-            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-0.01f, -4.46f), Radius = 2.8f });           // центр лица
-            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-3.20f, 0.20f), Radius = 2.2f });            // левый глаз
-            blendingInfo.Add(new BlendingInfo { Position = new Vector2(3.20f, 0.20f), Radius = 2.2f });            // правый глаз
-            blendingInfo.Add(new BlendingInfo { Position = new Vector2(0f, -8.6f), Radius = 1.5f });                  // подбородок
-            HeadMesh.CalculateBlendingWeights(blendingInfo);
 
             camera.ResetCamera(true);
         }
@@ -143,9 +135,6 @@ namespace HeadRotation.Controls
 
             blendShader = new ShaderController("blending.vs", "blending.fs");
             blendShader.SetUniformLocation("u_Texture");
-            blendShader.SetUniformLocation("u_BaseTexture");
-            blendShader.SetUniformLocation("u_BlendDirectionX");
-
             blendShader.SetUniformLocation("u_BlendStartDepth");
             blendShader.SetUniformLocation("u_BlendDepth");
 
@@ -352,9 +341,9 @@ namespace HeadRotation.Controls
 
         public void ApplySmoothedTextures()
         {
-            if (smoothedTextures.Count == 0)
+            if(smoothedTextures.Count == 0)
             {
-                foreach (var part in HeadMesh.Parts)
+                foreach(var part in HeadMesh.Parts)
                 {
                     if (!smoothedTextures.Contains(part.Texture) && part.Texture > 0)
                         smoothedTextures.Add(part.Texture);
@@ -363,18 +352,13 @@ namespace HeadRotation.Controls
 
             foreach (var smoothTex in smoothedTextures)
             {
-                var bitmap = RenderToTexture(smoothTex, HeadMesh.HeadAngle >= 0 ? 1.0f : -1.0f);
+                var bitmap = RenderToTexture(smoothTex);
                 TextureHelper.SetTexture(smoothTex, bitmap);
-            }
-
-            foreach (var smoothTex in smoothedTextures)
-            {
-                var bitmap = RenderToTexture(smoothTex, HeadMesh.HeadAngle >= 0 ? -1.0f : 1.0f);
-                TextureHelper.SetTexture(smoothTex, bitmap);
+                bitmap.Save(Guid.NewGuid().ToString() + ".png");
             }
         }
 
-        public Bitmap RenderToTexture(int textureId, float blendDirection)
+        public Bitmap RenderToTexture(int textureId)
         {
             int textureWidth;
             int textureHeight;
@@ -384,10 +368,10 @@ namespace HeadRotation.Controls
                 textureWidth = img.Width;
                 textureHeight = img.Height;
             }
-            return RenderToTexture(textureId, blendDirection, textureWidth, textureHeight, blendShader);
+            return RenderToTexture(textureId, textureWidth, textureHeight, blendShader);
         }
 
-        public Bitmap RenderToTexture(int textureId, float blendDirection, int textureWidth, int textureHeight, ShaderController shader, bool useAlpha = false)
+        public Bitmap RenderToTexture(int textureId, int textureWidth, int textureHeight, ShaderController shader, bool useAlpha = false)
         {
             graphicsContext.MakeCurrent(windowInfo);
             renderPanel.Size = new Size(textureWidth, textureHeight);
@@ -405,7 +389,7 @@ namespace HeadRotation.Controls
             GL.Enable(EnableCap.Texture2D);
             GL.DepthMask(false);
 
-            DrawToTexture(shader, textureId, blendDirection);
+            DrawToTexture(shader, textureId);
             //renderFunc(shader, oldTextureId, textureId);
 
             GL.DepthMask(true);
@@ -419,7 +403,7 @@ namespace HeadRotation.Controls
             return result;
         }
 
-        private bool DrawToTexture(ShaderController shader, int textureId, float blendDirection)
+        private bool DrawToTexture(ShaderController shader, int textureId)
         {
             //GL.BindTexture(TextureTarget.Texture2D, oldTextureId);
             DrawQuad(1f, 1f, 1f, 1f);
@@ -431,12 +415,6 @@ namespace HeadRotation.Controls
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, headTextureId);
             shader.UpdateUniform("u_Texture", 0);
-
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
-            shader.UpdateUniform("u_BaseTexture", 1);
-
-            shader.UpdateUniform("u_BlendDirectionX", blendDirection);
             //shader.UpdateUniform("u_BlendStartDepth", -0.5f);
             //shader.UpdateUniform("u_BlendDepth", 4f);
 

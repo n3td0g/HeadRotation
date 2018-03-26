@@ -179,8 +179,8 @@ namespace HeadRotation.Render
 
                 GL.VertexPointer(3, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(0));
                 GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(Vector3.SizeInBytes));
-                GL.TexCoordPointer(3, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
-                GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(3 * Vector3.SizeInBytes));
+                GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
+                GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes));
 
                 GL.DrawRangeElements(PrimitiveType.Triangles, 0, part.CountIndices, part.CountIndices, DrawElementsType.UnsignedInt, new IntPtr(0));
             }
@@ -204,8 +204,7 @@ namespace HeadRotation.Render
             GL.Color3(1.0f, 1.0f, 1.0f);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
-            //GL.EnableClientState(ArrayCap.TextureCoordArray);
-            GL.EnableClientState(ArrayCap.ColorArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             foreach (var part in Parts)
             {
@@ -214,10 +213,9 @@ namespace HeadRotation.Render
                 GL.BindBuffer(BufferTarget.ArrayBuffer, part.VertexBuffer);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, part.IndexBuffer);
 
-                GL.VertexPointer(3, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
-                GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(3 * Vector3.SizeInBytes + 2 * Vector4.SizeInBytes));
-                //GL.TexCoordPointer(3, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
-                GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(3 * Vector3.SizeInBytes + Vector4.SizeInBytes));
+                GL.VertexPointer(2, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes)); //Как позицию используем основные текстурные координаты
+                GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(0));//Как нормаль используем позиции (координата Z потребуется для вычисления смешивания 
+                GL.TexCoordPointer(3, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes));//Как текстурные координаты берем дополнительные текстурные координаты
 
                 GL.DrawRangeElements(PrimitiveType.Triangles, 0, part.CountIndices, part.CountIndices, DrawElementsType.UnsignedInt, new IntPtr(0));
             }
@@ -226,8 +224,7 @@ namespace HeadRotation.Render
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
-            //GL.DisableClientState(ArrayCap.TextureCoordArray);
-            GL.DisableClientState(ArrayCap.ColorArray);
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
         }
 
         public static RenderMesh LoadFromFile(string filePath)
@@ -327,14 +324,6 @@ namespace HeadRotation.Render
             }
 
             return result;
-        }
-
-        public void CalculateBlendingWeights(List<BlendingInfo> blendingInfo)
-        {
-            foreach (var part in Parts)
-            {
-                part.CalculateBlendingWeights(blendingInfo);
-            }
         }
 
         private static List<Vector3> GetScaledVertices(List<Vector3> vlist, float scale)

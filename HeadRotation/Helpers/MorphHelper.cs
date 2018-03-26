@@ -16,7 +16,7 @@ namespace HeadRotation.Helpers
         private Vector3 topVector = new Vector3(0.0f, 1.0f, 0.0f);
 
         static List<int> headIndices = new List<int>();
-        public static List<int> mirroredPoints = new List<int>
+        static List<int> mirroredPoints = new List<int>
         {
             12, 15,
             18, 21,
