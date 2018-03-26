@@ -110,6 +110,26 @@ namespace HeadRotation.Helpers
             MovePoint(46, diff);
             MovePoint(44, diff);
 
+            MovePoint(3, diff);         // рот
+            MovePoint(56, diff); 
+            MovePoint(60, diff);
+            MovePoint(54, diff);
+            MovePoint(61, diff);
+            MovePoint(57, diff);
+            MovePoint(62, diff);
+            MovePoint(4, diff);
+            MovePoint(65, diff);
+            MovePoint(59, diff);
+            MovePoint(64, diff);
+            MovePoint(55, diff);
+            MovePoint(63, diff);
+            MovePoint(58, diff);
+
+            MovePoint(52, diff);         // носо-рот.
+            MovePoint(50, diff);
+            MovePoint(53, diff);
+            MovePoint(51, diff);
+
             leftPoint = headPoints.Points[66];                                     // крайняя левая-правай боковые точки лица на моделе (вдоль глаз)
             rightPoint = headPoints.Points[67];
             centerXPos = leftPoint.X + ((rightPoint.X - leftPoint.X) / 2f);        // центр лица по крайним боковым точкам..
