@@ -136,6 +136,20 @@ namespace HeadRotation.Render
             return true;
         }
 
+        public void SetMorphPercent(float percent)
+        {
+            foreach(var point in MorphPoints)
+            {
+                foreach (var index in point.Indices)
+                {
+                    var vertex = Vertices[index];
+                    vertex.Position = point.Position * percent + vertex.OriginalPosition * (1.0f - percent);
+                    Vertices[index] = vertex;
+                }
+            }
+            UpdateVertexBuffer();
+        }
+
         public void CalculateBlendingWeights(List<BlendingInfo> blendingInfo)
         {
             for(int i = 0; i < Vertices.Length; ++i)

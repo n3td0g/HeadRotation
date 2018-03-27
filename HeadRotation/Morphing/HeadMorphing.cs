@@ -19,10 +19,21 @@ namespace HeadRotation.Morphing
         public List<MorphTriangle> TrianglesFront = new List<MorphTriangle>();
         public List<MorphTriangle> TrianglesRight = new List<MorphTriangle>();
         public HeadPoints headPoints;
+
         public List<Vector2> AutodotsTexCords = new List<Vector2>();
+        public Dictionary<int, int> MirroredPoints = new Dictionary<int, int>();
 
         public void Initialize(LuxandFaceRecognition recognizer, HeadPoints hPoints)
         {
+            MirroredPoints.Clear();
+            AutodotsTexCords.Clear();
+
+            for (int i = 0; i < MorphHelper.mirroredPoints.Count; i += 2)
+            {
+                MirroredPoints.Add(MorphHelper.mirroredPoints[i], MorphHelper.mirroredPoints[i + 1]);
+                MirroredPoints.Add(MorphHelper.mirroredPoints[i + 1], MorphHelper.mirroredPoints[i]);
+            }
+
             headPoints = hPoints;
 
             var headMesh = headPoints.HeadMesh;
@@ -69,6 +80,14 @@ namespace HeadRotation.Morphing
 
             headPoints.Points.Add(a1); //78
             headPoints.Points.Add(a2); //79
+
+            MirroredPoints.Add(72, 70);
+            MirroredPoints.Add(73, 77);
+            MirroredPoints.Add(74, 76);
+
+            MirroredPoints.Add(70, 72);
+            MirroredPoints.Add(77, 73);
+            MirroredPoints.Add(76, 74);
 
             headPoints.IsVisible.AddRange(Enumerable.Repeat(true, 10));
 
@@ -301,6 +320,14 @@ namespace HeadRotation.Morphing
             InitializeMorphin();
         }
 
+        private int GetMirroredIndex(int index)
+        {
+            int result = 0;
+            if (!MirroredPoints.TryGetValue(index, out result))
+                return index;
+            return result;
+        }
+
         private void InitializeMorphin()
         {
             var headMesh = headPoints.HeadMesh;
@@ -316,13 +343,18 @@ namespace HeadRotation.Morphing
                         var b = headPoints.Points[triangle.B].Xy;
                         var c = headPoints.Points[triangle.C].Xy;
 
-                        if(point.Initialize(ref a, ref b, ref c, index, true))
+                        if (point.Initialize(ref a, ref b, ref c, index, true))
                         {
                             var ta = AutodotsTexCords[triangle.A];
                             var tb = AutodotsTexCords[triangle.B];
                             var tc = AutodotsTexCords[triangle.C];
 
-                            point.InitializeTexCoords(ref ta, ref tb, ref tc, part);
+                            var ma = AutodotsTexCords[GetMirroredIndex(triangle.A)];
+                            var mb = AutodotsTexCords[GetMirroredIndex(triangle.B)];
+                            var mc = AutodotsTexCords[GetMirroredIndex(triangle.C)];
+
+                            point.InitializeTexCoords(ref ta, ref tb, ref tc,
+                                ref ma, ref mb, ref mc, part);
                         }
                     }
 

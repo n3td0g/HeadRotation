@@ -90,6 +90,13 @@ namespace HeadRotation.Controls
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
 
+            var blendingInfo = new List<BlendingInfo>();
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-0.01f, -4.46f), Radius = 3.2f });           // центр лица
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(-3.20f, 0.20f), Radius = 3.0f });            // левый глаз
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(3.20f, 0.20f), Radius = 3.0f });            // правый глаз
+            blendingInfo.Add(new BlendingInfo { Position = new Vector2(0f, -8.6f), Radius = 2.0f });                  // подбородок
+            HeadMesh.CalculateBlendingWeights(blendingInfo);
+
             camera.ResetCamera(true);
         }
 
@@ -135,8 +142,8 @@ namespace HeadRotation.Controls
 
             blendShader = new ShaderController("blending.vs", "blending.fs");
             blendShader.SetUniformLocation("u_Texture");
-            blendShader.SetUniformLocation("u_BlendStartDepth");
-            blendShader.SetUniformLocation("u_BlendDepth");
+            blendShader.SetUniformLocation("u_BaseTexture");
+            blendShader.SetUniformLocation("u_BlendDirectionX");
 
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
             var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
@@ -354,7 +361,6 @@ namespace HeadRotation.Controls
             {
                 var bitmap = RenderToTexture(smoothTex);
                 TextureHelper.SetTexture(smoothTex, bitmap);
-                bitmap.Save(Guid.NewGuid().ToString() + ".png");
             }
         }
 
@@ -390,7 +396,6 @@ namespace HeadRotation.Controls
             GL.DepthMask(false);
 
             DrawToTexture(shader, textureId);
-            //renderFunc(shader, oldTextureId, textureId);
 
             GL.DepthMask(true);
             GL.BindTexture(TextureTarget.Texture2D, 0);
@@ -415,8 +420,12 @@ namespace HeadRotation.Controls
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, headTextureId);
             shader.UpdateUniform("u_Texture", 0);
-            //shader.UpdateUniform("u_BlendStartDepth", -0.5f);
-            //shader.UpdateUniform("u_BlendDepth", 4f);
+
+            GL.ActiveTexture(TextureUnit.Texture1);
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
+            shader.UpdateUniform("u_BaseTexture", 1);
+
+            shader.UpdateUniform("u_BlendDirectionX", HeadMesh.HeadAngle >= 0 ? 1.0f : -1.0f);
 
             HeadMesh.DrawToTexture(textureId);
 
@@ -652,6 +661,14 @@ namespace HeadRotation.Controls
             {
                 if (HeadPoints.SelectedPoint != -1)
                     HeadPoints.IsVisible[HeadPoints.SelectedPoint] = false;
+            }
+            if(e.KeyCode == Keys.Z)
+            {
+                HeadMesh.SetMorphPercent(1.0f);
+            }
+            if (e.KeyCode == Keys.X)
+            {
+                HeadMesh.SetMorphPercent(0.0f);
             }
         }
     }

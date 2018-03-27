@@ -337,6 +337,14 @@ namespace HeadRotation.Render
             }
         }
 
+        public void SetMorphPercent(float percent)
+        {
+            foreach (var part in Parts)
+            {
+                part.SetMorphPercent(percent);
+            }
+        }
+
         private static List<Vector3> GetScaledVertices(List<Vector3> vlist, float scale)
         {
             var result = new List<Vector3>();
