@@ -135,5 +135,28 @@ namespace HeadRotation.Render
 
             return true;
         }
+
+        public void CalculateBlendingWeights(List<BlendingInfo> blendingInfo)
+        {
+            for(int i = 0; i < Vertices.Length; ++i)
+            {
+                var v = Vertices[i];
+
+                var k = 0.0f;
+                foreach (var b in blendingInfo)
+                {
+                    var length = (b.Position - v.OriginalPosition.Xy).Length;
+                    if (length < b.Radius)
+                        k = 1.0f;
+                    else if (length < (b.Radius + b.HalfRadius))
+                        k = Math.Max(k, (1.0f - ((length - b.Radius) / b.HalfRadius)));
+                }
+
+                v.BlendWeight = k;
+
+                Vertices[i] = v;
+            }
+            UpdateVertexBuffer();      
+        }
     }
 }
