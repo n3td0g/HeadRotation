@@ -403,6 +403,7 @@ namespace HeadRotation.Controls
             GL.PopMatrix();
 
             var result = GrabScreenshot(string.Empty, textureWidth, textureHeight, useAlpha);
+            result.Save(textureId.ToString() + ".png");
             glControl.Context.MakeCurrent(glControl.WindowInfo);
             SetupViewport(glControl);
             return result;
