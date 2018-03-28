@@ -73,7 +73,12 @@ namespace HeadRotation.Helpers
             ProcessHeadPoints();
 
             SpecialAlignment();         // выравниваем точки рта-глаз-носа по центру лица
-            MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);             // отразить форму лица зеркально
+          //  MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);             // отразить форму лица зеркально
+        }
+
+        public void MirrorPoints()
+        {
+            MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
         }
 
         private void ProcessHeadPoints()

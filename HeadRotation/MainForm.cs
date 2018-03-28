@@ -59,6 +59,7 @@ namespace HeadRotation
             photoControl.LoadPhoto();
             btnApplyTextures.Enabled = true;
             trackMorphing.Enabled = true;
+            btnMirror.Enabled = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -96,6 +97,12 @@ namespace HeadRotation
         {
             var value = trackMorphing.Value / 100f;
             renderControl.HeadMesh.SetMorphPercent(value);
+        }
+
+        private void btnMirror_Click(object sender, EventArgs e)
+        {
+            renderControl.morphHelper.MirrorPoints();
+            renderControl.headMorphing.Morph();
         }
     }
 }
