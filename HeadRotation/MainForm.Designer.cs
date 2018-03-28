@@ -37,13 +37,20 @@ namespace HeadRotation
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLoadPhoto = new System.Windows.Forms.Button();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.btnApplyTextures = new System.Windows.Forms.Button();
+            this.trackMorphing = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
             this.renderControl = new HeadRotation.Controls.RenderControl();
             this.photoControl = new HeadRotation.Controls.PhotoControl();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackMorphing)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.trackMorphing);
+            this.panel1.Controls.Add(this.btnApplyTextures);
             this.panel1.Controls.Add(this.btnEditPoint);
             this.panel1.Controls.Add(this.btnImportVector);
             this.panel1.Controls.Add(this.btnExportVector);
@@ -52,12 +59,12 @@ namespace HeadRotation
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1067, 47);
+            this.panel1.Size = new System.Drawing.Size(1067, 55);
             this.panel1.TabIndex = 0;
             // 
             // btnEditPoint
             // 
-            this.btnEditPoint.Location = new System.Drawing.Point(591, 12);
+            this.btnEditPoint.Location = new System.Drawing.Point(855, 12);
             this.btnEditPoint.Name = "btnEditPoint";
             this.btnEditPoint.Size = new System.Drawing.Size(75, 23);
             this.btnEditPoint.TabIndex = 4;
@@ -67,7 +74,7 @@ namespace HeadRotation
             // 
             // btnImportVector
             // 
-            this.btnImportVector.Location = new System.Drawing.Point(378, 12);
+            this.btnImportVector.Location = new System.Drawing.Point(642, 12);
             this.btnImportVector.Name = "btnImportVector";
             this.btnImportVector.Size = new System.Drawing.Size(75, 23);
             this.btnImportVector.TabIndex = 3;
@@ -77,7 +84,7 @@ namespace HeadRotation
             // 
             // btnExportVector
             // 
-            this.btnExportVector.Location = new System.Drawing.Point(473, 12);
+            this.btnExportVector.Location = new System.Drawing.Point(737, 12);
             this.btnExportVector.Name = "btnExportVector";
             this.btnExportVector.Size = new System.Drawing.Size(75, 23);
             this.btnExportVector.TabIndex = 2;
@@ -107,26 +114,60 @@ namespace HeadRotation
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(478, 47);
+            this.splitter1.Location = new System.Drawing.Point(478, 55);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 585);
+            this.splitter1.Size = new System.Drawing.Size(3, 577);
             this.splitter1.TabIndex = 2;
             this.splitter1.TabStop = false;
+            // 
+            // btnApplyTextures
+            // 
+            this.btnApplyTextures.Enabled = false;
+            this.btnApplyTextures.Location = new System.Drawing.Point(178, 12);
+            this.btnApplyTextures.Name = "btnApplyTextures";
+            this.btnApplyTextures.Size = new System.Drawing.Size(97, 23);
+            this.btnApplyTextures.TabIndex = 5;
+            this.btnApplyTextures.Text = "Apply textures";
+            this.btnApplyTextures.UseVisualStyleBackColor = true;
+            this.btnApplyTextures.Click += new System.EventHandler(this.btnApplyTextures_Click);
+            // 
+            // trackMorphing
+            // 
+            this.trackMorphing.Enabled = false;
+            this.trackMorphing.LargeChange = 10;
+            this.trackMorphing.Location = new System.Drawing.Point(441, 7);
+            this.trackMorphing.Maximum = 100;
+            this.trackMorphing.Name = "trackMorphing";
+            this.trackMorphing.Size = new System.Drawing.Size(104, 45);
+            this.trackMorphing.SmallChange = 10;
+            this.trackMorphing.TabIndex = 6;
+            this.trackMorphing.TickFrequency = 10;
+            this.trackMorphing.Value = 100;
+            this.trackMorphing.ValueChanged += new System.EventHandler(this.trackMorphing_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(380, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Morphing:";
             // 
             // renderControl
             // 
             this.renderControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.renderControl.Location = new System.Drawing.Point(481, 47);
+            this.renderControl.Location = new System.Drawing.Point(481, 55);
             this.renderControl.Name = "renderControl";
-            this.renderControl.Size = new System.Drawing.Size(586, 585);
+            this.renderControl.Size = new System.Drawing.Size(586, 577);
             this.renderControl.TabIndex = 3;
             // 
             // photoControl
             // 
             this.photoControl.Dock = System.Windows.Forms.DockStyle.Left;
-            this.photoControl.Location = new System.Drawing.Point(0, 47);
+            this.photoControl.Location = new System.Drawing.Point(0, 55);
             this.photoControl.Name = "photoControl";
-            this.photoControl.Size = new System.Drawing.Size(478, 585);
+            this.photoControl.Size = new System.Drawing.Size(478, 577);
             this.photoControl.TabIndex = 1;
             // 
             // MainForm
@@ -142,6 +183,8 @@ namespace HeadRotation
             this.Text = "Head rotation tests";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackMorphing)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -157,6 +200,9 @@ namespace HeadRotation
         private System.Windows.Forms.Button btnImportVector;
         private System.Windows.Forms.Button btnExportVector;
         private System.Windows.Forms.Button btnEditPoint;
+        private System.Windows.Forms.Button btnApplyTextures;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TrackBar trackMorphing;
     }
 }
 

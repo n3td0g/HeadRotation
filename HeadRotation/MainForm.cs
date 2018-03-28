@@ -57,6 +57,8 @@ namespace HeadRotation
             RenderControl.ImportPoints();
 
             photoControl.LoadPhoto();
+            btnApplyTextures.Enabled = true;
+            trackMorphing.Enabled = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -83,6 +85,17 @@ namespace HeadRotation
             }
             else
                 frmEditPoint.Show(this);
+        }
+
+        private void btnApplyTextures_Click(object sender, EventArgs e)
+        {
+            renderControl.ApplySmoothedTextures();
+        }
+
+        private void trackMorphing_ValueChanged(object sender, EventArgs e)
+        {
+            var value = trackMorphing.Value / 100f;
+            renderControl.HeadMesh.SetMorphPercent(value);
         }
     }
 }

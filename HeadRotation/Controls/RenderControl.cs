@@ -118,7 +118,7 @@ namespace HeadRotation.Controls
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
             headMorphing.Morph();
 
-            ApplySmoothedTextures();
+         //   ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
         }
 
         public void Initialize()
