@@ -63,6 +63,15 @@ namespace HeadRotation.Controls
 
             Toolkit.Init();
         }
+
+        private void LoadModel()
+        {
+            var dir = Path.GetDirectoryName(Application.ExecutablePath);
+            var fullPath = Path.Combine(dir, "Models", "FemWithoutSmile", "Fem.obj");
+            HeadMesh = RenderMesh.LoadFromFile(fullPath);
+            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
+            HeadPoints.HeadMesh = HeadMesh;
+        }
         internal void ReloadModel()
         {
             if (HeadMesh != null)
@@ -83,12 +92,7 @@ namespace HeadRotation.Controls
                 TextureHelper.ReloadTextures();
             }
 
-
-            var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
-            HeadMesh = RenderMesh.LoadFromFile(fullPath);
-            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
-            HeadPoints.HeadMesh = HeadMesh;
+            LoadModel();
 
             var blendingInfo = new List<BlendingInfo>();
             blendingInfo.Add(new BlendingInfo { Position = new Vector2(-0.01f, -4.46f), Radius = 3.2f });           // центр лица
@@ -145,11 +149,7 @@ namespace HeadRotation.Controls
             blendShader.SetUniformLocation("u_BaseTexture");
             blendShader.SetUniformLocation("u_BlendDirectionX");
 
-            var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Fem", "Fem.obj");
-            HeadMesh = RenderMesh.LoadFromFile(fullPath);
-            HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
-            HeadPoints.HeadMesh = HeadMesh;
+            LoadModel();
 
             SetupViewport(glControl);
 
