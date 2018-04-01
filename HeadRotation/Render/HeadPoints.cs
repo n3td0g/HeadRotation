@@ -306,7 +306,7 @@ namespace HeadRotation.Render
         {
             if (!PointIsValid(pointIndex))
                 return false;
-            var point = Points[pointIndex];
+            var point = GetWorldPoint(Points[pointIndex]);
             var screenPoint = RenderCamera.GetScreenPoint(point);
             float distance = (screenPoint - selectionPoint).Length;
             return distance < SelectionRadius;

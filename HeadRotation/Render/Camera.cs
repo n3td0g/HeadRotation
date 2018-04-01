@@ -133,6 +133,22 @@ namespace HeadRotation.Render
             }
         }
 
+        public void SetupCamera(Vector2 dataLeft, Vector2 dataRight)
+        {
+            float k = dataRight.Length / dataLeft.Length;
+
+            Scale *= k;
+
+           /* var l = dataRight.X * dataLeft.X;
+            Scale = (float)Math.Sqrt(l * l / (WindowWidth * WindowWidth + WindowHeight * WindowHeight));
+            var h = dataLeft.Y * Scale * WindowHeight;
+            var y0 = dataRight.Y - h;
+            var y1 = y0 + Scale * WindowHeight;
+            dy = (y0 + y1) * 0.5f;*/
+            UpdateViewport(WindowWidth, WindowHeight);
+            PutCamera();
+        }
+
         public void Wheel(float delta1)
         {
             Scale += delta1;
@@ -186,8 +202,8 @@ namespace HeadRotation.Render
         public Vector2 GetScreenPoint(Vector3 worldPoint)
         {            
             var viewProj = ViewMatrix * ProjectMatrix;
-            var worldPoint4 = new Vector4(worldPoint);
-            var p = Vector4.Transform(worldPoint4, viewProj);
+            var p = Vector3.TransformPosition(worldPoint, viewProj);
+            
             return new Vector2((p.X + 1.0f) * WindowWidth * 0.5f,
                     (1f - p.Y) * WindowHeight * 0.5f);
         }

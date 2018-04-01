@@ -27,6 +27,7 @@ namespace HeadRotation.Controls
         public bool loaded = false;
         private ShaderController idleShader;
         private ShaderController blendShader;
+        private LuxandFaceRecognition recognizer;
 
         public Camera camera = new Camera();
         public ProjectedDots ProjectedPoints = new ProjectedDots();
@@ -67,7 +68,7 @@ namespace HeadRotation.Controls
         private void LoadModel()
         {
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Models", "FemWithoutSmile", "Fem.obj");
+            var fullPath = Path.Combine(dir, "Models", "FemWithSmile", "Fem.obj");
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
@@ -115,6 +116,7 @@ namespace HeadRotation.Controls
 
         public void PhotoLoaded(LuxandFaceRecognition recognizer, string photoPath)
         {
+            this.recognizer = recognizer;
             headTextureId = TextureHelper.GetTexture(photoPath);
 
             ProjectedPoints.Initialize(recognizer, HeadPoints);
@@ -122,7 +124,9 @@ namespace HeadRotation.Controls
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
             headMorphing.Morph();
 
-         //   ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
+            //   ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
+
+            ResetCamera();
         }
 
         public void Initialize()
@@ -454,11 +458,39 @@ namespace HeadRotation.Controls
 
         #region ScaleTools
 
+        public void ResetCamera()
+        {
+            if (recognizer != null)
+            {
+                const int indexA = 66;
+                const int indexB = 11;
+
+                var pA = ProgramCore.MainForm.PhotoControl.facialFeaturesTransformed[indexA];
+                var pB = ProgramCore.MainForm.PhotoControl.facialFeaturesTransformed[indexB];
+                var pointA = new Vector2(pA.X, pA.Y);
+                var pointB = new Vector2(pB.X, pB.Y);
+
+                var pointA1 = camera.GetScreenPoint(HeadPoints.Points[indexA]);
+                var pointB1 = camera.GetScreenPoint(HeadPoints.Points[indexB]);
+
+                camera.SetupCamera(pointA - pointB, pointA1 - pointB1);
+
+                var worldPointB = camera.GetWorldPoint((int)pointB1.X, (int)pB.Y, 0.0f);
+                var worldPointB1 = HeadPoints.Points[indexB];
+                camera.dy = (worldPointB1.Y - worldPointB.Y);
+                camera.PutCamera();
+            }
+            else
+            {
+                camera.ResetCamera(true);
+            }
+        }
+
         private void btnUnscale_MouseUp(object sender, MouseEventArgs e)
         {
             btnUnscale.Image = Resources.btnUnscaleNormal;
+            ResetCamera();
 
-            camera.ResetCamera(true);//, HeadMesh.HeadAngle);
             ScaleMode = ScaleMode.None;
 
             checkArrow.Tag = checkZoom.Tag = "2";
