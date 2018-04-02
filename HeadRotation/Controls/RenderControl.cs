@@ -462,7 +462,7 @@ namespace HeadRotation.Controls
         {
             if (recognizer != null)
             {
-                const int indexA = 66;
+                const int indexA = 22;
                 const int indexB = 11;
 
                 var pA = ProgramCore.MainForm.PhotoControl.facialFeaturesTransformed[indexA];
