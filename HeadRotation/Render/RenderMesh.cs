@@ -121,6 +121,75 @@ namespace HeadRotation.Render
             var tv = new double[] { 0, 0, 1 };
             var tvec = new Matrix<double>(tv);
 
+            /*
+              public Vector3 GetFrontalFaceAngles (List<Vector2> points)
+        {
+            if (points.Count < 68)
+                throw new ArgumentException ("Invalid face landmark points", "points");
+
+            landmarkPoints [0].x = (points [38].x + points [41].x) / 2;
+            landmarkPoints [0].y = (points [38].y + points [41].y) / 2;
+            landmarkPoints [1].x = (points [43].x + points [46].x) / 2;
+            landmarkPoints [1].y = (points [43].y + points [46].y) / 2;
+            landmarkPoints [2].x = points [30].x;
+            landmarkPoints [2].y = points [30].y;
+            landmarkPoints [3].x = points [48].x;
+            landmarkPoints [3].y = points [48].y;
+            landmarkPoints [4].x = points [54].x;
+            landmarkPoints [4].y = points [54].y;
+            landmarkPoints [5].x = points [0].x;
+            landmarkPoints [5].y = points [0].y;
+            landmarkPoints [6].x = points [16].x;
+            landmarkPoints [6].y = points [16].y;
+
+            // Normalize points.
+            Point centerOffset = landmarkPoints [2] - new Point (imageWidth / 2, imageHeight / 2);
+            for (int i = 0; i < landmarkPoints.Length; i++) {
+                landmarkPoints [i] = landmarkPoints [i] - centerOffset;
+            }
+
+            imagePoints.fromArray (landmarkPoints);
+
+            Calib3d.solvePnP (objectPoints, imagePoints, camMatrix, distCoeffs, rvec, tvec);
+
+            double tvec_z = tvec.get (2, 0) [0];
+
+//            Debug.Log (rvec.dump());
+//            Debug.Log (tvec.dump());
+
+            if (!double.IsNaN (tvec_z)) {
+                Calib3d.Rodrigues (rvec, rotM);
+            
+//                Debug.Log (rotM.dump());
+
+                transformationM.SetRow (0, new Vector4 ((float)rotM.get (0, 0) [0], (float)rotM.get (0, 1) [0], (float)rotM.get (0, 2) [0], (float)tvec.get (0, 0) [0]));
+                transformationM.SetRow (1, new Vector4 ((float)rotM.get (1, 0) [0], (float)rotM.get (1, 1) [0], (float)rotM.get (1, 2) [0], (float)tvec.get (1, 0) [0]));
+                transformationM.SetRow (2, new Vector4 ((float)rotM.get (2, 0) [0], (float)rotM.get (2, 1) [0], (float)rotM.get (2, 2) [0], (float)tvec.get (2, 0) [0]));
+                transformationM.SetRow (3, new Vector4 (0, 0, 0, 1));
+            
+                transformationM = invertYM * transformationM * invertZM;
+            
+                Vector3 angles = ExtractRotationFromMatrix (ref transformationM).eulerAngles;
+
+//                Debug.Log ("angles " + angles.x + " " + angles.y + " " + angles.z);
+
+                float rotationX = (angles.x > 180) ? angles.x - 360 : angles.x;
+                float rotationY = (angles.y > 180) ? angles.y - 360 : angles.y;
+                float rotationZ = (tvec_z >= 0) ? (angles.z > 180) ? angles.z - 360 : angles.z : 180 - angles.z;
+
+                if(tvec_z < 0){
+                    rotationX = -rotationX;
+                    rotationY = -rotationY;
+                    rotationZ = -rotationZ;
+                }
+
+                return new Vector3(rotationX, rotationY, rotationZ);
+            } else {
+                return new Vector3(0, 0, 0);
+            }
+        }
+             */
+
             Emgu.CV.CvInvoke.SolvePnP(modelPoints.ToArray(), imagePoints.ToArray(), camMatrix, distMatrix, rvec, tvec, false, Emgu.CV.CvEnum.SolvePnpMethod.EPnP);      // решаем проблему PNP
             var rotM = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rvec, rotM);
