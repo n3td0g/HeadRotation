@@ -122,9 +122,9 @@ namespace HeadRotation.Controls
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(recognizer, HeadPoints);
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
-            headMorphing.Morph();
+           // headMorphing.Morph();
 
-            //   ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
+            //ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
 
             ResetCamera();
         }

@@ -118,6 +118,9 @@ namespace HeadRotation.Helpers
         private Vector2 RightMiddleFace1;
         private Vector2 RightMiddleFace2;
 
+        public float ImageWidth;
+        public float ImageHeight;
+
         public float GetMinX()
         {
             var minX = float.MaxValue;
@@ -277,6 +280,9 @@ namespace HeadRotation.Helpers
                 FacialFeatures.Add(new Vector3(point.x / (image.Width * 1f), point.y / (image.Height * 1f), pointDepths[index++]));
                 RealPoints.Add(new Vector2(point.x, point.y));
             }
+
+            ImageWidth = image.Width;
+            ImageHeight = image.Height;
 
             #endregion
 
