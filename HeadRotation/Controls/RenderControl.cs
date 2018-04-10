@@ -49,6 +49,7 @@ namespace HeadRotation.Controls
         bool drawTriangles = false;
         bool drawAABB = false;
         bool drawAxis = false;
+        bool drawRotation = false;
 
         public List<int> smoothedTextures = new List<int>();
 
@@ -238,6 +239,11 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
 
+            if(drawRotation)
+            {
+                DrawMeshRotation();
+            }            
+
             if (drawAxis)
             {
                 DrawAxis();
@@ -273,6 +279,36 @@ namespace HeadRotation.Controls
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
 
             HeadMesh.Draw(drawAABB);
+        }
+
+        private void DrawMeshRotation()
+        {
+            GL.PushMatrix();
+
+            GL.MatrixMode(MatrixMode.Modelview);
+            var WorldViweMatrix = HeadMesh.RotationMatrix * camera.ViewMatrix;
+            GL.LoadMatrix(ref WorldViweMatrix);
+
+            var Offset = HeadMesh.AABB.Center;
+            Offset.X = 0.0f;
+            Offset.Z = 0.0f;
+            GL.LineWidth(3.0f);
+            GL.DepthMask(false);
+            GL.Begin(PrimitiveType.Lines);
+            GL.Color3(Color.Red);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(10.0, 0.0, 0.0);
+            GL.Color3(Color.Blue);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, 10.0, 0.0);
+            GL.Color3(Color.Green);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.Vertex3(0.0, 0.0, 10.0);
+            GL.End();
+            
+            GL.DepthMask(true);
+
+            GL.PopMatrix();
         }
 
         private void DrawAxis()
@@ -676,6 +712,10 @@ namespace HeadRotation.Controls
             if (e.KeyCode == Keys.R)
             {
                 pictureBox1_MouseUp(null, null);
+            }
+            if (e.KeyCode == Keys.Q)
+            {
+                drawRotation = !drawRotation;
             }
             if (e.KeyCode == Keys.G)
             {

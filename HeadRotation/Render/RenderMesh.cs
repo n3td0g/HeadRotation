@@ -236,10 +236,17 @@ namespace HeadRotation.Render
                  float rotationY = (angles.Y > 180) ? angles.Y - 360 : angles.Y;
                  float rotationZ = (tvec_z >= 0) ? (angles.Z > 180) ? angles.Z - 360 : angles.Z : 180 - angles.Z;*/
 
+                quaternion.Y = -quaternion.Y;
+
                 RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
                 RotationMatrix = invertYM * RotationMatrix * invertZM;
-            }
 
+                MeshQuaternion = quaternion;
+            }
+            else
+            {
+                MeshQuaternion = Quaternion.Identity;
+            }
             //Old version
             /* var eulerVector = MatrixToEuler(rotM);
 
@@ -258,6 +265,7 @@ namespace HeadRotation.Render
             Matrix4.CreateRotationY(HeadAngle, out RotationMatrix);*/
         }
 
+        public Quaternion MeshQuaternion = Quaternion.Identity;
 
         private static float Rad2Deg = 180.0f / (float)Math.PI;
 
