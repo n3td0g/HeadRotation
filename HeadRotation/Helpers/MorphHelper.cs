@@ -13,9 +13,11 @@ namespace HeadRotation.Helpers
 
         private Vector3 forwardVector;
         private Vector3 rightVector;
-        private Vector3 topVector = new Vector3(0.0f, 1.0f, 0.0f);
+        private Vector3 upVector;
 
+        
         static List<int> headIndices = new List<int>();
+        #region Mirrored indices
         public static List<int> mirroredPoints = new List<int>
         {
             12, 15,
@@ -48,11 +50,113 @@ namespace HeadRotation.Helpers
             63, 65,
             58, 59
         };
+        #endregion
+
+        #region Lips indices
+        public static List<int> LipsIndiecs = new List<int>
+        {
+            3, 56, 54, 57, 60, 61, 62, 4,
+            63, 64, 65, 58, 55, 59
+        };
+
+        public static List<int> LipsCenterIndiecs = new List<int>
+        {
+            54, 61, 64, 55
+        };
+        #endregion
 
         //new List<int> { 66, 67, 68, 69, 5, 6, 7, 8, 9, 10, 11 };
         private Matrix4 RotationMatrix;
 
         public void ProcessPoints(ProjectedDots dots, HeadPoints points)
+        {
+            projectedDots = dots;
+            headPoints = points;
+
+            rightVector = headPoints.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f));
+            forwardVector = headPoints.GetWorldPoint(new Vector3(0.0f, 0.0f, 1.0f));
+            upVector = headPoints.GetWorldPoint(new Vector3(0.0f, 1.0f, 0.0f));
+
+            headIndices.Clear();
+            for (int i = 0; i < dots.Points.Count; ++i)
+                headIndices.Add(i);
+
+            Matrix4.Invert(ref headPoints.HeadMesh.RotationMatrix, out RotationMatrix);
+
+            ProcessHeadPoints();
+
+            FixLipsPoints();
+        }
+
+       /* public Vector3 Point0;
+        public Vector3 Point1;
+
+        public Vector3 Point2;
+        public Vector3 Point3;*/
+
+        private void ProcessHeadPoints()
+        {
+            foreach (int index in headIndices)
+            {
+                Vector2 targetPoint = projectedDots.Points[index];
+                Vector3 current = headPoints.GetWorldPoint(index);
+
+                var point0 = new Vector3(targetPoint.X, targetPoint.Y, -1000.0f);
+                var point1 = new Vector3(targetPoint.X, targetPoint.Y, 1000.0f);
+
+                point0 = Vector4.Transform(new Vector4(point0), RotationMatrix).Xyz;
+                point1 = Vector4.Transform(new Vector4(point1), RotationMatrix).Xyz;               
+
+                var p = point1 - point0;
+                var t = current - point0;
+                p.Normalize();
+                var dot = Vector3.Dot(t, p);
+
+                var point3 = point0 + p * dot;
+
+                /*if (index == headIndices[44])
+                {
+                    Point0 = headPoints.GetWorldPoint(point0);
+                    Point1 = headPoints.GetWorldPoint(point1);
+
+                    Point2 = current;
+                    Point3 = headPoints.GetWorldPoint(point3);
+                }*/
+
+                headPoints.Points[index] = point3;
+            }
+        }
+
+        private void FixLipsPoints()
+        {
+            float minX = 99999.0f;
+            float maxX = -99999.0f;
+
+            foreach(var index in LipsCenterIndiecs)
+            {
+                var headPoint = headPoints.Points[index];
+                minX = Math.Min(minX, headPoint.X);
+                maxX = Math.Max(maxX, headPoint.X);
+            }
+
+            var lipsCenter = (maxX + minX) * 0.5f;
+
+            const int topNose = 22;
+            const int bottomNose = 2;
+
+            var noseCenter = (headPoints.Points[topNose].X + headPoints.Points[bottomNose].X) * 0.5f;
+
+            foreach (var index in LipsIndiecs)
+            {
+                var headPoint = headPoints.Points[index];
+                headPoint.X += noseCenter - lipsCenter;
+                headPoints.Points[index] = headPoint;
+            }
+        }
+
+//=================================== OLD ===================================
+
+        public void ProcessPoints_old(ProjectedDots dots, HeadPoints points)
         { 
             projectedDots = dots;
             headPoints = points;
@@ -68,11 +172,11 @@ namespace HeadRotation.Helpers
             // (float)Math.Cos(headPoints.HeadMesh.HeadAngle);
 
             rightVector = headPoints.GetWorldPoint(new Vector3(1.0f, 0.0f, 0.0f));
-            forwardVector = headPoints.GetWorldPoint(new Vector3(0.0f, 0.0f, 1.0f));
+            forwardVector = headPoints.GetWorldPoint(new Vector3(0.0f, 0.0f, 1.0f));            
 
-            ProcessHeadPoints();
+            ProcessHeadPoints_old();
 
-            SpecialAlignment();         // выравниваем точки рта-глаз-носа по центру лица
+            //SpecialAlignment();         // выравниваем точки рта-глаз-носа по центру лица
           //  MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);             // отразить форму лица зеркально
         }
 
@@ -81,7 +185,7 @@ namespace HeadRotation.Helpers
             MirrorPoints(headPoints.HeadMesh.HeadAngle > 0.0f);
         }
 
-        private void ProcessHeadPoints()
+        private void ProcessHeadPoints_old()
         {
             foreach(int index in headIndices)
             {

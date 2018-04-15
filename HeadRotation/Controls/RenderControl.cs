@@ -123,9 +123,9 @@ namespace HeadRotation.Controls
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(recognizer, HeadPoints);
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
-           // headMorphing.Morph();
+            headMorphing.Morph();
 
-            //ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
+            ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
 
             ResetCamera();
         }
@@ -259,6 +259,8 @@ namespace HeadRotation.Controls
                 ProjectedPoints.Draw();
             }
 
+            //DrawShapeLine();
+
             if (drawTriangles)
             {
                 headMorphing.Draw(useProfileTriangles);
@@ -310,6 +312,24 @@ namespace HeadRotation.Controls
 
             GL.PopMatrix();
         }
+
+       /* private void DrawShapeLine()
+        {           
+            GL.LineWidth(2.0f);
+            GL.DepthMask(false);
+            GL.Begin(PrimitiveType.Lines);
+
+            GL.Color3(Color.Orange);
+            GL.Vertex3(morphHelper.Point0);
+            GL.Vertex3(morphHelper.Point1);
+
+            GL.Color3(Color.Olive);
+            GL.Vertex3(morphHelper.Point2);
+            GL.Vertex3(morphHelper.Point3);
+            GL.End();
+
+            GL.DepthMask(true);
+        }*/
 
         private void DrawAxis()
         {
@@ -401,6 +421,7 @@ namespace HeadRotation.Controls
             {
                 var bitmap = RenderToTexture(smoothTex);
                 TextureHelper.SetTexture(smoothTex, bitmap);
+                bitmap.Save("texture_" + smoothTex.ToString() + ".png");
             }
         }
 
@@ -443,7 +464,6 @@ namespace HeadRotation.Controls
             GL.PopMatrix();
 
             var result = GrabScreenshot(string.Empty, textureWidth, textureHeight, useAlpha);
-            result.Save(textureId.ToString() + ".png");
             glControl.Context.MakeCurrent(glControl.WindowInfo);
             SetupViewport(glControl);
             return result;
