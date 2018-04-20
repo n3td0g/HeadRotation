@@ -7,6 +7,8 @@ namespace HeadRotation
 {
     public static class ProgramCore
     {
+        /// <summary> Какую модель грузим по дефолту - с улыбкой или нет. Нужно для дебага, когда еще не загрузили фотку. </summary>
+        public static bool DefaultIsSmile = true;
         public static MainForm MainForm;
 
         static ProgramCore()

@@ -66,10 +66,10 @@ namespace HeadRotation.Controls
             Toolkit.Init();
         }
 
-        private void LoadModel()
+        private void LoadModel(bool isSmile)
         {
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Models", "FemWithSmile", "Fem.obj");
+            var fullPath = Path.Combine(dir, "Models", isSmile ? "FemWithSmile" : "FemWithoutSmile", "Fem.obj");
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;
@@ -94,7 +94,7 @@ namespace HeadRotation.Controls
                 TextureHelper.ReloadTextures();
             }
 
-            LoadModel();
+            LoadModel(recognizer.IsOpenSmile);
 
             var blendingInfo = new List<BlendingInfo>();
             blendingInfo.Add(new BlendingInfo { Position = new Vector2(-0.01f, -4.46f), Radius = 3.2f });           // центр лица
@@ -108,8 +108,9 @@ namespace HeadRotation.Controls
 
         public void ImportPoints()
         {
+            var isSmile = recognizer == null ? ProgramCore.DefaultIsSmile : recognizer.IsOpenSmile;
             HeadPoints.Points.Clear();
-            HeadPoints.Points.AddRange(VectorEx.ImportVector());
+            HeadPoints.Points.AddRange(VectorEx.ImportVector(isSmile));
             HeadPoints.IsVisible.AddRange(Enumerable.Repeat(true, HeadPoints.Points.Count));
 
             //headMorphing.Initialize(HeadPoints);
@@ -119,6 +120,10 @@ namespace HeadRotation.Controls
         {
             this.recognizer = recognizer;
             headTextureId = TextureHelper.GetTexture(photoPath);
+
+            ReloadModel();
+            HeadMesh.DetectFaceRotationEmgu();
+            ImportPoints();
 
             ProjectedPoints.Initialize(recognizer, HeadPoints);
             headMorphing.Initialize(recognizer, HeadPoints);
@@ -154,7 +159,7 @@ namespace HeadRotation.Controls
             blendShader.SetUniformLocation("u_BaseTexture");
             blendShader.SetUniformLocation("u_BlendDirectionX");
 
-            LoadModel();
+            LoadModel(ProgramCore.DefaultIsSmile);
 
             SetupViewport(glControl);
 
@@ -239,10 +244,10 @@ namespace HeadRotation.Controls
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
 
-            if(drawRotation)
+            if (drawRotation)
             {
                 DrawMeshRotation();
-            }            
+            }
 
             if (drawAxis)
             {
@@ -307,29 +312,29 @@ namespace HeadRotation.Controls
             GL.Vertex3(0.0, 0.0, 0.0);
             GL.Vertex3(0.0, 0.0, 10.0);
             GL.End();
-            
+
             GL.DepthMask(true);
 
             GL.PopMatrix();
         }
 
-       /* private void DrawShapeLine()
-        {           
-            GL.LineWidth(2.0f);
-            GL.DepthMask(false);
-            GL.Begin(PrimitiveType.Lines);
+        /* private void DrawShapeLine()
+         {           
+             GL.LineWidth(2.0f);
+             GL.DepthMask(false);
+             GL.Begin(PrimitiveType.Lines);
 
-            GL.Color3(Color.Orange);
-            GL.Vertex3(morphHelper.Point0);
-            GL.Vertex3(morphHelper.Point1);
+             GL.Color3(Color.Orange);
+             GL.Vertex3(morphHelper.Point0);
+             GL.Vertex3(morphHelper.Point1);
 
-            GL.Color3(Color.Olive);
-            GL.Vertex3(morphHelper.Point2);
-            GL.Vertex3(morphHelper.Point3);
-            GL.End();
+             GL.Color3(Color.Olive);
+             GL.Vertex3(morphHelper.Point2);
+             GL.Vertex3(morphHelper.Point3);
+             GL.End();
 
-            GL.DepthMask(true);
-        }*/
+             GL.DepthMask(true);
+         }*/
 
         private void DrawAxis()
         {
@@ -408,9 +413,9 @@ namespace HeadRotation.Controls
 
         public void ApplySmoothedTextures()
         {
-            if(smoothedTextures.Count == 0)
+            if (smoothedTextures.Count == 0)
             {
-                foreach(var part in HeadMesh.Parts)
+                foreach (var part in HeadMesh.Parts)
                 {
                     if (!smoothedTextures.Contains(part.Texture) && part.Texture > 0)
                         smoothedTextures.Add(part.Texture);
@@ -755,7 +760,7 @@ namespace HeadRotation.Controls
                 if (HeadPoints.SelectedPoint != -1)
                     HeadPoints.IsVisible[HeadPoints.SelectedPoint] = false;
             }
-            if(e.KeyCode == Keys.Z)
+            if (e.KeyCode == Keys.Z)
             {
                 HeadMesh.SetMorphPercent(1.0f);
             }

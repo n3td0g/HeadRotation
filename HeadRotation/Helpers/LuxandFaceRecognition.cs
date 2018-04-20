@@ -138,6 +138,9 @@ namespace HeadRotation.Helpers
             return maxX;
         }
 
+        /// <summary> Есть ли улыбка с открытым ртом на фото. </summary>
+        public bool IsOpenSmile { get; private set; }       
+
         public List<Vector3> FacialFeatures;
         /// <summary> Не отнормированные </summary>
         public List<Vector2> RealPoints;
@@ -250,6 +253,15 @@ namespace HeadRotation.Helpers
             }
 
             #endregion
+
+            var upperUpperLip = pointFeature[54];       // вехняя точка верхней губы
+            var lowerUpperLip = pointFeature[61];            // нижняя точка верхней губы
+            var lowerLip = pointFeature[64];            // верхняя точка нижней губы
+
+            var diff2 = Math.Abs(lowerUpperLip.y - upperUpperLip.y);
+            var diffX = Math.Abs(lowerLip.y - lowerUpperLip.y);
+
+            IsOpenSmile = diffX > diff2;            // экспериментальным путем выяснено, что улыбка на 90% открытая, если расстояние между верхней и нижней губой больше, чем толщина верхней губы
 
             #region Переводим в относительные координаты
 
