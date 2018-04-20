@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using Emgu.CV.Structure;
 using Emgu.CV;
+using System.Linq;
 
 namespace HeadRotation.Render
 {
@@ -449,8 +450,12 @@ namespace HeadRotation.Render
             var vertexBoneWeights = new List<float>();
             var indeces = new List<uint>();
 
+            var indexer = 0;
             foreach (var modelGroup in objModel.Groups) // one group - one mesh
             {
+                if (modelGroup.Key.Name == "Tear" || modelGroup.Key.Name == "Cornea" || modelGroup.Key.Name == "EyeReflection")     // очень плохие материалы. ИЗ-за них ломаются глазки.
+                    continue;
+
                 vertexPositions.Clear();
                 vertexNormals.Clear();
                 vertexTextureCoordinates.Clear();
@@ -471,6 +476,8 @@ namespace HeadRotation.Render
                     texCoords.Add(new Vector2(vertexTextureCoordinates[i * 2], 1.0f - vertexTextureCoordinates[i * 2 + 1]));
                 }
 
+
+
                 var meshPartInfo = new MeshPartInfo
                 {
                     VertexPositions = GetScaledVertices(positions, scale),
@@ -486,9 +493,9 @@ namespace HeadRotation.Render
                     TransparentTextureName = modelGroup.Key.TransparentTextureMap
                 };
 
-                result.Add(meshPartInfo);
+               result.Add(meshPartInfo);
             }
-
+            
             return result;
         }
 
