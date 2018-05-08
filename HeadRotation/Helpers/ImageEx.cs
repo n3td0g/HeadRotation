@@ -36,10 +36,10 @@ namespace HeadRotation.Helpers
         {
             var mRotate = new Matrix();
             mRotate.Translate(bmpSrc.Width / -2, bmpSrc.Height / -2, MatrixOrder.Append);
-            mRotate.RotateAt(theta, new Point(0, 0), MatrixOrder.Append);
+            mRotate.RotateAt(theta, new System.Drawing.Point(0, 0), MatrixOrder.Append);
             using (var gp = new GraphicsPath())
             {  // transform image points by rotation matrix
-                gp.AddPolygon(new Point[] { new Point(0, 0), new Point(bmpSrc.Width, 0), new Point(0, bmpSrc.Height) });
+                gp.AddPolygon(new System.Drawing.Point[] { new System.Drawing.Point(0, 0), new System.Drawing.Point(bmpSrc.Width, 0), new System.Drawing.Point(0, bmpSrc.Height) });
                 gp.Transform(mRotate);
                 var pts = gp.PathPoints;
 
@@ -67,7 +67,7 @@ namespace HeadRotation.Helpers
                 g.TranslateTransform(img.Width * 0.5f, img.Height * 0.5f); //set the rotation point as the center into the matrix
                 g.RotateTransform(angle); //rotate
                 g.TranslateTransform(-img.Width * 0.5f, -img.Height * 0.5f); //restore rotation point into the matrix
-                g.DrawImage(img, new Point(0, 0)); //draw the image on the new bitmap
+                g.DrawImage(img, new System.Drawing.Point(0, 0)); //draw the image on the new bitmap
             }
 
             return rotatedImage;

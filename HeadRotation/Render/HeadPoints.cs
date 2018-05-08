@@ -180,8 +180,7 @@ namespace HeadRotation.Render
 
         public Vector3 GetWorldPoint(Vector3 point)
         {
-            var point4 = new Vector4(point);
-            return Vector4.Transform(point4, HeadMesh.RotationMatrix).Xyz;
+            return HeadMesh.GetWorldPoint(point);
         }
 
         public void DrawDots()

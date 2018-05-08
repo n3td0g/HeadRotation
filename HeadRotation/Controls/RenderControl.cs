@@ -33,6 +33,7 @@ namespace HeadRotation.Controls
         public ProjectedDots ProjectedPoints = new ProjectedDots();
         public MorphHelper morphHelper = new MorphHelper();
         public HeadMorphing headMorphing = new HeadMorphing();
+        public AdditionalMorphing additionalMorphing = new AdditionalMorphing();
         public ScaleMode ScaleMode = ScaleMode.None;
         private int mX;
         private int mY;
@@ -43,13 +44,15 @@ namespace HeadRotation.Controls
 
         public const int HeadPointsCount = 70;
 
-        bool drawDots = false;
-        bool drawSpheres = false;
-        bool drawPoints = false;
-        bool drawTriangles = false;
-        bool drawAABB = false;
-        bool drawAxis = false;
-        bool drawRotation = false;
+        private bool drawDots = false;
+        private bool drawSpheres = false;
+        private bool drawPoints = false;
+        private bool drawTriangles = false;
+        private bool drawAABB = false;
+        private bool drawAxis = false;
+        private bool drawRotation = false;
+        private bool drawPointTriangles = false;
+        private bool drawConvex = false;
 
         public List<int> smoothedTextures = new List<int>();
 
@@ -133,6 +136,9 @@ namespace HeadRotation.Controls
             ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
 
             ResetCamera();
+
+            additionalMorphing.Initialize(HeadMesh, ProjectedPoints);
+            additionalMorphing.ProcessPoints(ProjectedPoints);
         }
 
         public void Initialize()
@@ -264,6 +270,17 @@ namespace HeadRotation.Controls
                 ProjectedPoints.Draw();
             }
 
+            if (drawPointTriangles)
+            {
+                DrawPointTriangles(MorphTriangleType.Left);
+            }
+
+            if(drawConvex)
+            {
+                DrawConvex();
+            }
+           
+
             //DrawShapeLine();
 
             if (drawTriangles)
@@ -286,6 +303,83 @@ namespace HeadRotation.Controls
             idleShader.UpdateUniform("u_ViewProjection", camera.ViewMatrix * camera.ProjectMatrix);
 
             HeadMesh.Draw(drawAABB);
+        }
+
+        public void DrawConvex()
+        {
+            GL.LineWidth(1.5f);
+            GL.DepthMask(false);
+            GL.Begin(PrimitiveType.Lines);           
+
+            GL.Color3(Color.Beige);
+            for(int i = 0; i<additionalMorphing.Indices.Count; i += 3)
+            {
+                int i0 = (int)additionalMorphing.Indices[i];
+                int i1 = (int)additionalMorphing.Indices[i + 1];
+                int i2 = (int)additionalMorphing.Indices[i + 2];
+
+                GL.Vertex2(additionalMorphing.Convex[i0]);
+                GL.Vertex2(additionalMorphing.Convex[i1]);
+
+                GL.Vertex2(additionalMorphing.Convex[i1]);
+                GL.Vertex2(additionalMorphing.Convex[i2]);
+
+                GL.Vertex2(additionalMorphing.Convex[i2]);
+                GL.Vertex2(additionalMorphing.Convex[i0]);
+            }
+
+            GL.Color3(Color.Orchid);
+            for (int i = 0; i < additionalMorphing.Convex.Count; ++i)
+            {
+                GL.Vertex2(additionalMorphing.Convex[i]);
+                GL.Vertex2(additionalMorphing.Convex[(i + 1) % additionalMorphing.Convex.Count]);
+            }
+
+            GL.End();
+
+            GL.PointSize(5.0f);
+            GL.Begin(PrimitiveType.Points);
+            GL.Color3(Color.Red);
+            GL.Vertex2(additionalMorphing.Convex[additionalMorphing.LastIndex]);
+            GL.Vertex2(additionalMorphing.Convex[additionalMorphing.FirstIndex]);
+            GL.End();
+
+            GL.DepthMask(true);
+        }
+
+        public void DrawPointTriangles(MorphTriangleType Type)
+        {
+            GL.LineWidth(1.5f);
+            GL.DepthMask(false);
+            GL.Begin(PrimitiveType.Lines);
+            GL.Color3(Color.Red);
+            foreach (var part in HeadMesh.Parts)
+            {
+                for(int i = 0; i < part.PointIndices.Count; i += 3)
+                {
+                    var p0 = part.MorphPoints[part.PointIndices[i]];
+                    var p1 = part.MorphPoints[part.PointIndices[i + 1]];
+                    var p2 = part.MorphPoints[part.PointIndices[i + 2]];
+
+                    if (p0.TriangleType != Type || p0.Position.Z < 0.0f)
+                        continue;
+
+                    if (p1.TriangleType != Type || p1.Position.Z < 0.0f)
+                        continue;
+
+                    if (p2.TriangleType != Type || p2.Position.Z < 0.0f)
+                        continue;
+
+                    GL.Vertex3(p0.WorldPosition);
+                    GL.Vertex3(p1.WorldPosition);
+                    GL.Vertex3(p1.WorldPosition);
+                    GL.Vertex3(p2.WorldPosition);
+                    GL.Vertex3(p2.WorldPosition);
+                    GL.Vertex3(p0.WorldPosition);
+                }
+            }
+            GL.End();
+            GL.DepthMask(true);
         }
 
         private void DrawMeshRotation()
@@ -711,7 +805,8 @@ namespace HeadRotation.Controls
             camera.LeftRight(Math.PI / 2f);
         }
 
-        private bool useProfileTriangles = false;
+        private bool useProfileTriangles = false;       
+
         private void glControl_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.A)
@@ -750,7 +845,14 @@ namespace HeadRotation.Controls
             {
                 useProfileTriangles = !useProfileTriangles;
             }
-
+            if (e.KeyCode == Keys.Z)
+            {
+                drawPointTriangles = !drawPointTriangles;
+            }
+            if (e.KeyCode == Keys.C)
+            {
+                drawConvex = !drawConvex;
+            }
             if (e.KeyCode == Keys.Space)
             {
                 UseTexture = !UseTexture;

@@ -16,7 +16,18 @@ namespace HeadRotation.Render
         public delegate void BeforePartDrawHandler(MeshPart part);
         public event BeforePartDrawHandler OnBeforePartDraw;
         public RectangleAABB AABB = new RectangleAABB();
-        public Matrix4 RotationMatrix = Matrix4.Identity;
+        public Matrix4 RotationMatrix
+        {
+            get { return rotationMatrix; }
+            set
+            {
+                rotationMatrix = value;
+                Matrix4.Invert(ref rotationMatrix, out invRotationMatrix);
+            }
+        }
+
+        private Matrix4 rotationMatrix = Matrix4.Identity;
+        private Matrix4 invRotationMatrix = Matrix4.Identity;
 
         //Угол поворота головы
         public float HeadAngle
@@ -74,7 +85,7 @@ namespace HeadRotation.Render
             var angle = (float)Math.Asin(Math.Abs(noseTip.X - noseTop.X) / noseLength);
 
             HeadAngle = noseTip.X < noseTop.X ? angle : -angle;
-            Matrix4.CreateRotationY(HeadAngle, out RotationMatrix);
+            Matrix4.CreateRotationY(HeadAngle, out rotationMatrix);
         }
         public void DetectFaceRotationEmgu()
         {
@@ -159,12 +170,12 @@ namespace HeadRotation.Render
                 var invertYM = Matrix4.CreateScale(1.0f, -1.0f, 1.0f);
                 var invertZM = Matrix4.CreateScale(1.0f, 1.0f, -1.0f);
 
-                quaternion.Y = -quaternion.Y;                
+                quaternion.Y = -quaternion.Y;
 
                 RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
                 RotationMatrix = invertYM * RotationMatrix * invertZM;
 
-                MeshQuaternion = quaternion;
+                MeshQuaternion = quaternion;                
 
                 /*var angles = ToEulerRad(quaternion);
 
@@ -177,6 +188,18 @@ namespace HeadRotation.Render
                 MeshQuaternion = Quaternion.Identity;
             }
             HeadAngle = MeshQuaternion.Z;       
+        }
+
+        public Vector3 GetWorldPoint(Vector3 point)
+        {
+            var point4 = new Vector4(point);
+            return Vector4.Transform(point4, RotationMatrix).Xyz;
+        }
+
+        public Vector3 GetPositionFromWorld(Vector3 point)
+        {
+            var point4 = new Vector4(point);
+            return Vector4.Transform(point4, invRotationMatrix).Xyz;
         }
 
         public Quaternion MeshQuaternion = Quaternion.Identity;

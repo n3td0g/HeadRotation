@@ -6,15 +6,24 @@ using HeadRotation.Morphing;
 
 namespace HeadRotation.Render
 {    
+    public enum PartType
+    {
+        Neck,
+        Default,
+    }
+
     public class MeshPart
     {
         public List<MorphingPoint> MorphPoints = new List<MorphingPoint>();
         public List<uint> Indices = new List<uint>();
+        public List<int> PointIndices = new List<int>();
         public Vertex3d[] Vertices = null;
 
         public int Texture = 0;
         public int TransparentTexture = 0;
         public Vector4 Color = Vector4.One;
+
+        public PartType Type = PartType.Default;
 
         public int IndexBuffer, VertexBuffer = 0;
         public int CountIndices
@@ -68,12 +77,10 @@ namespace HeadRotation.Render
         {
             if (info.VertexPositions.Count == 0)
                 return false;
-           // Guid = Guid.NewGuid();
+            
             Color = info.Color;
             Texture = info.Texture;
             TransparentTexture = info.TransparentTexture;
-            //DefaultTextureName = TextureName = info.TextureName;
-           // TransparentTextureName = info.TransparentTextureName;
 
             Indices.Clear();
             var positions = new List<Vector3>();
@@ -96,6 +103,7 @@ namespace HeadRotation.Render
                     if (!positionsDict.ContainsKey(vertexInfo.Position))
                     {
                         positionsDict.Add(vertexInfo.Position, MorphPoints.Count);
+                        PointIndices.Add(MorphPoints.Count);
                         MorphPoints.Add(new MorphingPoint
                         {
                             Indices = new List<int> { index },
@@ -105,6 +113,7 @@ namespace HeadRotation.Render
                     else
                     {
                         var id = positionsDict[vertexInfo.Position];
+                        PointIndices.Add(id);
                         MorphPoints[id].Indices.Add(index);
                     }
 
@@ -114,7 +123,10 @@ namespace HeadRotation.Render
                     texCoords.Add(vertexInfo.TexCoords);
                 }
                 else
+                {
+                    PointIndices.Add(positionsDict[vertexInfo.Position]);
                     Indices.Add((uint)pointnsDict[vertexInfo]);
+                }                   
             }
 
             CountIndices = Indices.Count;

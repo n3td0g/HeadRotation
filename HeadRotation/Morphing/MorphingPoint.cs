@@ -21,9 +21,12 @@ namespace HeadRotation.Morphing
         }
 
         public Vector3 Position;
+        public Vector3 WorldPosition;
         public List<int> Indices = new List<int>();
         public TrinagleInfo FrontTriangle = new TrinagleInfo();
         public TrinagleInfo RightTriangle = new TrinagleInfo();
+        public TrinagleInfo AdditionalTriangle = new TrinagleInfo();
+        public MorphTriangleType TriangleType = MorphTriangleType.Default;
 
         public Vector3 MorphFront(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3)
         {
@@ -38,6 +41,14 @@ namespace HeadRotation.Morphing
             Vector3 result = Position;
             result.Z = RightTriangle.U * v1.X + RightTriangle.V * v2.X + RightTriangle.W * v3.X;
             result.Y = RightTriangle.U * v1.Y + RightTriangle.V * v2.Y + RightTriangle.W * v3.Y;
+            return result;
+        }
+
+        public Vector3 AdditionalMorph(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3)
+        {
+            Vector3 result = WorldPosition;
+            result.X = AdditionalTriangle.U * v1.X + AdditionalTriangle.V * v2.X + AdditionalTriangle.W * v3.X;
+            result.Y = AdditionalTriangle.U * v1.Y + AdditionalTriangle.V * v2.Y + AdditionalTriangle.W * v3.Y;
             return result;
         }
 
@@ -61,6 +72,29 @@ namespace HeadRotation.Morphing
                     triangle.W = uv.X / uv.Z;
                 }
                 triangle.TriangleIndex = triangleIndex;
+                return true;
+            }
+            return false;
+        }
+
+        public bool AdditionalInitialize(ref Vector2 a, ref Vector2 b, ref Vector2 c, int triangleIndex)
+        {
+            var point = WorldPosition.Xy;
+
+            if (PointInTriangle(ref a, ref b, ref c, point))
+            {
+                var uv = Vector3.Cross(
+                    new Vector3(c.X - a.X, b.X - a.X, a.X - point.X),
+                    new Vector3(c.Y - a.Y, b.Y - a.Y, a.Y - point.Y));
+                if (uv.Z == 0.0f)
+                    AdditionalTriangle.U = AdditionalTriangle.V = AdditionalTriangle.W = 0.0f;
+                else
+                {
+                    AdditionalTriangle.U = 1.0f - (uv.X + uv.Y) / uv.Z;
+                    AdditionalTriangle.V = uv.Y / uv.Z;
+                    AdditionalTriangle.W = uv.X / uv.Z;
+                }
+                AdditionalTriangle.TriangleIndex = triangleIndex;
                 return true;
             }
             return false;

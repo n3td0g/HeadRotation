@@ -81,7 +81,8 @@ namespace HeadRotation.Helpers
             for (int i = 0; i < dots.Points.Count; ++i)
                 headIndices.Add(i);
 
-            Matrix4.Invert(ref headPoints.HeadMesh.RotationMatrix, out RotationMatrix);
+            var rotationMatrix = headPoints.HeadMesh.RotationMatrix;
+            Matrix4.Invert(ref rotationMatrix, out RotationMatrix);
 
             ProcessHeadPoints();
 
@@ -165,7 +166,8 @@ namespace HeadRotation.Helpers
             for (int i = 0; i < dots.Points.Count; ++i)
                 headIndices.Add(i);
 
-            Matrix4.Invert(ref headPoints.HeadMesh.RotationMatrix, out RotationMatrix);
+            var rotaionMatrix = headPoints.HeadMesh.RotationMatrix;
+            Matrix4.Invert(ref rotaionMatrix, out RotationMatrix);
             
             rightPower = 1.0f - Math.Abs(headPoints.HeadMesh.HeadAngle) * 2.0f / (float)Math.PI;
             //rightPower = Math.Min(1.0f, Math.Max(rightPower, 0.0f));

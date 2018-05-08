@@ -80,6 +80,7 @@
       <DependentUpon>RenderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="EchoMessageType.cs" />
+    <Compile Include="Helpers\AdditionalMorphing.cs" />
     <Compile Include="Helpers\DrawingTools.cs" />
     <Compile Include="Helpers\FileDialogEx.cs" />
     <Compile Include="Helpers\FolderEx.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Helpers\ProjectedDots.cs" />
     <Compile Include="Helpers\RenderHelper.cs" />
     <Compile Include="Helpers\StringConverter.cs" />
+    <Compile Include="Helpers\Triangulation.cs" />
     <Compile Include="Helpers\VectorEx.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
