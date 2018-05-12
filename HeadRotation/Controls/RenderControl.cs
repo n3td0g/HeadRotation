@@ -137,7 +137,8 @@ namespace HeadRotation.Controls
 
             ResetCamera();
 
-            additionalMorphing.Initialize(HeadMesh, ProjectedPoints);
+            additionalMorphing.Type = HeadMesh.HeadAngle < 0.0f ? MorphTriangleType.Left : MorphTriangleType.Right;
+            additionalMorphing.Initialize(HeadMesh, ProjectedPoints, headMorphing);
             additionalMorphing.ProcessPoints(ProjectedPoints);
         }
 
@@ -272,7 +273,7 @@ namespace HeadRotation.Controls
 
             if (drawPointTriangles)
             {
-                DrawPointTriangles(MorphTriangleType.Left);
+                DrawPointTriangles(additionalMorphing.Type);
             }
 
             if(drawConvex)

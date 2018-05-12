@@ -4,8 +4,6 @@ using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HeadRotation.Helpers
 {
@@ -19,7 +17,7 @@ namespace HeadRotation.Helpers
         public int LastIndex = 0;
         public int FirstIndex = 0;
 
-        public void Initialize(RenderMesh headMesh, ProjectedDots dots)
+        public void Initialize(RenderMesh headMesh, ProjectedDots dots, HeadMorphing headMorphing)
         {
             HeadMesh = headMesh;
 
@@ -35,7 +33,7 @@ namespace HeadRotation.Helpers
                 }
             }
 
-            Convex = Triangulate.ComputeConvexHull(points);
+            Convex = Triangulate.ComputeConvexHull(points, Type == MorphTriangleType.Right);
 
             LastIndex = Convex.Count - 1;
             float prevY = Convex[LastIndex].Y;
@@ -49,10 +47,27 @@ namespace HeadRotation.Helpers
             }
 
             Convex.RemoveRange(0, FirstIndex);
-            Convex.Insert(0, dots.Points[52]);
-            Convex.Insert(0, dots.Points[3]);
-            Convex.Insert(0, dots.Points[58]);
-            FirstIndex = 3;
+            if(Type == MorphTriangleType.Left)
+            {
+                Convex.Insert(0, dots.Points[52]);
+                Convex.Insert(0, dots.Points[3]);
+                Convex.Insert(0, dots.Points[58]);
+                Convex.Insert(0, headMorphing.headPoints.Points[72].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[73].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[74].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[75].Xy);
+            }
+            else
+            {
+                Convex.Insert(0, dots.Points[53]);
+                Convex.Insert(0, dots.Points[4]);
+                Convex.Insert(0, dots.Points[59]);
+                Convex.Insert(0, headMorphing.headPoints.Points[70].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[77].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[76].Xy);
+                Convex.Insert(0, headMorphing.headPoints.Points[75].Xy);
+            }
+            FirstIndex = 7;
             LastIndex = Convex.Count - 1;
 
             var tempPoints = new List<Point>();
@@ -62,7 +77,7 @@ namespace HeadRotation.Helpers
                 tempPoints.Add(new Point((uint)index, position.X, position.Y));
             }
             Indices.Clear();
-            Indices.AddRange(Triangulate.Delaunay(tempPoints));           
+            Indices.AddRange(Triangulate.Delaunay(tempPoints));      
         }
 
         
@@ -73,7 +88,7 @@ namespace HeadRotation.Helpers
             {
                 foreach (var point in part.MorphPoints)
                 {
-                    if (point.TriangleType != Type || point.Position.Z < 0.0f)
+                   if (point.Position.Z < 0.0f) //point.TriangleType != Type || 
                         continue;
                     for (int i = 0; i < Indices.Count; i += 3)
                     {
@@ -87,7 +102,9 @@ namespace HeadRotation.Helpers
                 }
             }
 
-            int[] dotIndices = new int[]{ 66, 68, 5, 7, 9, 11 };
+            int[] dotIndices = Type == MorphTriangleType.Right ? 
+                new int[] { 67, 69, 6, 8, 10, 11 } :
+                new int[] { 66, 68, 5, 7, 9, 11 };
 
             float targetLength = 0.0f;
             for (int i = 1; i < dotIndices.Length; ++i)
@@ -131,6 +148,11 @@ namespace HeadRotation.Helpers
 
         private void MorphPoints()
         {
+            var start = Convex[FirstIndex];
+            var end = Convex[LastIndex];
+            var centerY = (start.Y + end.Y) * 0.5f;
+            var height = Math.Abs((start.Y - end.Y)) * 0.5f;
+
             foreach (var part in HeadMesh.Parts)
             {
                 foreach (var point in part.MorphPoints)
@@ -147,7 +169,12 @@ namespace HeadRotation.Helpers
                         var c = Convex[i2];
 
                         var worldPosition = point.AdditionalMorph(ref a, ref b, ref c);
-                        point.Position = HeadMesh.GetPositionFromWorld(worldPosition);
+                        var ky = (point.WorldPosition.Y - centerY) / height;
+                        ky = 1.0f - Math.Min(ky * ky, 1.0f);
+                        var kz = point.Position.Z / 2.0f;
+                        kz = kz * kz;
+                        var k = Math.Min(Math.Min(ky, kz), 1.0f);
+                        point.Position = k * HeadMesh.GetPositionFromWorld(worldPosition) + point.Position * (1.0f - k); // = point.Position;//
                     }
 
                     foreach (var index in point.Indices)

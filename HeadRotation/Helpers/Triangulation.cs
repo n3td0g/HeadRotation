@@ -531,7 +531,7 @@ namespace HeadRotation.Helpers
             return outArray;
         }
 
-        public static List<Vector2> ComputeConvexHull(List<MorphingPoint> points, bool sortInPlace = false)
+        public static List<Vector2> ComputeConvexHull(List<MorphingPoint> points, bool isRightSide = false)
         {
             List<int> indices = new List<int>();
             for (int i = 0; i < points.Count(); ++i)
@@ -544,7 +544,7 @@ namespace HeadRotation.Helpers
                     continue;
                 if (points[i].WorldPosition.Y == points[first].WorldPosition.Y)
                 {
-                    if (points[i].WorldPosition.X > points[first].WorldPosition.X)
+                    if ((points[i].WorldPosition.X < points[first].WorldPosition.X) == isRightSide)
                     {
                         continue;
                     }
@@ -554,7 +554,8 @@ namespace HeadRotation.Helpers
 
             current = first;
 
-            Vector2 vec = new Vector2(-1.0f, 0.0f), curr, prev = points[first].WorldPosition.Xy, next;
+            Vector2 vec = isRightSide ? new Vector2(1.0f, 0.0f) : new Vector2(-1.0f, 0.0f);
+            Vector2 curr, prev = points[first].WorldPosition.Xy, next;
             while (true)
             {
                 float current_dist = 0.0f;
@@ -567,7 +568,7 @@ namespace HeadRotation.Helpers
                     if (len < 0.0001f)
                         continue;
                     float c = curr.X * curr_vec.Y - curr.Y * curr_vec.X;
-                    if (c > 0.0f || (c == 0.0f && current_dist < len))
+                    if (c < 0.0f == isRightSide || (c == 0.0f && current_dist < len))
                     {
                         current_dist = len;
                         current = i;
