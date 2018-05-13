@@ -22,6 +22,7 @@ namespace HeadRotation.Morphing
 
         public Vector3 Position;
         public Vector3 WorldPosition;
+        public Vector3 ReversedWorldPosition;
         public List<int> Indices = new List<int>();
         public TrinagleInfo FrontTriangle = new TrinagleInfo();
         public TrinagleInfo RightTriangle = new TrinagleInfo();
@@ -44,9 +45,9 @@ namespace HeadRotation.Morphing
             return result;
         }
 
-        public Vector3 AdditionalMorph(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3)
+        public Vector3 AdditionalMorph(ref Vector2 v1, ref Vector2 v2, ref Vector2 v3, bool isReversed)
         {
-            Vector3 result = WorldPosition;
+            Vector3 result = isReversed ? ReversedWorldPosition : WorldPosition;
             result.X = AdditionalTriangle.U * v1.X + AdditionalTriangle.V * v2.X + AdditionalTriangle.W * v3.X;
             result.Y = AdditionalTriangle.U * v1.Y + AdditionalTriangle.V * v2.Y + AdditionalTriangle.W * v3.Y;
             return result;
@@ -77,9 +78,9 @@ namespace HeadRotation.Morphing
             return false;
         }
 
-        public bool AdditionalInitialize(ref Vector2 a, ref Vector2 b, ref Vector2 c, int triangleIndex)
+        public bool AdditionalInitialize(ref Vector2 a, ref Vector2 b, ref Vector2 c, int triangleIndex, bool isReversed)
         {
-            var point = WorldPosition.Xy;
+            var point = isReversed ? ReversedWorldPosition.Xy : WorldPosition.Xy;
 
             if (PointInTriangle(ref a, ref b, ref c, point))
             {

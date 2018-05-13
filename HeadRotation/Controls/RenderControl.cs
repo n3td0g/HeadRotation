@@ -140,6 +140,12 @@ namespace HeadRotation.Controls
             additionalMorphing.Type = HeadMesh.HeadAngle < 0.0f ? MorphTriangleType.Left : MorphTriangleType.Right;
             additionalMorphing.Initialize(HeadMesh, ProjectedPoints, headMorphing);
             additionalMorphing.ProcessPoints(ProjectedPoints);
+            
+            additionalMorphing.IsReversed = true;
+            additionalMorphing.Initialize(HeadMesh, ProjectedPoints, headMorphing);
+            additionalMorphing.ProcessPoints(ProjectedPoints);
+
+            //HeadMesh.RotationMatrix = HeadMesh.ReverseRotationMatrix;
         }
 
         public void Initialize()

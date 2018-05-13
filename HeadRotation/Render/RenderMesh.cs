@@ -29,6 +29,20 @@ namespace HeadRotation.Render
         private Matrix4 rotationMatrix = Matrix4.Identity;
         private Matrix4 invRotationMatrix = Matrix4.Identity;
 
+        //Reversed rotation
+        public Matrix4 ReverseRotationMatrix
+        {
+            get { return reverseRotationMatrix; }
+            set
+            {
+                reverseRotationMatrix = value;
+                Matrix4.Invert(ref reverseRotationMatrix, out invReverseRotationMatrix);
+            }
+        }
+
+        private Matrix4 reverseRotationMatrix = Matrix4.Identity;
+        private Matrix4 invReverseRotationMatrix = Matrix4.Identity;
+
         //Угол поворота головы
         public float HeadAngle
         {
@@ -167,27 +181,36 @@ namespace HeadRotation.Render
 
                 var quaternion = ExtractRotationFromMatrix(ref transformationM);
 
-                var invertYM = Matrix4.CreateScale(1.0f, -1.0f, 1.0f);
-                var invertZM = Matrix4.CreateScale(1.0f, 1.0f, -1.0f);
+                
 
                 quaternion.Y = -quaternion.Y;
 
-                RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
-                RotationMatrix = invertYM * RotationMatrix * invertZM;
+                RotationMatrix = CreateRotationMatrix(quaternion);
+               // RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
+               // RotationMatrix = invertYM * RotationMatrix * invertZM;
 
-                MeshQuaternion = quaternion;                
+                MeshQuaternion = quaternion;
 
-                /*var angles = ToEulerRad(quaternion);
-
-                float rotationX = (angles.X > 180) ? angles.X - 360 : angles.X;
-                float rotationY = (angles.Y > 180) ? angles.Y - 360 : angles.Y;
-                float rotationZ = (tvec_z >= 0) ? (angles.Z > 180) ? angles.Z - 360 : angles.Z : 180 - angles.Z;*/
+                RotationMatrix = CreateRotationMatrix(quaternion);
+                quaternion.Z = -quaternion.Z;
+                ReverseRotationMatrix = CreateRotationMatrix(quaternion);
             }
             else
             {
                 MeshQuaternion = Quaternion.Identity;
             }
             HeadAngle = MeshQuaternion.Z;       
+        }
+
+        private static Matrix4 CreateRotationMatrix(Quaternion quaternion)
+        {
+            var invertYM = Matrix4.CreateScale(1.0f, -1.0f, 1.0f);
+            var invertZM = Matrix4.CreateScale(1.0f, 1.0f, -1.0f);
+
+            var result = Matrix4.CreateFromQuaternion(quaternion);
+            result = invertYM * result * invertZM;
+
+            return result;
         }
 
         public Vector3 GetWorldPoint(Vector3 point)
@@ -200,6 +223,18 @@ namespace HeadRotation.Render
         {
             var point4 = new Vector4(point);
             return Vector4.Transform(point4, invRotationMatrix).Xyz;
+        }
+
+        public Vector3 GetReverseWorldPoint(Vector3 point)
+        {
+            var point4 = new Vector4(point);
+            return Vector4.Transform(point4, ReverseRotationMatrix).Xyz;
+        }
+
+        public Vector3 GetReversePositionFromWorld(Vector3 point)
+        {
+            var point4 = new Vector4(point);
+            return Vector4.Transform(point4, invReverseRotationMatrix).Xyz;
         }
 
         public Quaternion MeshQuaternion = Quaternion.Identity;

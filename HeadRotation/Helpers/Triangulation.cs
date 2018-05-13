@@ -531,7 +531,7 @@ namespace HeadRotation.Helpers
             return outArray;
         }
 
-        public static List<Vector2> ComputeConvexHull(List<MorphingPoint> points, bool isRightSide = false)
+        public static List<Vector2> ComputeConvexHull(List<Vector2> points, bool isRightSide = false)
         {
             List<int> indices = new List<int>();
             for (int i = 0; i < points.Count(); ++i)
@@ -540,11 +540,11 @@ namespace HeadRotation.Helpers
             int first = 0, current, count = 0;
             for (int i = 1; i < points.Count; ++i)
             {
-                if (points[i].WorldPosition.Y > points[first].WorldPosition.Y)
+                if (points[i].Y > points[first].Y)
                     continue;
-                if (points[i].WorldPosition.Y == points[first].WorldPosition.Y)
+                if (points[i].Y == points[first].Y)
                 {
-                    if ((points[i].WorldPosition.X < points[first].WorldPosition.X) == isRightSide)
+                    if ((points[i].X < points[first].X) == isRightSide)
                     {
                         continue;
                     }
@@ -555,14 +555,14 @@ namespace HeadRotation.Helpers
             current = first;
 
             Vector2 vec = isRightSide ? new Vector2(1.0f, 0.0f) : new Vector2(-1.0f, 0.0f);
-            Vector2 curr, prev = points[first].WorldPosition.Xy, next;
+            Vector2 curr, prev = points[first], next;
             while (true)
             {
                 float current_dist = 0.0f;
                 Vector2 curr_vec = vec;
                 for (int i = count; i < points.Count; ++i)
                 {
-                    next = points[indices[i]].WorldPosition.Xy;
+                    next = points[indices[i]];
                     curr = next - prev;
                     float len = curr.Length;
                     if (len < 0.0001f)
@@ -581,7 +581,7 @@ namespace HeadRotation.Helpers
                 indices[current] = temp;
 
                 vec = -curr_vec;
-                prev = points[indices[count]].WorldPosition.Xy;
+                prev = points[indices[count]];
                 count++;
 
                 if (points[indices[count - 1]] == points[first])
@@ -595,7 +595,7 @@ namespace HeadRotation.Helpers
 
             List<Vector2> result = new List<Vector2>();
             for (int i = 0; i < count; ++i)
-                result.Add(points[indices[i]].WorldPosition.Xy);
+                result.Add(points[indices[i]]);
 
             return result;
         }

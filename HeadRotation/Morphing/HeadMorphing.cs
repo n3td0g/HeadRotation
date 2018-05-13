@@ -415,6 +415,7 @@ namespace HeadRotation.Morphing
                     }
 
                     point.WorldPosition = headMesh.GetWorldPoint(point.Position);
+                    point.ReversedWorldPosition = headMesh.GetReverseWorldPoint(point.Position);
 
                     foreach (var index in point.Indices)
                     {
