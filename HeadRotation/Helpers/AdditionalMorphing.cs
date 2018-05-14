@@ -97,8 +97,7 @@ namespace HeadRotation.Helpers
 
         public void ProcessPoints(ProjectedDots dots)
         {
-            List<MorphingPoint> points = new List<MorphingPoint>();
-            foreach (var part in HeadMesh.Parts)
+            /*foreach (var part in HeadMesh.Parts)
             {
                 foreach (var point in part.MorphPoints)
                 {
@@ -115,54 +114,81 @@ namespace HeadRotation.Helpers
                         point.AdditionalInitialize(ref a, ref b, ref c, index, IsReversed);
                     }
                 }
-            }
+            }*/
 
             int[] dotIndices = Type == MorphTriangleType.Right ?
                 new int[] { 67, 69, 6, 8, 10, 11 } :
                 new int[] { 66, 68, 5, 7, 9, 11 };
 
-            List<Vector2> targetPoints = new List<Vector2>();
-            foreach (var index in dotIndices)
-                targetPoints.Add(GetPoint(dots.Points[index]));
+            var right = new Vector3(1.0f, 0.0f, 0.0f);
+            right = HeadMesh.GetWorldPoint(right);
 
-            float targetLength = 0.0f;
-            for (int i = 1; i < targetPoints.Count; ++i)
-                targetLength += (targetPoints[i] - targetPoints[i - 1]).Length;
+            var a = dots.Points[dotIndices.Last()];
+            var b = Convex[LastIndex];
 
-            float sourceLength = 0.0f;
-            for (int i = FirstIndex; i < LastIndex; ++i)
-                sourceLength += (Convex[i + 1] - Convex[i]).Length;
+            var sa = Vector3.Dot(new Vector3(a.X, a.Y, 0.0f), right);
+            var sb = Vector3.Dot(new Vector3(b.X, b.Y, 0.0f), right);
 
-            List<Vector2> NewConvex = new List<Vector2>();
-            NewConvex.AddRange(Convex);
-            NewConvex[FirstIndex] = targetPoints[0];
-            NewConvex[LastIndex] = targetPoints[targetPoints.Count - 1];
+            var ds = sa / sb;
 
-            float k = targetLength / sourceLength;
-            float sourceDistance = 0.0f;
-            float targetDistance = 0.0f;
-            int targetIndex = 0;
-            for (int i = FirstIndex + 1; i < LastIndex; ++i)
+            foreach (var part in HeadMesh.Parts)
             {
-                var point = Convex[i];
-                sourceDistance += (Convex[i - 1] - point).Length;
-                var td = sourceDistance * k;
-                var direction = targetPoints[targetIndex + 1] - targetPoints[targetIndex];
-                var distance = direction.Length;
-                while ((targetDistance + distance) < td)
+                foreach (var point in part.MorphPoints)
                 {
-                    targetDistance += distance;
-                    targetIndex++;
-                    direction = targetPoints[targetIndex + 1] - targetPoints[targetIndex];
-                    distance = direction.Length;
-                }
-                direction.Normalize();
-                NewConvex[i] = targetPoints[targetIndex] + direction * (td - targetDistance);
-            }
-            Convex = NewConvex;
+                    point.Position.X *= ds;
 
-            MorphPoints();
-        }
+                    foreach (var index in point.Indices)
+                    {
+                        part.Vertices[index].Position = point.Position;
+                    }
+                }
+
+                //part.UpdateBuffers();
+            }
+
+
+                    /*List<Vector2> targetPoints = new List<Vector2>();
+                    foreach (var index in dotIndices)
+                        targetPoints.Add(GetPoint(dots.Points[index]));
+
+                    float targetLength = 0.0f;
+                    for (int i = 1; i < targetPoints.Count; ++i)
+                        targetLength += (targetPoints[i] - targetPoints[i - 1]).Length;
+
+                    float sourceLength = 0.0f;
+                    for (int i = FirstIndex; i < LastIndex; ++i)
+                        sourceLength += (Convex[i + 1] - Convex[i]).Length;
+
+                    List<Vector2> NewConvex = new List<Vector2>();
+                    NewConvex.AddRange(Convex);
+                    NewConvex[FirstIndex] = targetPoints[0];
+                    NewConvex[LastIndex] = targetPoints[targetPoints.Count - 1];
+
+                    float k = targetLength / sourceLength;
+                    float sourceDistance = 0.0f;
+                    float targetDistance = 0.0f;
+                    int targetIndex = 0;
+                    for (int i = FirstIndex + 1; i < LastIndex; ++i)
+                    {
+                        var point = Convex[i];
+                        sourceDistance += (Convex[i - 1] - point).Length;
+                        var td = sourceDistance * k;
+                        var direction = targetPoints[targetIndex + 1] - targetPoints[targetIndex];
+                        var distance = direction.Length;
+                        while ((targetDistance + distance) < td)
+                        {
+                            targetDistance += distance;
+                            targetIndex++;
+                            direction = targetPoints[targetIndex + 1] - targetPoints[targetIndex];
+                            distance = direction.Length;
+                        }
+                        direction.Normalize();
+                        NewConvex[i] = targetPoints[targetIndex] + direction * (td - targetDistance);
+                    }
+                    Convex = NewConvex;
+
+                    MorphPoints();*/
+                }
 
 
         private void MorphPoints()

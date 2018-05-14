@@ -133,7 +133,7 @@ namespace HeadRotation.Controls
             morphHelper.ProcessPoints(ProjectedPoints, HeadPoints);
             headMorphing.Morph();
 
-            ApplySmoothedTextures();              // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
+            ApplySmoothedTextures(); // Для автоматического текстурирования раскомментить эту строку. А так - подвесил на кнопку.
 
             ResetCamera();
 
@@ -141,9 +141,9 @@ namespace HeadRotation.Controls
             additionalMorphing.Initialize(HeadMesh, ProjectedPoints, headMorphing);
             additionalMorphing.ProcessPoints(ProjectedPoints);
             
-            additionalMorphing.IsReversed = true;
+            /*additionalMorphing.IsReversed = true;
             additionalMorphing.Initialize(HeadMesh, ProjectedPoints, headMorphing);
-            additionalMorphing.ProcessPoints(ProjectedPoints);
+            additionalMorphing.ProcessPoints(ProjectedPoints);*/
 
             //HeadMesh.RotationMatrix = HeadMesh.ReverseRotationMatrix;
         }
