@@ -129,7 +129,7 @@ namespace HeadRotation.Helpers
             var sa = Vector3.Dot(new Vector3(a.X, a.Y, 0.0f), right);
             var sb = Vector3.Dot(new Vector3(b.X, b.Y, 0.0f), right);
 
-            var ds = sa / sb;
+            var ds = Math.Abs(sa / sb);
 
             foreach (var part in HeadMesh.Parts)
             {
@@ -143,7 +143,7 @@ namespace HeadRotation.Helpers
                     }
                 }
 
-                //part.UpdateBuffers();
+               // part.UpdateBuffers();
             }
 
 

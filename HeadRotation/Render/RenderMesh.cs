@@ -181,25 +181,29 @@ namespace HeadRotation.Render
 
                 var quaternion = ExtractRotationFromMatrix(ref transformationM);
 
-                
+                           
+                //quaternion.Y = -quaternion.Y;
 
-                quaternion.Y = -quaternion.Y;
-
-                RotationMatrix = CreateRotationMatrix(quaternion);
+               // RotationMatrix = CreateRotationMatrix(quaternion);
                // RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
                // RotationMatrix = invertYM * RotationMatrix * invertZM;
+
+                quaternion.X = -quaternion.X;
+                quaternion.Y = -quaternion.Y;
+                quaternion.Z = -quaternion.Z;
 
                 MeshQuaternion = quaternion;
 
                 RotationMatrix = CreateRotationMatrix(quaternion);
-                quaternion.Z = -quaternion.Z;
+
+                quaternion.Z = -MeshQuaternion.Z;
                 ReverseRotationMatrix = CreateRotationMatrix(quaternion);
             }
             else
             {
                 MeshQuaternion = Quaternion.Identity;
             }
-            HeadAngle = MeshQuaternion.Z;       
+            HeadAngle = -MeshQuaternion.Z;       
         }
 
         private static Matrix4 CreateRotationMatrix(Quaternion quaternion)
