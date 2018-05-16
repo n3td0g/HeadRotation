@@ -316,7 +316,15 @@ namespace HeadRotation.Controls
         {
             GL.LineWidth(1.5f);
             GL.DepthMask(false);
-            GL.Begin(PrimitiveType.Lines);           
+            GL.Begin(PrimitiveType.Lines);
+
+            GL.Color3(Color.Salmon);
+            GL.Vertex3(Vector3.Zero);
+            GL.Vertex3(additionalMorphing.A);
+
+            GL.Color3(Color.Azure);
+            GL.Vertex3(Vector3.Zero);
+            GL.Vertex3(additionalMorphing.B);
 
             GL.Color3(Color.Beige);
             for(int i = 0; i<additionalMorphing.Indices.Count; i += 3)

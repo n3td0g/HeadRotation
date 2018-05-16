@@ -95,6 +95,9 @@ namespace HeadRotation.Helpers
             return point;
         }
 
+        public Vector3 A;
+        public Vector3 B;
+
         public void ProcessPoints(ProjectedDots dots)
         {
             /*foreach (var part in HeadMesh.Parts)
@@ -123,11 +126,14 @@ namespace HeadRotation.Helpers
             var right = new Vector3(1.0f, 0.0f, 0.0f);
             right = HeadMesh.GetWorldPoint(right);
 
-            var a = dots.Points[dotIndices.Last()];
-            var b = Convex[LastIndex];
+            var a = dots.Points[dotIndices.First()];
+            var b = Convex[FirstIndex];
 
             var sa = Vector3.Dot(new Vector3(a.X, a.Y, 0.0f), right);
             var sb = Vector3.Dot(new Vector3(b.X, b.Y, 0.0f), right);
+
+            A = new Vector3(a.X, a.Y, 0.0f);
+            B = new Vector3(b.X, b.Y, 0.0f);
 
             var ds = Math.Abs(sa / sb);
 
@@ -143,7 +149,7 @@ namespace HeadRotation.Helpers
                     }
                 }
 
-               // part.UpdateBuffers();
+                part.UpdateBuffers();
             }
 
 
