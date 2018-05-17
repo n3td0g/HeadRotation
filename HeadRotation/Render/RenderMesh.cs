@@ -179,20 +179,25 @@ namespace HeadRotation.Render
                 transformationM.Row2 = new Vector4((float)rotM[2, 0], (float)rotM[2, 1], (float)rotM[2, 2], (float)tvec[2, 0]);
                 transformationM.Row3 = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
-                var quaternion = ExtractRotationFromMatrix(ref transformationM);
+                var quaternion = ExtractRotationFromMatrix(ref transformationM);                
 
-                           
                 //quaternion.Y = -quaternion.Y;
 
-               // RotationMatrix = CreateRotationMatrix(quaternion);
-               // RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
-               // RotationMatrix = invertYM * RotationMatrix * invertZM;
+                // RotationMatrix = CreateRotationMatrix(quaternion);
+                // RotationMatrix = Matrix4.CreateFromQuaternion(quaternion);
+                // RotationMatrix = invertYM * RotationMatrix * invertZM;
 
                 quaternion.X = -quaternion.X;
                 quaternion.Y = -quaternion.Y;
                 quaternion.Z = -quaternion.Z;
 
                 MeshQuaternion = quaternion;
+
+                var angles = ToEulerRad(MeshQuaternion);
+                if(angles.X > -5.0f && angles.X < 5.0f)
+                    angles.X = 0.0f;
+
+                MeshQuaternion = quaternion = ToQ(angles);
 
                 RotationMatrix = CreateRotationMatrix(quaternion);
 
@@ -245,6 +250,36 @@ namespace HeadRotation.Render
 
         private static float Rad2Deg = 180.0f / (float)Math.PI;
 
+        public static Quaternion ToQ(Vector3 v)
+        {
+            return ToQ(v.Y, v.X, v.Z);
+        }
+
+        public static Quaternion ToQ(float yaw, float pitch, float roll)
+        {
+            const float Deg2Rad = (float)Math.PI / 180.0f;
+
+            yaw *= Deg2Rad;
+            pitch *= Deg2Rad;
+            roll *= Deg2Rad;
+            float rollOver2 = roll * 0.5f;
+            float sinRollOver2 = (float)Math.Sin((double)rollOver2);
+            float cosRollOver2 = (float)Math.Cos((double)rollOver2);
+            float pitchOver2 = pitch * 0.5f;
+            float sinPitchOver2 = (float)Math.Sin((double)pitchOver2);
+            float cosPitchOver2 = (float)Math.Cos((double)pitchOver2);
+            float yawOver2 = yaw * 0.5f;
+            float sinYawOver2 = (float)Math.Sin((double)yawOver2);
+            float cosYawOver2 = (float)Math.Cos((double)yawOver2);
+            Quaternion result = new Quaternion();
+            result.W = cosYawOver2 * cosPitchOver2 * cosRollOver2 + sinYawOver2 * sinPitchOver2 * sinRollOver2;
+            result.X = cosYawOver2 * sinPitchOver2 * cosRollOver2 + sinYawOver2 * cosPitchOver2 * sinRollOver2;
+            result.Y = sinYawOver2 * cosPitchOver2 * cosRollOver2 - cosYawOver2 * sinPitchOver2 * sinRollOver2;
+            result.Z = cosYawOver2 * cosPitchOver2 * sinRollOver2 - sinYawOver2 * sinPitchOver2 * cosRollOver2;
+
+            return result;
+        }
+
         private static Vector3 ToEulerRad(Quaternion rotation)
         {
             float sqw = rotation.W * rotation.W;
@@ -286,10 +321,10 @@ namespace HeadRotation.Render
 
         private static float NormalizeAngle(float angle)
         {
-            while (angle > 360)
-                angle -= 360;
-            while (angle < 0)
-                angle += 360;
+            while (angle > 180.0f)
+                angle -= 360.0f;
+            while (angle < -180.0f)
+                angle += 360.0f;
             return angle;
         }
 
