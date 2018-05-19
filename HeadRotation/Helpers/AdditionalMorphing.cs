@@ -45,12 +45,19 @@ namespace HeadRotation.Helpers
             Convex = Triangulate.ComputeConvexHull(points, (Type == MorphTriangleType.Left) == IsReversed);
 
             LastIndex = Convex.Count - 1;
+
+            float prevX = Convex[LastIndex].X;
             float prevY = Convex[LastIndex].Y;
+            
             for (int i = LastIndex - 1; i >= 0; --i)
             {
                 float y = Convex[i].Y;
+                float x = Convex[i].X;
+                if (x > prevX == (Type == MorphTriangleType.Left))
+                    continue;
                 if (y < prevY)
                     break;
+                prevX = x;
                 prevY = y;
                 FirstIndex = i;
             }
