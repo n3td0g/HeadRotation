@@ -197,6 +197,8 @@ namespace HeadRotation.Render
                 if(angles.X > -5.0f && angles.X < 5.0f)
                     angles.X = 0.0f;
 
+                HeadAngle = angles.Y;
+
                 MeshQuaternion = quaternion = ToQ(angles);
 
                 RotationMatrix = CreateRotationMatrix(quaternion);
@@ -207,8 +209,9 @@ namespace HeadRotation.Render
             else
             {
                 MeshQuaternion = Quaternion.Identity;
+                HeadAngle = 0.0f;
             }
-            HeadAngle = -MeshQuaternion.Z;       
+
         }
 
         private static Matrix4 CreateRotationMatrix(Quaternion quaternion)
