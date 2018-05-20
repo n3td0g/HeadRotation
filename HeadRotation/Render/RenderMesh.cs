@@ -194,7 +194,7 @@ namespace HeadRotation.Render
                 MeshQuaternion = quaternion;
 
                 var angles = ToEulerRad(MeshQuaternion);
-                if(angles.X > -5.0f && angles.X < 5.0f)
+                if(angles.X > -12.0f && angles.X < 3.0f)
                     angles.X = 0.0f;
 
                 HeadAngle = angles.Y;
