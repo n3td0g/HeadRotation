@@ -9,5 +9,5 @@ void main(void)
 	v_OrigitnalPosition = gl_Normal.xyz;
 
 	gl_FrontColor = gl_Color;
-	gl_TexCoord[0] = gl_Vertex;//vec4(gl_Vertex.xy, gl_MultiTexCoord0.x, 0.0);
+	gl_TexCoord[0] = vec4(gl_Vertex.xy, gl_MultiTexCoord0.x, 0.0); //gl_Vertex;//
 }

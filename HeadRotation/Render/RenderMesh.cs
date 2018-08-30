@@ -468,7 +468,7 @@ namespace HeadRotation.Render
             GL.Color3(1.0f, 1.0f, 1.0f);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
-            //GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
             GL.EnableClientState(ArrayCap.ColorArray);
 
             foreach (var part in Parts)
@@ -480,7 +480,7 @@ namespace HeadRotation.Render
 
                 GL.VertexPointer(2, VertexPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes));
                 GL.NormalPointer(NormalPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes + 2 * Vector4.SizeInBytes));
-                //GL.TexCoordPointer(1, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(3 * Vector3.SizeInBytes + Vector2.SizeInBytes + 2 * Vector4.SizeInBytes));
+                GL.TexCoordPointer(1, TexCoordPointerType.Float, Vertex3d.Stride, new IntPtr(3 * Vector3.SizeInBytes + Vector2.SizeInBytes + 2 * Vector4.SizeInBytes));
                 GL.ColorPointer(4, ColorPointerType.Float, Vertex3d.Stride, new IntPtr(2 * Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes));
 
                 GL.DrawRangeElements(PrimitiveType.Triangles, 0, part.CountIndices, part.CountIndices, DrawElementsType.UnsignedInt, new IntPtr(0));
@@ -490,7 +490,7 @@ namespace HeadRotation.Render
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
-            //GL.DisableClientState(ArrayCap.TextureCoordArray);
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
             GL.DisableClientState(ArrayCap.ColorArray);
         }
 

@@ -10,7 +10,7 @@ void main(void)
 {
 	float b = clamp(sign(v_OrigitnalPosition.z), 0.0, 1.0);
 
-	//b = b * gl_TexCoord[0].z;
+	b = b * gl_TexCoord[0].z;
 
 	vec2 t;
 	if(u_BlendDirectionX * v_OrigitnalPosition.x < 0.0) {
