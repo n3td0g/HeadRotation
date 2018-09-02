@@ -72,7 +72,7 @@ namespace HeadRotation.Controls
         private void LoadModel(bool isSmile)
         {
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
-            var fullPath = Path.Combine(dir, "Models", isSmile ? "FemWithSmile" : "FemWithoutSmile", "Fem.obj");
+            var fullPath = Path.Combine(dir, "Models", isSmile ? "ChildWithSmile" : "ChildWithoutSmile", "Child.obj");
             HeadMesh = RenderMesh.LoadFromFile(fullPath);
             HeadMesh.OnBeforePartDraw += HeadMesh_OnBeforePartDraw;
             HeadPoints.HeadMesh = HeadMesh;

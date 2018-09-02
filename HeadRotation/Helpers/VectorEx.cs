@@ -12,7 +12,7 @@ namespace HeadRotation.Helpers
     {
         public static void ExportVector(List<Vector3> data, bool isSmile)
         {
-            var vectorPath = Path.Combine(Application.StartupPath, "Models", isSmile ? "FemWithSmile" : "FemWithoutSmile", "headRotater_vectors.txt");
+            var vectorPath = Path.Combine(Application.StartupPath, "Models", isSmile ? "ChildWithSmile" : "ChildWithoutSmile", "headRotater_vectors.txt");
             using (var writer = new StreamWriter(vectorPath, false, Encoding.Default))
             {
                 foreach (var vector in data)
@@ -23,7 +23,7 @@ namespace HeadRotation.Helpers
         }
         public static List<Vector3> ImportVector(bool isSmile)
         {
-            var vectorPath = Path.Combine(Application.StartupPath, "Models", isSmile ? "FemWithSmile" : "FemWithoutSmile", "headRotater_vectors.txt");
+            var vectorPath = Path.Combine(Application.StartupPath, "Models", isSmile ? "ChildWithSmile" : "ChildWithoutSmile", "headRotater_vectors.txt");
             var result = new List<Vector3>();
             using (var reader = new StreamReader(vectorPath))
             {
