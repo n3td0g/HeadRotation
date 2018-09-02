@@ -1,0 +1,150 @@
+newmtl Legs
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl EyeReflection
+d 0
+Ns 0.75
+Ni 1.3
+Ka 0 0 0
+Kd 0.80000001 0.80000001 0.80000001
+Ks 1 1 1
+Km 0.02
+
+newmtl Nostrils
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipface01.jpg
+
+newmtl Lacrimals
+d 1
+Kd 1 1 1
+map_Kd /Maps/d2.png
+
+newmtl Pupils
+d 1
+Kd 1 1 1
+map_Kd /Maps/d2.png
+
+newmtl Lips
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipface01.jpg
+
+newmtl Tear
+d 0.118182
+Ns 0.80000001
+Ni 1.3
+Ka 0 0 0
+Kd 0.80000001 0.80000001 0.80000001
+Ks 1 1 1
+Km 0.02
+
+newmtl Gums
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipmouth.jpg
+map_D /Maps/m5phillipmoutho.jpg
+
+newmtl Irises
+d 1
+Kd 1 1 1
+map_Kd /Maps/d2.png
+
+newmtl Teeth
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipmouth.jpg
+
+newmtl Cornea
+d 0
+Kd 1 1 1
+
+newmtl Face
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipface01.jpg
+
+newmtl Toenails
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Sclera
+d 1
+Kd 1 1 1
+map_Kd /Maps/d2.png
+map_D /Maps/m5phillipeyeso.jpg
+
+newmtl Fingernails
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Head
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Ears
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Hands
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Shoulders
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Neck
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Hips
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Torso
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Nipples
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliptorso01.jpg
+
+newmtl Forearms
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Feet
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5philliplimbs01.jpg
+
+newmtl Eyelashes
+d 0.69999999
+Kd 0.21176471 0.17647059 0.16470589
+map_Kd /Maps/m5philliplashes.jpg
+map_D /Maps/m5philliplasheso.jpg
+
+newmtl Tongue
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipmouth.jpg
+
+newmtl InnerMouth
+d 1
+Kd 1 1 1
+map_Kd /Maps/m5phillipmouth.jpg
+
